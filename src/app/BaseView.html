@@ -1,0 +1,82 @@
+<link rel='ractive' href='./Module.html'>
+<link rel='ractive' href='./Output.html'>
+
+<div class='left'>
+	<link rel='ractive' href='./Module.html'>
+
+	{{#each modules :i}}
+		<Module module='{{this}}' index='{{i}}' main='{{i===0}}'/>
+	{{/each}}
+</div>
+
+<div class='right'>
+	<Output output='{{output}}'/>
+</div>
+
+
+<style>
+	.left, .right {
+		width: 50%;
+		height: 100%;
+		float: left;
+	}
+</style>
+
+<script>
+	const path = require( './interop/path' );
+
+	component.exports = {
+		data: () => ({
+			modules: [
+				{
+					name: 'main.js',
+					code: `import { foo } from './foo';\nconsole.log( foo() );`
+				},
+
+				{
+					name: 'foo.js',
+					code: `export function foo () {\n\treturn 42;\n}`
+				}
+			]
+		}),
+
+		oninit () {
+			this.observe( 'modules', modules => {
+				console.log( 'modules', modules )
+
+				let moduleById = {};
+				modules.forEach( module => {
+					moduleById[ module.name ] = module;
+				});
+
+				rollup.rollup({
+					entry: '@main',
+					resolveId ( importee, importer ) {
+						if ( !importer ) return importee;
+						if ( importee[0] !== '.' ) return importee;
+						return path.resolve( path.dirname( importer ), importee );
+					},
+					load: function ( id ) {
+						if ( id === '@main' ) return modules[0].code;
+						if ( id.substr( 0, 2 ) === './' ) id = id.substring( 2 );
+
+						const module = moduleById[ id + '.js' ];
+
+						if ( !module ) throw new Error( `missing module ${id}` ); // TODO...
+
+						return module.code;
+					}
+				}).then( bundle => {
+					console.log( 'bundle', bundle )
+					const generated = bundle.generate({
+						format: 'iife'
+					});
+
+					this.set( 'output', generated.code );
+				})
+			});
+
+
+		}
+	};
+</script>

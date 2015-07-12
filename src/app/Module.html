@@ -1,0 +1,47 @@
+<article class='module'>
+	<header>
+		<input value='{{module.name}}' placeholder='foo.js'>
+		<button on-tap='fire("remove", index)'>remove</button>
+	</header>
+
+	<textarea value='{{module.code}}'/>
+</article>
+
+<style>
+	.module {
+		width: 100%;
+		min-height: 100px;
+	}
+
+	header {
+		width: 100%;
+		padding: 0 4em 0 0;
+	}
+
+	input {
+		width: 100%;
+	}
+
+	button {
+		position: absolute;
+		top: 0;
+		right: 0;
+	}
+
+	textarea {
+		width: 100%;
+		height: 100px;
+	}
+</style>
+
+<script>
+	component.exports = {
+		data: () => ({
+
+		}),
+
+		events: {
+			tap: require( 'ractive-events-tap' )
+		}
+	};
+</script>

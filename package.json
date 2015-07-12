@@ -1,0 +1,22 @@
+{
+  "name": "rollupjs.org",
+  "author": "Rich Harris",
+  "version": "0.1.0",
+  "devDependencies": {
+    "gobble": "^0.10.2",
+    "gobble-babel": "^5.5.8",
+    "gobble-browserify": "^0.6.1",
+    "gobble-cli": "^0.4.2",
+    "gobble-derequire": "^0.1.2",
+    "gobble-ractive": "^0.2.0",
+    "gobble-rollup": "^0.4.0"
+  },
+  "scripts": {
+    "start": "gobble"
+  },
+  "dependencies": {
+    "ractive": "^0.7.3",
+    "ractive-events-tap": "^0.2.0",
+    "rollup": "^0.10.0"
+  }
+}
