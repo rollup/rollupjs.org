@@ -7,6 +7,8 @@
 	{{#each modules :i}}
 		<Module module='{{this}}' index='{{i}}' main='{{i===0}}'/>
 	{{/each}}
+
+	<button class='new-module' on-tap='createModule()'>new module</button>
 </div>
 
 <div class='right'>
@@ -77,6 +79,20 @@
 			});
 
 
+		},
+
+		createModule () {
+			this.push( 'modules', {
+				name: 'newModule.js',
+				contents: ''
+			});
+
+			const view = this.findAllComponents( 'Module' ).pop();
+			view.find( 'input' ).select();
+		},
+
+		events: {
+			tap: require( 'ractive-events-tap' )
 		}
 	};
 </script>
