@@ -41,32 +41,6 @@ function extname(path) {
 	return match[0];
 }
 
-function relative(from, to) {
-	var fromParts = from.split(/[\/\\]/);
-	var toParts = to.split(/[\/\\]/);
-
-	while (fromParts[0] && toParts[0] && fromParts[0] === toParts[0]) {
-		fromParts.shift();
-		toParts.shift();
-	}
-
-	while (toParts[0] && toParts[0][0] === '.') {
-		if (toParts[0] === '.') {
-			toParts.shift();
-		} else if (toParts[0] === '..') {
-			fromParts.pop();
-		} else {
-			throw new Error('Unexpected path part (' + toParts[0] + ')');
-		}
-	}
-
-	while (fromParts.pop()) {
-		toParts.unshift('..');
-	}
-
-	return toParts.join('/');
-}
-
 function resolve() {
 	for (var _len = arguments.length, paths = Array(_len), _key = 0; _key < _len; _key++) {
 		paths[_key] = arguments[_key];
@@ -81,10 +55,11 @@ function resolve() {
 			var parts = path.split(/[\/\\]/);
 
 			while (parts[0] && parts[0][0] === '.') {
-				if (parts[0] === '.') {
-					parts.shift();
-				} else if (parts[0] === '..') {
+				var part = parts.shift();
+				if (part === '..') {
 					resolvedParts.pop();
+				} else if (part !== '.') {
+					throw new Error('Unexpected path part (' + part + ')');
 				}
 			}
 
@@ -93,6 +68,12 @@ function resolve() {
 	});
 
 	return resolvedParts.join('/'); // TODO windows...
+}
+
+var keys = Object.keys;
+
+function blank() {
+	return Object.create(null);
 }
 
 function unixizePath(path) {
@@ -105,12 +86,6 @@ function getIndentString(magicString, options) {
 	}
 
 	return options.indent || '';
-}
-
-var keys = Object.keys;
-
-function blank() {
-	return Object.create(null);
 }
 
 function badExports(option, keys) {
@@ -369,117 +344,6 @@ function makeLegalIdentifier(str) {
 	return str;
 }
 
-function sequence(arr, callback) {
-	var len = arr.length;
-	var results = new Array(len);
-
-	var promise = _Promise.resolve();
-
-	function next(i) {
-		return promise.then(function () {
-			return callback(arr[i], i);
-		}).then(function (result) {
-			return results[i] = result;
-		});
-	}
-
-	var i = undefined;
-
-	for (i = 0; i < len; i += 1) {
-		promise = next(i);
-	}
-
-	return promise.then(function () {
-		return results;
-	});
-}
-
-var _analyse = analyse;
-
-function analyse(magicString, module) {
-	// first we need to generate comprehensive scope info
-	var previousStatement = null;
-	var commentIndex = 0;
-
-	module.statements.forEach(function (statement) {
-		var node = statement.node;
-
-		var trailing = !!previousStatement;
-		var previousComment = undefined;
-
-		// TODO surely this can be neater
-		// attach leading comment
-		do {
-			var comment = module.comments[commentIndex];
-
-			// prevent comments inside the previous statement being
-			// appended to it
-			if (previousStatement) {
-				while (comment && comment.start < previousStatement.node.end) {
-					commentIndex += 1;
-					comment = module.comments[commentIndex];
-				}
-			}
-
-			if (!comment || comment.end > node.start) break;
-
-			// attach any trailing comment to the previous statement
-			if (trailing && !/\n/.test(module.source.slice(previousStatement.node.end, comment.start))) {
-				previousStatement.trailingComment = comment;
-			}
-
-			// then attach leading comments to this statement
-			else {
-				statement.leadingComments.push({
-					separator: previousComment ? magicString.slice(previousComment.end, comment.start) : '\n',
-					comment: comment
-				});
-
-				previousComment = comment;
-			}
-
-			commentIndex += 1;
-			trailing = false;
-		} while (module.comments[commentIndex]);
-
-		// determine margin
-		var previousEnd = previousComment ? previousComment.end : previousStatement ? (previousStatement.trailingComment || previousStatement.node).end : 0;
-
-		//const start = ( statement.leadingComments[0] || node ).start;
-
-		var gap = magicString.original.slice(previousEnd, node.start);
-		var margin = gap.split('\n').length;
-
-		if (previousStatement) previousStatement.margin[1] = margin;
-		statement.margin[0] = margin;
-
-		statement.analyse();
-
-		previousStatement = statement;
-	});
-}
-
-function getLocation(source, charIndex) {
-	var lines = source.split('\n');
-	var len = lines.length;
-
-	var lineStart = 0;
-	var i = undefined;
-
-	for (i = 0; i < len; i += 1) {
-		var line = lines[i];
-		var lineEnd = lineStart + line.length + 1; // +1 for newline
-
-		if (lineEnd > charIndex) {
-			return { line: i + 1, column: charIndex - lineStart };
-		}
-
-		lineStart = lineEnd;
-	}
-
-	throw new Error('Could not determine location of character');
-}
-
 var shouldSkip = undefined;
 var shouldAbort = undefined;
 function walk(ast, _ref) {
@@ -545,6 +409,52 @@ function visit(node, parent, enter, leave) {
 	}
 }
 
+function sequence(arr, callback) {
+	var len = arr.length;
+	var results = new Array(len);
+
+	var promise = _Promise.resolve();
+
+	function next(i) {
+		return promise.then(function () {
+			return callback(arr[i], i);
+		}).then(function (result) {
+			return results[i] = result;
+		});
+	}
+
+	var i = undefined;
+
+	for (i = 0; i < len; i += 1) {
+		promise = next(i);
+	}
+
+	return promise.then(function () {
+		return results;
+	});
+}
+
+function getLocation(source, charIndex) {
+	var lines = source.split('\n');
+	var len = lines.length;
+
+	var lineStart = 0;
+	var i = undefined;
+
+	for (i = 0; i < len; i += 1) {
+		var line = lines[i];
+		var lineEnd = lineStart + line.length + 1; // +1 for newline
+
+		if (lineEnd > charIndex) {
+			return { line: i + 1, column: charIndex - lineStart };
+		}
+
+		lineStart = lineEnd;
+	}
+
+	throw new Error('Could not determine location of character');
+}
+
 var classCallCheck = function (instance, Constructor) {
   if (!(instance instanceof Constructor)) {
     throw new TypeError("Cannot call a class as a function");
@@ -598,10 +508,6 @@ var Scope = (function () {
 		}
 	};
 
-	Scope.prototype.getDeclaration = function getDeclaration(name) {
-		return this.declarations[name] || this.parent && this.parent.getDeclaration(name);
-	};
-
 	Scope.prototype.contains = function contains(name) {
 		return !!this.getDeclaration(name);
 	};
@@ -616,6 +522,10 @@ var Scope = (function () {
 		}
 
 		return null;
+	};
+
+	Scope.prototype.getDeclaration = function getDeclaration(name) {
+		return this.declarations[name] || this.parent && this.parent.getDeclaration(name);
 	};
 
 	return Scope;
@@ -854,52 +764,17 @@ var Statement = (function () {
 		}
 	};
 
-	Statement.prototype.expand = function expand() {
+	Statement.prototype.mark = function mark() {
 		var _this3 = this;
 
-		this.isIncluded = true; // prevent statement being included twice
+		if (this.included) return; // prevent infinite loops
+		this.isIncluded = true;
 
-		var result = [];
-
-		// We have a statement, and it hasn't been included yet. First, include
-		// the statements it depends on
 		var dependencies = Object.keys(this.dependsOn);
 
 		return sequence(dependencies, function (name) {
 			if (_this3.defines[name]) return; // TODO maybe exclude from `this.dependsOn` in the first place?
-
-			return _this3.module.define(name).then(function (definition) {
-				result.push.apply(result, definition);
-			});
-		})
-
-		// then include the statement itself
-		.then(function () {
-			result.push(_this3);
-		})
-
-		// then include any statements that could modify the
-		// thing(s) this statement defines
-		.then(function () {
-			return sequence(keys(_this3.defines), function (name) {
-				var modifications = _this3.module.modifications[name];
-
-				if (modifications) {
-					return sequence(modifications, function (statement) {
-						if (!statement.isIncluded) {
-							return statement.expand().then(function (statements) {
-								result.push.apply(result, statements);
-							});
-						}
-					});
-				}
-			});
-		})
-
-		// the `result` is an array of all statements that need
-		// to be included if this one is
-		.then(function () {
-			return result;
+			return _this3.module.mark(name);
 		});
 	};
 
@@ -1033,6 +908,71 @@ var Statement = (function () {
 	return Statement;
 })();
 
+var _analyse = analyse;
+
+function analyse(magicString, module) {
+	// first we need to generate comprehensive scope info
+	var previousStatement = null;
+	var commentIndex = 0;
+
+	module.statements.forEach(function (statement) {
+		var node = statement.node;
+
+		var trailing = !!previousStatement;
+		var previousComment = undefined;
+
+		// TODO surely this can be neater
+		// attach leading comment
+		do {
+			var comment = module.comments[commentIndex];
+
+			// prevent comments inside the previous statement being
+			// appended to it
+			if (previousStatement) {
+				while (comment && comment.start < previousStatement.node.end) {
+					commentIndex += 1;
+					comment = module.comments[commentIndex];
+				}
+			}
+
+			if (!comment || comment.end > node.start) break;
+
+			// attach any trailing comment to the previous statement
+			if (trailing && !/\n/.test(module.source.slice(previousStatement.node.end, comment.start))) {
+				previousStatement.trailingComment = comment;
+			}
+
+			// then attach leading comments to this statement
+			else {
+				statement.leadingComments.push({
+					separator: previousComment ? magicString.slice(previousComment.end, comment.start) : '\n',
+					comment: comment
+				});
+
+				previousComment = comment;
+			}
+
+			commentIndex += 1;
+			trailing = false;
+		} while (module.comments[commentIndex]);
+
+		// determine margin
+		var previousEnd = previousComment ? previousComment.end : previousStatement ? (previousStatement.trailingComment || previousStatement.node).end : 0;
+
+		//const start = ( statement.leadingComments[0] || node ).start;
+
+		var gap = magicString.original.slice(previousEnd, node.start);
+		var margin = gap.split('\n').length;
+
+		if (previousStatement) previousStatement.margin[1] = margin;
+		statement.margin[0] = margin;
+
+		statement.analyse();
+
+		previousStatement = statement;
+	});
+}
+
 var emptyArrayPromise = _Promise.resolve([]);
 
 function deconflict(name, names) {
@@ -1045,8 +985,6 @@ function deconflict(name, names) {
 
 var Module = (function () {
 	function Module(_ref) {
-		var _this = this;
-
 		var id = _ref.id;
 		var source = _ref.source;
 		var bundle = _ref.bundle;
@@ -1066,173 +1004,11 @@ var Module = (function () {
 		this.suggestedNames = blank();
 		this.comments = [];
 
-		// Try to extract a list of top-level statements/declarations. If
-		// the parse fails, attach file info and abort
-		var ast = undefined;
-
-		try {
-			ast = acorn.parse(source, {
-				ecmaVersion: 6,
-				sourceType: 'module',
-				onComment: function (block, text, start, end) {
-					return _this.comments.push({ block: block, text: text, start: start, end: end });
-				}
-			});
-		} catch (err) {
-			err.code = 'PARSE_ERROR';
-			err.file = id; // see above - not necessarily true, but true enough
-			throw err;
-		}
-
-		walk(ast, {
-			enter: function (node) {
-				_this.magicString.addSourcemapLocation(node.start);
-				_this.magicString.addSourcemapLocation(node.end);
-			}
-		});
-
-		this.statements = [];
-
-		ast.body.map(function (node) {
-			// special case - top-level var declarations with multiple declarators
-			// should be split up. Otherwise, we may end up including code we
-			// don't need, just because an unwanted declarator is included
-			if (node.type === 'VariableDeclaration' && node.declarations.length > 1) {
-				node.declarations.forEach(function (declarator) {
-					var magicString = _this.magicString.snip(declarator.start, declarator.end).trim();
-					magicString.prepend(node.kind + ' ').append(';');
-
-					var syntheticNode = {
-						type: 'VariableDeclaration',
-						kind: node.kind,
-						start: node.start,
-						end: node.end,
-						declarations: [declarator]
-					};
-
-					var statement = new Statement(syntheticNode, magicString, _this, _this.statements.length);
-					_this.statements.push(statement);
-				});
-			} else {
-				var magicString = _this.magicString.snip(node.start, node.end).trim();
-				var statement = new Statement(node, magicString, _this, _this.statements.length);
-
-				_this.statements.push(statement);
-			}
-		});
-
-		this.importDeclarations = this.statements.filter(isImportDeclaration);
-		this.exportDeclarations = this.statements.filter(isExportDeclaration);
-
-		this.analyse();
-	}
-
-	Module.prototype.analyse = function analyse() {
-		var _this2 = this;
+		this.statements = this._parse();
 
 		// imports and exports, indexed by ID
 		this.imports = blank();
 		this.exports = blank();
-
-		this.importDeclarations.forEach(function (statement) {
-			var node = statement.node;
-			var source = node.source.value;
-
-			node.specifiers.forEach(function (specifier) {
-				var isDefault = specifier.type === 'ImportDefaultSpecifier';
-				var isNamespace = specifier.type === 'ImportNamespaceSpecifier';
-
-				var localName = specifier.local.name;
-				var name = isDefault ? 'default' : isNamespace ? '*' : specifier.imported.name;
-
-				if (_this2.imports[localName]) {
-					var err = new Error('Duplicated import \'' + localName + '\'');
-					err.file = _this2.id;
-					err.loc = getLocation(_this2.source, specifier.start);
-					throw err;
-				}
-
-				_this2.imports[localName] = {
-					source: source,
-					name: name,
-					localName: localName
-				};
-			});
-		});
-
-		this.exportDeclarations.forEach(function (statement) {
-			var node = statement.node;
-			var source = node.source && node.source.value;
-
-			// export default function foo () {}
-			// export default foo;
-			// export default 42;
-			if (node.type === 'ExportDefaultDeclaration') {
-				var isDeclaration = /Declaration$/.test(node.declaration.type);
-				var isAnonymous = /(?:Class|Function)Expression$/.test(node.declaration.type);
-
-				var declaredName = isDeclaration && node.declaration.id.name;
-				var identifier = node.declaration.type === 'Identifier' && node.declaration.name;
-
-				_this2.exports.default = {
-					statement: statement,
-					name: 'default',
-					localName: declaredName || 'default',
-					declaredName: declaredName,
-					identifier: identifier,
-					isDeclaration: isDeclaration,
-					isAnonymous: isAnonymous,
-					isModified: false // in case of `export default foo; foo = somethingElse`
-				};
-			}
-
-			// export { foo, bar, baz }
-			// export var foo = 42;
-			// export function foo () {}
-			else if (node.type === 'ExportNamedDeclaration') {
-				if (node.specifiers.length) {
-					// export { foo, bar, baz }
-					node.specifiers.forEach(function (specifier) {
-						var localName = specifier.local.name;
-						var exportedName = specifier.exported.name;
-
-						_this2.exports[exportedName] = {
-							localName: localName,
-							exportedName: exportedName
-						};
-
-						// export { foo } from './foo';
-						if (source) {
-							_this2.imports[localName] = {
-								source: source,
-								localName: localName,
-								name: localName
-							};
-						}
-					});
-				} else {
-					var declaration = node.declaration;
-
-					var _name = undefined;
-
-					if (declaration.type === 'VariableDeclaration') {
-						// export var foo = 42
-						_name = declaration.declarations[0].id.name;
-					} else {
-						// export function foo () {}
-						_name = declaration.id.name;
-					}
-
-					_this2.exports[_name] = {
-						statement: statement,
-						localName: _name,
-						expression: declaration
-					};
-				}
-			}
-		});
-
-		_analyse(this.magicString, this);
 
 		this.canonicalNames = blank();
 
@@ -1240,31 +1016,145 @@ var Module = (function () {
 		this.definitionPromises = blank();
 		this.modifications = blank();
 
+		this.analyse();
+	}
+
+	Module.prototype.addExport = function addExport(statement) {
+		var _this = this;
+
+		var node = statement.node;
+		var source = node.source && node.source.value;
+
+		// export default function foo () {}
+		// export default foo;
+		// export default 42;
+		if (node.type === 'ExportDefaultDeclaration') {
+			var isDeclaration = /Declaration$/.test(node.declaration.type);
+			var isAnonymous = /(?:Class|Function)Expression$/.test(node.declaration.type);
+
+			var declaredName = isDeclaration && node.declaration.id.name;
+			var identifier = node.declaration.type === 'Identifier' && node.declaration.name;
+
+			this.exports.default = {
+				statement: statement,
+				name: 'default',
+				localName: declaredName || 'default',
+				declaredName: declaredName,
+				identifier: identifier,
+				isDeclaration: isDeclaration,
+				isAnonymous: isAnonymous,
+				isModified: false // in case of `export default foo; foo = somethingElse`
+			};
+		}
+
+		// export { foo, bar, baz }
+		// export var foo = 42;
+		// export function foo () {}
+		else if (node.type === 'ExportNamedDeclaration') {
+			if (node.specifiers.length) {
+				// export { foo, bar, baz }
+				node.specifiers.forEach(function (specifier) {
+					var localName = specifier.local.name;
+					var exportedName = specifier.exported.name;
+
+					_this.exports[exportedName] = {
+						localName: localName,
+						exportedName: exportedName
+					};
+
+					// export { foo } from './foo';
+					if (source) {
+						_this.imports[localName] = {
+							source: source,
+							localName: localName,
+							name: localName
+						};
+					}
+				});
+			} else {
+				var declaration = node.declaration;
+
+				var _name = undefined;
+
+				if (declaration.type === 'VariableDeclaration') {
+					// export var foo = 42
+					_name = declaration.declarations[0].id.name;
+				} else {
+					// export function foo () {}
+					_name = declaration.id.name;
+				}
+
+				this.exports[_name] = {
+					statement: statement,
+					localName: _name,
+					expression: declaration
+				};
+			}
+		}
+	};
+
+	Module.prototype.addImport = function addImport(statement) {
+		var _this2 = this;
+
+		var node = statement.node;
+		var source = node.source.value;
+
+		node.specifiers.forEach(function (specifier) {
+			var isDefault = specifier.type === 'ImportDefaultSpecifier';
+			var isNamespace = specifier.type === 'ImportNamespaceSpecifier';
+
+			var localName = specifier.local.name;
+			var name = isDefault ? 'default' : isNamespace ? '*' : specifier.imported.name;
+
+			if (_this2.imports[localName]) {
+				var err = new Error('Duplicated import \'' + localName + '\'');
+				err.file = _this2.id;
+				err.loc = getLocation(_this2.source, specifier.start);
+				throw err;
+			}
+
+			_this2.imports[localName] = {
+				source: source,
+				name: name,
+				localName: localName
+			};
+		});
+	};
+
+	Module.prototype.analyse = function analyse() {
+		var _this3 = this;
+
+		// discover this module's imports and exports
+		this.statements.forEach(function (statement) {
+			if (isImportDeclaration(statement)) _this3.addImport(statement);else if (isExportDeclaration(statement)) _this3.addExport(statement);
+		});
+
+		_analyse(this.magicString, this);
+
+		// consolidate names that are defined/modified in this module
 		this.statements.forEach(function (statement) {
 			keys(statement.defines).forEach(function (name) {
-				_this2.definitions[name] = statement;
+				_this3.definitions[name] = statement;
 			});
 
 			keys(statement.modifies).forEach(function (name) {
-				if (!_this2.modifications[name]) {
-					_this2.modifications[name] = [];
-				}
-
-				_this2.modifications[name].push(statement);
+				(_this3.modifications[name] || (_this3.modifications[name] = [])).push(statement);
 			});
 		});
 
+		// if names are referenced that are neither defined nor imported
+		// in this module, we assume that they're globals
 		this.statements.forEach(function (statement) {
 			keys(statement.dependsOn).forEach(function (name) {
-				if (!_this2.definitions[name] && !_this2.imports[name]) {
-					_this2.bundle.assumedGlobals[name] = true;
+				if (!_this3.definitions[name] && !_this3.imports[name]) {
+					_this3.bundle.assumedGlobals[name] = true;
 				}
 			});
 		});
 	};
 
 	Module.prototype.consolidateDependencies = function consolidateDependencies() {
-		var _this3 = this;
+		var _this4 = this;
 
 		var strongDependencies = blank();
 
@@ -1277,7 +1167,7 @@ var Module = (function () {
 			keys(statement.stronglyDependsOn).forEach(function (name) {
 				if (statement.defines[name]) return;
 
-				var importDeclaration = _this3.imports[name];
+				var importDeclaration = _this4.imports[name];
 
 				if (importDeclaration && importDeclaration.module && !importDeclaration.module.isExternal) {
 					strongDependencies[importDeclaration.module.id] = importDeclaration.module;
@@ -1291,7 +1181,7 @@ var Module = (function () {
 			keys(statement.dependsOn).forEach(function (name) {
 				if (statement.defines[name]) return;
 
-				var importDeclaration = _this3.imports[name];
+				var importDeclaration = _this4.imports[name];
 
 				if (importDeclaration && importDeclaration.module && !importDeclaration.module.isExternal) {
 					weakDependencies[importDeclaration.module.id] = importDeclaration.module;
@@ -1300,6 +1190,20 @@ var Module = (function () {
 		});
 
 		return { strongDependencies: strongDependencies, weakDependencies: weakDependencies };
+	};
+
+	Module.prototype.findDefiningStatement = function findDefiningStatement(name) {
+		if (this.definitions[name]) return this.definitions[name];
+
+		// TODO what about `default`/`*`?
+
+		var importDeclaration = this.imports[name];
+		if (!importDeclaration) return null;
+
+		return _Promise.resolve(importDeclaration.module || this.bundle.fetchModule(importDeclaration.source, this.id)).then(function (module) {
+			importDeclaration.module = module;
+			return module.findDefiningStatement(name);
+		});
 	};
 
 	Module.prototype.findDeclaration = function findDeclaration(localName) {
@@ -1369,8 +1273,8 @@ var Module = (function () {
 		return this.canonicalNames[localName];
 	};
 
-	Module.prototype.define = function define(name) {
-		var _this4 = this;
+	Module.prototype.mark = function mark(name) {
+		var _this5 = this;
 
 		// shortcut cycles. TODO this won't work everywhere...
 		if (this.definitionPromises[name]) {
@@ -1382,16 +1286,16 @@ var Module = (function () {
 		// The definition for this name is in a different module
 		if (this.imports[name]) {
 			(function () {
-				var importDeclaration = _this4.imports[name];
+				var importDeclaration = _this5.imports[name];
 
-				promise = _this4.bundle.fetchModule(importDeclaration.source, _this4.id).then(function (module) {
+				promise = _this5.bundle.fetchModule(importDeclaration.source, _this5.id).then(function (module) {
 					importDeclaration.module = module;
 
 					// suggest names. TODO should this apply to non default/* imports?
 					if (importDeclaration.name === 'default') {
 						// TODO this seems ropey
 						var localName = importDeclaration.localName;
-						var suggestion = _this4.suggestedNames[localName] || localName;
+						var suggestion = _this5.suggestedNames[localName] || localName;
 
 						// special case - the module has its own import by this name
 						while (!module.isExternal && module.imports[suggestion]) {
@@ -1401,7 +1305,7 @@ var Module = (function () {
 						module.suggestName('default', suggestion);
 					} else if (importDeclaration.name === '*') {
 						var localName = importDeclaration.localName;
-						var suggestion = _this4.suggestedNames[localName] || localName;
+						var suggestion = _this5.suggestedNames[localName] || localName;
 						module.suggestName('*', suggestion);
 						module.suggestName('default', suggestion + '__default');
 					}
@@ -1419,20 +1323,20 @@ var Module = (function () {
 
 					if (importDeclaration.name === '*') {
 						// we need to create an internal namespace
-						if (! ~_this4.bundle.internalNamespaceModules.indexOf(module)) {
-							_this4.bundle.internalNamespaceModules.push(module);
+						if (! ~_this5.bundle.internalNamespaceModules.indexOf(module)) {
+							_this5.bundle.internalNamespaceModules.push(module);
 						}
 
-						return module.expandAllStatements();
+						return module.markAllStatements();
 					}
 
 					var exportDeclaration = module.exports[importDeclaration.name];
 
 					if (!exportDeclaration) {
-						throw new Error('Module ' + module.id + ' does not export ' + importDeclaration.name + ' (imported by ' + _this4.id + ')');
+						throw new Error('Module ' + module.id + ' does not export ' + importDeclaration.name + ' (imported by ' + _this5.id + ')');
 					}
 
-					return module.define(exportDeclaration.localName);
+					return module.mark(exportDeclaration.localName);
 				});
 			})();
 		}
@@ -1441,22 +1345,22 @@ var Module = (function () {
 		else if (name === 'default' && this.exports.default.isDeclaration) {
 			// We have something like `export default foo` - so we just start again,
 			// searching for `foo` instead of default
-			promise = this.define(this.exports.default.name);
+			promise = this.mark(this.exports.default.name);
 		} else {
 			(function () {
 				var statement = undefined;
 
-				statement = name === 'default' ? _this4.exports.default.statement : _this4.definitions[name];
-				promise = statement && !statement.isIncluded ? statement.expand() : emptyArrayPromise;
+				statement = name === 'default' ? _this5.exports.default.statement : _this5.definitions[name];
+				promise = statement && !statement.isIncluded ? statement.mark() : emptyArrayPromise;
 
 				// Special case - `export default foo; foo += 1` - need to be
 				// vigilant about maintaining the correct order of the export
 				// declaration. Otherwise, the export declaration will always
 				// go at the end of the expansion, because the expansion of
 				// `foo` will include statements *after* the declaration
-				if (name === 'default' && _this4.exports.default.identifier && _this4.exports.default.isModified) {
+				if (name === 'default' && _this5.exports.default.identifier && _this5.exports.default.isModified) {
 					(function () {
-						var defaultExportStatement = _this4.exports.default.statement;
+						var defaultExportStatement = _this5.exports.default.statement;
 						promise = promise.then(function (statements) {
 							// remove the default export statement...
 							// TODO could this be statements.pop()?
@@ -1466,7 +1370,7 @@ var Module = (function () {
 							var inserted = false;
 
 							while (i--) {
-								if (statements[i].module === _this4 && statements[i].index < defaultExportStatement.index) {
+								if (statements[i].module === _this5 && statements[i].index < defaultExportStatement.index) {
 									statements.splice(i + 1, 0, defaultExportStatement);
 									inserted = true;
 									break;
@@ -1485,35 +1389,20 @@ var Module = (function () {
 		return this.definitionPromises[name];
 	};
 
-	Module.prototype.expandAllStatements = function expandAllStatements(isEntryModule) {
-		var _this5 = this;
-
-		var allStatements = [];
+	Module.prototype.markAllStatements = function markAllStatements(isEntryModule) {
+		var _this6 = this;
 
 		return sequence(this.statements, function (statement) {
-			// A statement may have already been included, in which case we need to
-			// curb rollup's enthusiasm and move it down here. It remains to be seen
-			// if this approach is bulletproof
-			if (statement.isIncluded) {
-				var index = allStatements.indexOf(statement);
-				if (~index) {
-					allStatements.splice(index, 1);
-					allStatements.push(statement);
-				}
-
-				return;
-			}
+			if (statement.isIncluded) return; // TODO can this happen? probably not...
 
 			// skip import declarations...
 			if (statement.isImportDeclaration) {
 				// ...unless they're empty, in which case assume we're importing them for the side-effects
 				// THIS IS NOT FOOLPROOF. Probably need /*rollup: include */ or similar
 				if (!statement.node.specifiers.length) {
-					return _this5.bundle.fetchModule(statement.node.source.value, _this5.id).then(function (module) {
+					return _this6.bundle.fetchModule(statement.node.source.value, _this6.id).then(function (module) {
 						statement.module = module;
-						return module.expandAllStatements();
-					}).then(function (statements) {
-						allStatements.push.apply(allStatements, statements);
+						return module.markAllStatements();
 					});
 				}
 
@@ -1524,21 +1413,78 @@ var Module = (function () {
 			if (statement.node.type === 'ExportNamedDeclaration' && statement.node.specifiers.length) {
 				// ...but ensure they are defined, if this is the entry module
 				if (isEntryModule) {
-					return statement.expand().then(function (statements) {
-						allStatements.push.apply(allStatements, statements);
-					});
+					return statement.mark();
 				}
 
 				return;
 			}
 
 			// include everything else
-			return statement.expand().then(function (statements) {
-				allStatements.push.apply(allStatements, statements);
-			});
-		}).then(function () {
-			return allStatements;
+			return statement.mark();
 		});
+	};
+
+	// TODO rename this to parse, once https://github.com/rollup/rollup/issues/42 is fixed
+
+	Module.prototype._parse = function _parse() {
+		var _this7 = this;
+
+		// Try to extract a list of top-level statements/declarations. If
+		// the parse fails, attach file info and abort
+		var ast = undefined;
+
+		try {
+			ast = acorn.parse(this.source, {
+				ecmaVersion: 6,
+				sourceType: 'module',
+				onComment: function (block, text, start, end) {
+					return _this7.comments.push({ block: block, text: text, start: start, end: end });
+				}
+			});
+		} catch (err) {
+			err.code = 'PARSE_ERROR';
+			err.file = this.id; // see above - not necessarily true, but true enough
+			throw err;
+		}
+
+		walk(ast, {
+			enter: function (node) {
+				_this7.magicString.addSourcemapLocation(node.start);
+				_this7.magicString.addSourcemapLocation(node.end);
+			}
+		});
+
+		var statements = [];
+
+		ast.body.map(function (node) {
+			// special case - top-level var declarations with multiple declarators
+			// should be split up. Otherwise, we may end up including code we
+			// don't need, just because an unwanted declarator is included
+			if (node.type === 'VariableDeclaration' && node.declarations.length > 1) {
+				node.declarations.forEach(function (declarator) {
+					var magicString = _this7.magicString.snip(declarator.start, declarator.end).trim();
+					magicString.prepend(node.kind + ' ').append(';');
+
+					var syntheticNode = {
+						type: 'VariableDeclaration',
+						kind: node.kind,
+						start: node.start,
+						end: node.end,
+						declarations: [declarator]
+					};
+
+					var statement = new Statement(syntheticNode, magicString, _this7, statements.length);
+					statements.push(statement);
+				});
+			} else {
+				var magicString = _this7.magicString.snip(node.start, node.end).trim();
+				var statement = new Statement(node, magicString, _this7, statements.length);
+
+				statements.push(statement);
+			}
+		});
+
+		return statements;
 	};
 
 	Module.prototype.rename = function rename(name, replacement) {
@@ -1576,6 +1522,10 @@ var ExternalModule = (function () {
 		this.needsNamed = false;
 	}
 
+	ExternalModule.prototype.findDefiningStatement = function findDefiningStatement() {
+		return null;
+	};
+
 	ExternalModule.prototype.getCanonicalName = function getCanonicalName(name) {
 		if (name === 'default') {
 			return this.needsNamed ? this.name + '__default' : this.name;
@@ -1597,10 +1547,6 @@ var ExternalModule = (function () {
 		if (!this.suggestedNames[exportName]) {
 			this.suggestedNames[exportName] = suggestion;
 		}
-	};
-
-	ExternalModule.prototype.findDefiningStatement = function findDefiningStatement() {
-		return null;
 	};
 
 	return ExternalModule;
@@ -1710,53 +1656,19 @@ var Bundle = (function () {
 		this.modulePromises = blank();
 		this.modules = [];
 
-		this.statements = [];
+		this.statements = null;
 		this.externalModules = [];
 		this.internalNamespaceModules = [];
 		this.assumedGlobals = blank();
 	}
 
-	Bundle.prototype.fetchModule = function fetchModule(importee, importer) {
+	Bundle.prototype.build = function build() {
 		var _this = this;
 
-		return _Promise.resolve(this.resolveId(importee, importer, this.resolveOptions)).then(function (id) {
-			if (!id) {
-				// external module
-				if (!_this.modulePromises[importee]) {
-					var _module = new ExternalModule(importee);
-					_this.externalModules.push(_module);
-					_this.modulePromises[importee] = _Promise.resolve(_module);
-				}
-
-				return _this.modulePromises[importee];
-			}
-
-			if (!_this.modulePromises[id]) {
-				_this.modulePromises[id] = _Promise.resolve(_this.load(id, _this.loadOptions)).then(function (source) {
-					var module = new Module({
-						id: id,
-						source: source,
-						bundle: _this
-					});
-
-					_this.modules.push(module);
-
-					return module;
-				});
-			}
-
-			return _this.modulePromises[id];
-		});
-	};
-
-	Bundle.prototype.build = function build() {
-		var _this2 = this;
-
-		// bring in top-level AST nodes from the entry module
 		return this.fetchModule(this.entry, undefined).then(function (entryModule) {
 			var defaultExport = entryModule.exports.default;
 
-			_this2.entryModule = entryModule;
+			_this.entryModule = entryModule;
 
 			if (defaultExport) {
 				// `export default function foo () {...}` -
@@ -1769,7 +1681,7 @@ var Bundle = (function () {
 				// based on the id of the entry module
 				else {
 					(function () {
-						var defaultExportName = makeLegalIdentifier(basename(_this2.entryModule.id).slice(0, -extname(_this2.entryModule.id).length));
+						var defaultExportName = makeLegalIdentifier(basename(_this.entryModule.id).slice(0, -extname(_this.entryModule.id).length));
 
 						// deconflict
 						var topLevelNames = [];
@@ -1788,17 +1700,17 @@ var Bundle = (function () {
 				}
 			}
 
-			return entryModule.expandAllStatements(true);
-		}).then(function (statements) {
-			_this2.statements = statements;
-			_this2.deconflict();
-
-			_this2.orderedStatements = _this2.sort();
+			return entryModule.markAllStatements(true);
+		}).then(function () {
+			return _this.markAllModifierStatements();
+		}).then(function () {
+			_this.statements = _this.sort();
+			_this.deconflict();
 		});
 	};
 
 	Bundle.prototype.deconflict = function deconflict() {
-		var _this3 = this;
+		var _this2 = this;
 
 		var definers = blank();
 		var conflicts = blank();
@@ -1861,7 +1773,7 @@ var Bundle = (function () {
 		keys(conflicts).forEach(function (name) {
 			var modules = definers[name];
 
-			if (!_this3.assumedGlobals[name]) {
+			if (!_this2.assumedGlobals[name]) {
 				// the module closest to the entryModule gets away with
 				// keeping things as they are, unless we have a conflict
 				// with a global name
@@ -1884,99 +1796,37 @@ var Bundle = (function () {
 		}
 	};
 
-	Bundle.prototype.sort = function sort() {
-		var seen = {};
-		var ordered = [];
-		var hasCycles = undefined;
+	Bundle.prototype.fetchModule = function fetchModule(importee, importer) {
+		var _this3 = this;
 
-		var strongDeps = {};
-		var stronglyDependsOn = {};
-
-		function visit(module) {
-			seen[module.id] = true;
-
-			var _module$consolidateDependencies = module.consolidateDependencies();
-
-			var strongDependencies = _module$consolidateDependencies.strongDependencies;
-			var weakDependencies = _module$consolidateDependencies.weakDependencies;
-
-			strongDeps[module.id] = [];
-			stronglyDependsOn[module.id] = {};
-
-			keys(strongDependencies).forEach(function (id) {
-				var imported = strongDependencies[id];
-
-				strongDeps[module.id].push(imported);
-
-				if (seen[id]) {
-					// we need to prevent an infinite loop, and note that
-					// we need to check for strong/weak dependency relationships
-					hasCycles = true;
-					return;
+		return _Promise.resolve(this.resolveId(importee, importer, this.resolveOptions)).then(function (id) {
+			if (!id) {
+				// external module
+				if (!_this3.modulePromises[importee]) {
+					var _module = new ExternalModule(importee);
+					_this3.externalModules.push(_module);
+					_this3.modulePromises[importee] = _Promise.resolve(_module);
 				}
 
-				visit(imported);
-			});
-
-			keys(weakDependencies).forEach(function (id) {
-				var imported = weakDependencies[id];
-
-				if (seen[id]) {
-					// we need to prevent an infinite loop, and note that
-					// we need to check for strong/weak dependency relationships
-					hasCycles = true;
-					return;
-				}
-
-				visit(imported);
-			});
-
-			// add second (and third...) order dependencies
-			function addStrongDependencies(dependency) {
-				if (stronglyDependsOn[module.id][dependency.id]) return;
-
-				stronglyDependsOn[module.id][dependency.id] = true;
-				strongDeps[dependency.id].forEach(addStrongDependencies);
+				return _this3.modulePromises[importee];
 			}
 
-			strongDeps[module.id].forEach(addStrongDependencies);
+			if (!_this3.modulePromises[id]) {
+				_this3.modulePromises[id] = _Promise.resolve(_this3.load(id, _this3.loadOptions)).then(function (source) {
+					var module = new Module({
+						id: id,
+						source: source,
+						bundle: _this3
+					});
 
-			ordered.push(module);
-		}
+					_this3.modules.push(module);
 
-		visit(this.entryModule);
+					return module;
+				});
+			}
 
-		if (hasCycles) {
-			var unordered = ordered;
-			ordered = [];
-
-			// unordered is actually semi-ordered, as [ fewer dependencies ... more dependencies ]
-			unordered.forEach(function (module) {
-				// ensure strong dependencies of `module` that don't strongly depend on `module` go first
-				strongDeps[module.id].forEach(place);
-
-				function place(dep) {
-					if (!stronglyDependsOn[dep.id][module.id] && ! ~ordered.indexOf(dep)) {
-						strongDeps[dep.id].forEach(place);
-						ordered.push(dep);
-					}
-				}
-
-				if (! ~ordered.indexOf(module)) {
-					ordered.push(module);
-				}
-			});
-		}
-
-		var statements = [];
-
-		ordered.forEach(function (module) {
-			module.statements.forEach(function (statement) {
-				if (statement.isIncluded) statements.push(statement);
-			});
+			return _this3.modulePromises[id];
 		});
-
-		return statements;
 	};
 
 	Bundle.prototype.generate = function generate() {
@@ -2031,7 +1881,7 @@ var Bundle = (function () {
 		var previousIndex = -1;
 		var previousMargin = 0;
 
-		this.orderedStatements.forEach(function (statement) {
+		this.statements.forEach(function (statement) {
 			// skip `export { foo, bar, baz }`
 			if (statement.node.type === 'ExportNamedDeclaration') {
 				// skip `export { foo, bar, baz }`
@@ -2158,23 +2008,160 @@ var Bundle = (function () {
 		var map = null;
 
 		if (options.sourceMap) {
-			(function () {
-				map = magicString.generateMap({
-					includeContent: true,
-					file: options.sourceMapFile || options.dest
-					// TODO
-				});
+			var file = options.sourceMapFile || options.dest;
+			map = magicString.generateMap({
+				includeContent: true,
+				file
+				// TODO
+				: file });
 
-				// make sources relative. TODO fix this upstream?
-				var dir = dirname(map.file);
-				map.sources = map.sources.map(function (source) {
-					// TODO is unixizePath still necessary, given internal helper rather than node builtin?
-					return source ? unixizePath(relative(dir, source)) : null;
-				});
-			})();
+			map.sources = map.sources.map(unixizePath);
 		}
 
 		return { code: code, map: map };
+	};
+
+	Bundle.prototype.markAllModifierStatements = function markAllModifierStatements() {
+		var _this5 = this;
+
+		var settled = true;
+		var promises = [];
+
+		this.modules.forEach(function (module) {
+			module.statements.forEach(function (statement) {
+				if (statement.isIncluded) return;
+
+				keys(statement.modifies).forEach(function (name) {
+					var definingStatement = module.definitions[name];
+					var exportDeclaration = module.exports[name];
+
+					var shouldMark = definingStatement && definingStatement.isIncluded || exportDeclaration && exportDeclaration.isUsed;
+
+					if (shouldMark) {
+						settled = false;
+						promises.push(statement.mark());
+						return;
+					}
+
+					// special case - https://github.com/rollup/rollup/pull/40
+					var importDeclaration = module.imports[name];
+					if (!importDeclaration) return;
+
+					var promise = _Promise.resolve(importDeclaration.module || _this5.fetchModule(importDeclaration.source, module.id)).then(function (module) {
+						importDeclaration.module = module;
+						var exportDeclaration = module.exports[importDeclaration.name];
+						// TODO things like `export default a + b` don't apply here... right?
+						return module.findDefiningStatement(exportDeclaration.localName);
+					}).then(function (definingStatement) {
+						if (!definingStatement) return;
+
+						settled = false;
+						return statement.mark();
+					});
+
+					promises.push(promise);
+				});
+			});
+		});
+
+		return _Promise.all(promises).then(function () {
+			if (!settled) return _this5.markAllModifierStatements();
+		});
+	};
+
+	Bundle.prototype.sort = function sort() {
+		var seen = {};
+		var ordered = [];
+		var hasCycles = undefined;
+
+		var strongDeps = {};
+		var stronglyDependsOn = {};
+
+		function visit(module) {
+			seen[module.id] = true;
+
+			var _module$consolidateDependencies = module.consolidateDependencies();
+
+			var strongDependencies = _module$consolidateDependencies.strongDependencies;
+			var weakDependencies = _module$consolidateDependencies.weakDependencies;
+
+			strongDeps[module.id] = [];
+			stronglyDependsOn[module.id] = {};
+
+			keys(strongDependencies).forEach(function (id) {
+				var imported = strongDependencies[id];
+
+				strongDeps[module.id].push(imported);
+
+				if (seen[id]) {
+					// we need to prevent an infinite loop, and note that
+					// we need to check for strong/weak dependency relationships
+					hasCycles = true;
+					return;
+				}
+
+				visit(imported);
+			});
+
+			keys(weakDependencies).forEach(function (id) {
+				var imported = weakDependencies[id];
+
+				if (seen[id]) {
+					// we need to prevent an infinite loop, and note that
+					// we need to check for strong/weak dependency relationships
+					hasCycles = true;
+					return;
+				}
+
+				visit(imported);
+			});
+
+			// add second (and third...) order dependencies
+			function addStrongDependencies(dependency) {
+				if (stronglyDependsOn[module.id][dependency.id]) return;
+
+				stronglyDependsOn[module.id][dependency.id] = true;
+				strongDeps[dependency.id].forEach(addStrongDependencies);
+			}
+
+			strongDeps[module.id].forEach(addStrongDependencies);
+
+			ordered.push(module);
+		}
+
+		visit(this.entryModule);
+
+		if (hasCycles) {
+			var unordered = ordered;
+			ordered = [];
+
+			// unordered is actually semi-ordered, as [ fewer dependencies ... more dependencies ]
+			unordered.forEach(function (module) {
+				// ensure strong dependencies of `module` that don't strongly depend on `module` go first
+				strongDeps[module.id].forEach(place);
+
+				function place(dep) {
+					if (!stronglyDependsOn[dep.id][module.id] && ! ~ordered.indexOf(dep)) {
+						strongDeps[dep.id].forEach(place);
+						ordered.push(dep);
+					}
+				}
+
+				if (! ~ordered.indexOf(module)) {
+					ordered.push(module);
+				}
+			});
+		}
+
+		var statements = [];
+
+		ordered.forEach(function (module) {
+			module.statements.forEach(function (statement) {
+				if (statement.isIncluded) statements.push(statement);
+			});
+		});
+
+		return statements;
 	};
 
 	return Bundle;
