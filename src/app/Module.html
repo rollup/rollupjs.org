@@ -40,6 +40,10 @@
 
 		}),
 
+		fire ( type, index ) {
+			if ( type === 'remove') this.parent.removeModule( index );
+		},
+
 		events: {
 			tap: require( 'ractive-events-tap' )
 		}
