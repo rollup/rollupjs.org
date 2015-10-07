@@ -39,6 +39,8 @@
 </style>
 
 <script>
+	import tap from 'ractive-events-tap';
+
 	component.exports = {
 		oncomplete () {
 			this.on( 'remove', index => this.parent.removeModule( index ) );
@@ -48,8 +50,6 @@
 			}).on( 'change', instance => this.set( 'module.code', instance.getValue() ) );
 		},
 
-		events: {
-			tap: require( 'ractive-events-tap' )
-		}
+		events: { tap }
 	};
 </script>

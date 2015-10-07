@@ -55,7 +55,8 @@
 </style>
 
 <script>
-	const path = require( './interop/path' );
+	import { dirname, resolve } from './utils/path';
+	import tap from 'ractive-events-tap';
 
 	component.exports = {
 		data: () => ({
@@ -105,7 +106,7 @@
 				resolveId ( importee, importer ) {
 					if ( !importer ) return importee;
 					if ( importee[0] !== '.' ) return undefined;
-					return path.resolve( path.dirname( importer ), importee );
+					return resolve( dirname( importer ), importee );
 				},
 				load: function ( id ) {
 					if ( id === '@main' ) return modules[0].code;
@@ -144,7 +145,7 @@
 		},
 
 		events: {
-			tap: require( 'ractive-events-tap' )
+			tap
 		}
 	};
 </script>
