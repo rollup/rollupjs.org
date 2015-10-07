@@ -15,7 +15,6 @@ module.exports = gobble([
 				'ractive'
 			]
 		})
-		.transform( 'derequire' )
 		.transform( 'browserify', {
 			entries: [ './app' ],
 			dest: 'app.js',

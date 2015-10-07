@@ -8,7 +8,6 @@
     "gobble": "^0.10.2",
     "gobble-browserify": "^0.6.1",
     "gobble-cli": "^0.4.2",
-    "gobble-derequire": "^0.1.2",
     "gobble-ractive": "^0.2.0",
     "gobble-rollup-babel": "^0.1.2"
   },
