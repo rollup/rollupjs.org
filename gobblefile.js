@@ -3,6 +3,8 @@ var gobble = require( 'gobble' );
 module.exports = gobble([
 	gobble( 'src/files' ),
 
+	gobble( 'node_modules/rollup/dist' ),
+
 	gobble( 'src/app' )
 		.transform( 'ractive', { type: 'es6' })
 		.transform( 'rollup-babel', {
