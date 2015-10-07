@@ -1,21 +1,25 @@
-<article class='module'>
+<div class='module mdl-card mdl-shadow--2dp'>
 	<header>
-		<input value='{{module.name}}' placeholder='foo.js'>
-		<button on-tap='fire("remove", index)'>remove</button>
+		<div class="mdl-textfield mdl-js-textfield">
+			<input class="mdl-textfield__input" value='{{module.name}}' placeholder='foo.js'>
+		</div>
+		<button class='mdl-button mdl-js-button' on-tap='fire("remove", index)'>remove</button>
 	</header>
 
-	<textarea value='{{module.code}}'/>
-</article>
+	<textarea value='[[module.code]]'/>
+</div>
 
 <style>
 	.module {
-		width: 100%;
+		padding: 5px;
+		margin: 0 auto 10px auto;
+		width: calc( 100% - 10px );
 		min-height: 100px;
 	}
 
 	header {
 		width: 100%;
-		padding: 0 4em 0 0;
+		padding: 0 5em 10px 0;
 	}
 
 	input {
@@ -24,7 +28,7 @@
 
 	button {
 		position: absolute;
-		top: 0;
+		top: 15px;
 		right: 0;
 	}
 
@@ -36,9 +40,13 @@
 
 <script>
 	component.exports = {
-		data: () => ({
+		oncomplete () {
+			this.on( 'remove', index => this.parent.removeModule( index ) );
 
-		}),
+			CodeMirror.fromTextArea( this.find( 'textarea' ), {
+				lineNumbers: true
+			}).on( 'change', instance => this.set( 'module.code', instance.getValue() ) );
+		},
 
 		events: {
 			tap: require( 'ractive-events-tap' )

@@ -1,0 +1,31 @@
+<div class='mdl-card mdl-shadow--2dp status-div' style="background-color:{{ error ? 'rgb(182, 80, 67)' : 'rgb(114, 185, 92)' }}">
+{{#error}}
+  <span>
+    <i class="material-icons">error</i>
+	  <strong>{{error.name}}:</strong> {{error.message}}
+  </span>
+{{else}}
+  <span>
+    <i class="material-icons">check</i>
+    Rollup successful!
+  </span>
+{{/error}}
+</div>
+
+<style>
+.status-div {
+	padding: 5px 20px;
+	margin: 0 auto 10px auto;
+	width: calc( 100% - 10px );
+  min-height: initial;
+  height: 75px;
+}
+
+.status-div > span {
+  vertical-align: middle;
+  line-height: 65px;
+  font-size: 20px;
+  color: white;
+  float: left;
+}
+</style>
