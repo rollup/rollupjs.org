@@ -41,7 +41,7 @@
 </style>
 
 <script>
-	import { dirname, resolve } from './utils/path';
+	import { dirname, resolve, extname } from './utils/path';
 	import tap from 'ractive-events-tap';
 
 	component.exports = {
@@ -114,7 +114,11 @@
 					if ( id === '@main' ) return modules[0].code;
 					if ( id.substr( 0, 2 ) === './' ) id = id.substring( 2 );
 
-					const module = moduleById[ id + '.js' ];
+					if ( extname( id ) === '' ) {
+						id += '.js';
+					}
+
+					const module = moduleById[ id ];
 
 					if ( !module ) throw new Error( `missing module ${id}` ); // TODO...
 
