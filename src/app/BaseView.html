@@ -1,18 +1,9 @@
+<link rel='ractive' href='./BundleOptions.html'>
 <link rel='ractive' href='./Module.html'>
 <link rel='ractive' href='./Status.html'>
 <link rel='ractive' href='./Output.html'>
 
 <div class='left'>
-	<div class='format-selection'>
-		<p>Bundle format:</p>
-		[[#formats : i]]
-		<label class="mdl-radio mdl-js-radio mdl-js-ripple-effect" for="format-[[value]]">
-		  <input type="radio" id="format-[[value]]" class="mdl-radio__button" name="{{format}}" value="[[value]]"/>
-		  <span class="mdl-radio__label">[[name]]</span>
-		</label>
-		[[/formats]]
-	</div>
-
 	{{#each modules :i}}
 		<Module module='{{this}}' index='{{i}}' main='{{i===0}}'/>
 	{{/each}}
@@ -22,6 +13,7 @@
 
 <div class='right'>
 	<Status error='{{error}}'/>
+	<BundleOptions options='{{options}}'/>
 	<Output output='{{output}}'/>
 </div>
 
@@ -40,18 +32,6 @@
 	.new-module {
 		float: right;
 	}
-
-	.format-selection {
-		margin: 0 20px 20px 20px;
-	}
-
-	.format-selection > label {
-		margin-right: 20px;
-	}
-
-	.format-selection > p {
-		margin: 0;
-	}
 </style>
 
 <script>
@@ -61,14 +41,10 @@
 	component.exports = {
 		data: () => ({
 			error: null,
-			formats: [
-				{ name: 'AMD', value: 'amd' },
-				{ name: 'CommonJS', value: 'cjs' },
-				{ name: 'ES2015', value: 'es6' },
-				{ name: 'Globals', value: 'iife' },
-				{ name: 'UMD', value: 'umd' }
-			],
-			format: 'amd',
+			options: {
+				format: 'amd',
+				moduleName: 'bundle'
+			},
 			modules: [
 				{
 					name: 'main.js',
@@ -88,13 +64,13 @@
 				this.renderModules( modules, this.get( 'format' ) );
 			});
 
-			this.observe( 'format', format => {
-				console.log( 'format', format );
-				this.renderModules( this.get( 'modules' ), format );
+			this.observe( 'options', options => {
+				console.log( 'options', options );
+				this.renderModules( this.get( 'modules' ), options );
 			});
 		},
 
-		renderModules ( modules, format ) {
+		renderModules ( modules, options ) {
 			let moduleById = {};
 
 			modules.forEach( module => {
@@ -120,9 +96,7 @@
 				}
 			}).then( bundle => {
 				console.log( 'bundle', bundle )
-				const generated = bundle.generate({
-					format
-				});
+				const generated = bundle.generate( options );
 
 				this.set( 'output', generated.code );
 				this.set( 'error', null );
