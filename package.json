@@ -9,11 +9,15 @@
     "gobble-browserify": "^0.6.1",
     "gobble-cli": "^0.4.2",
     "gobble-ractive": "^0.2.0",
-    "gobble-rollup-babel": "^0.1.2"
+    "gobble-rollup-babel": "^0.1.2",
+    "gobble-uglifyjs": "^0.2.1"
   },
   "scripts": {
     "start": "gobble",
-    "lint": "node node_modules/eslint/bin/eslint src --ext .js --ext .html"
+    "lint": "node node_modules/eslint/bin/eslint src --ext .js --ext .html",
+    "build": "gobble build -f dist",
+    "deploy": "surge dist rollup.surge.sh",
+    "predeploy": "npm run build"
   },
   "dependencies": {
     "ractive": "^0.7.3",
