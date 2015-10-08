@@ -10,6 +10,7 @@
     "gobble-cli": "^0.4.2",
     "gobble-ractive": "^0.2.0",
     "gobble-rollup-babel": "^0.1.2",
+    "gobble-spelunk": "^0.6.0",
     "gobble-uglifyjs": "^0.2.1",
     "surge": "^0.15.0"
   },

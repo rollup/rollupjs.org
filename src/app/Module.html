@@ -42,12 +42,30 @@
 	import tap from 'ractive-events-tap';
 
 	component.exports = {
-		oncomplete () {
+		onrender () {
 			this.on( 'remove', index => this.parent.removeModule( index ) );
 
-			CodeMirror.fromTextArea( this.find( 'textarea' ), {
+			let updating = false;
+
+			const editor = CodeMirror.fromTextArea( this.find( 'textarea' ), {
 				lineNumbers: true
-			}).on( 'change', instance => this.set( 'module.code', instance.getValue() ) );
+			});
+
+			editor.on( 'change', instance => {
+				if ( !updating ) {
+					updating = true;
+					this.set( 'module.code', instance.getValue() );
+					updating = false;
+				}
+			});
+
+			this.observe( 'module.code', code => {
+				if ( !updating ) {
+					updating = true;
+					editor.setValue( code );
+					updating = false;
+				}
+			});
 		},
 
 		events: { tap }
