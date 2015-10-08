@@ -5,8 +5,13 @@ module.exports = gobble([
 
 	gobble( 'node_modules/rollup/dist' ),
 
-	gobble( 'src/app' )
-		.transform( 'ractive', { type: 'es6' })
+	gobble([
+		gobble( 'src/app' ).transform( 'ractive', { type: 'es6' }),
+		gobble( 'src/examples' ).transform( 'spelunk', {
+			dest: 'examples.js',
+			type: 'es6'
+		})
+	])
 		.transform( 'rollup-babel', {
 			entry: 'main.js',
 			dest: 'app.js',

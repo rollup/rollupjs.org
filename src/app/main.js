@@ -1,7 +1,9 @@
 import BaseView from './BaseView';
+import examples from './examples';
 
-console.log( 'yes, it deployed correctly' );
+console.log( examples );
 
 const ractive = new BaseView({
-	el: 'main'
+	el: 'main',
+	data: { examples }
 });

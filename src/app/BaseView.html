@@ -4,6 +4,12 @@
 <link rel='ractive' href='./Output.html'>
 
 <div class='left'>
+	<select value='{{selectedExample}}'>
+		{{#each examples}}
+			<option value='{{this}}'>{{name}}</option>
+		{{/each}}
+	</select>
+
 	{{#each modules :i}}
 		<Module module='{{this}}' index='{{i}}' main='{{i===0}}'/>
 	{{/each}}
@@ -59,14 +65,34 @@
 		}),
 
 		oninit () {
-			this.observe( 'modules', modules => {
-				console.log( 'modules', modules );
-				this.renderModules( modules, this.get( 'options' ) );
-			});
+			this.observe({
+				modules: modules => {
+					console.log( 'modules', modules );
+					this.renderModules( modules, this.get( 'options' ) );
+				},
 
-			this.observe( 'options', options => {
-				console.log( 'options', options );
-				this.renderModules( this.get( 'modules' ), options );
+				options: options => {
+					console.log( 'options', options );
+					this.renderModules( this.get( 'modules' ), options );
+				},
+
+				selectedExample: example => {
+					const modules = Object.keys( example.modules ).map( key => {
+						return {
+							name: `${key}.js`,
+							code: example.modules[ key ]
+						};
+					});
+
+					modules.sort( ( a, b ) => {
+						if ( a.name === 'main.js' ) return -1;
+						if ( b.name === 'main.js' ) return 1;
+
+						return a.name < b.name ? -1 : 1;
+					});
+
+					this.set({ modules });
+				}
 			});
 		},
 
