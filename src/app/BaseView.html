@@ -61,7 +61,7 @@
 		oninit () {
 			this.observe( 'modules', modules => {
 				console.log( 'modules', modules );
-				this.renderModules( modules, this.get( 'format' ) );
+				this.renderModules( modules, this.get( 'options' ) );
 			});
 
 			this.observe( 'options', options => {
