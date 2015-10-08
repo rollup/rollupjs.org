@@ -21,4 +21,6 @@ module.exports = gobble([
 			debug: true,
 			standalone: 'app'
 		})
-]);
+
+// minify on deploy, but don't bother in development
+]).transformIf( gobble.env() === 'production', 'uglifyjs' );
