@@ -60,7 +60,7 @@
 			});
 
 			this.observe( 'module.code', code => {
-				if ( !updating ) {
+				if ( !updating && code != null ) {
 					updating = true;
 					editor.setValue( code );
 					updating = false;
