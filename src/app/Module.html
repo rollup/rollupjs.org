@@ -36,6 +36,14 @@
 		width: 100%;
 		height: 100px;
 	}
+
+	.CodeMirror {
+		height: auto;
+	}
+
+	.CodeMirror-scroll {
+		max-height: 80vh;
+	}
 </style>
 
 <script>
@@ -48,7 +56,8 @@
 			let updating = false;
 
 			const editor = CodeMirror.fromTextArea( this.find( 'textarea' ), {
-				lineNumbers: true
+				lineNumbers: true,
+				lineWrapping: true
 			});
 
 			editor.on( 'change', instance => {
