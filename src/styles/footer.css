@@ -1,0 +1,11 @@
+body > footer {
+	background-color: #424242;
+	color: #9e9e9e;
+	text-align: center;
+	padding: 1em;
+	line-height: 1;
+
+	a {
+		color: white;
+	}
+}

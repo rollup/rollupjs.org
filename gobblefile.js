@@ -25,6 +25,18 @@ module.exports = gobble([
 			dest: 'app.js',
 			debug: true,
 			standalone: 'app'
+		}),
+
+	gobble( 'src/styles' )
+		.transform( 'postcss', {
+			src: 'index.css',
+			dest: 'min.css',
+			plugins: [
+				require( 'postcss-import' ),
+				require( 'autoprefixer' ),
+				require( 'postcss-nested' ),
+				require( 'cssnano' )
+			]
 		})
 
 // minify on deploy, but don't bother in development

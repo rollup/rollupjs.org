@@ -1,0 +1,5 @@
+body > main {
+	min-height: 100%;
+	overflow: hidden;
+	padding: 1em;
+}
