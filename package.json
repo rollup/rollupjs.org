@@ -24,6 +24,6 @@
   "dependencies": {
     "ractive": "^0.7.3",
     "ractive-events-tap": "^0.2.0",
-    "rollup": "^0.18.4"
+    "rollup": "^0.19.0"
   }
 }
