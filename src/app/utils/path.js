@@ -19,7 +19,7 @@ export function dirname ( path ) {
 export function extname ( path ) {
 	const match = /\.[^\.]+$/.exec( path );
 	if ( !match ) return '';
-	return match[0]
+	return match[0];
 }
 
 export function relative ( from, to ) {
