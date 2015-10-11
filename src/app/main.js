@@ -4,6 +4,7 @@ import Footer from './Footer';
 import examples from './examples';
 import { dirname, extname, resolve } from './utils/path';
 import examplesMatch from './utils/examplesMatch';
+import debounce from './utils/debounce';
 
 // recover state from hash fragment
 const json = window.location.hash.slice( 1 );
@@ -50,7 +51,7 @@ const footer = new Footer({
 	el: 'footer'
 });
 
-function update () {
+const update = debounce( () => {
 	const modules = input.get( 'modules' );
 	const options = output.get( 'options' );
 
@@ -98,7 +99,7 @@ function update () {
 			throw error;
 		});
 	});
-}
+}, 200 );
 
 input.observe( 'modules', update );
 output.observe( 'options', update );
