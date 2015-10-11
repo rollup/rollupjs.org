@@ -24,7 +24,7 @@
     "start": "gobble",
     "lint": "node node_modules/eslint/bin/eslint src --ext .js --ext .html",
     "build": "gobble build -f dist",
-    "deploy": "surge dist rollup.surge.sh",
+    "deploy": "surge dist rollupjs.org",
     "predeploy": "npm run build"
   },
   "dependencies": {
