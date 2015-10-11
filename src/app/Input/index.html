@@ -42,6 +42,10 @@
 	let uid = 1;
 
 	component.exports = {
+		data: () => ({
+			selectedExample: null
+		}),
+
 		oninit () {
 			this.observe({
 				selectedExample: example => {

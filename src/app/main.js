@@ -35,6 +35,8 @@ const input = new Input({
 	}
 });
 
+input.set({ selectedExample });
+
 if ( saved ) input.set( 'modules', saved.modules );
 
 const output = new Output({
