@@ -71,7 +71,7 @@
 		createModule () {
 			this.push( 'modules', {
 				name: `module_${uid++}.js`,
-				contents: ''
+				code: ''
 			});
 
 			const view = this.findAllComponents( 'Module' ).pop();
