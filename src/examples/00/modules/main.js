@@ -1,2 +1,2 @@
-import { foo } from './foo';
-console.log( foo() );
+import { cube } from './maths.js';
+console.log( cube( 5 ) ); // 125

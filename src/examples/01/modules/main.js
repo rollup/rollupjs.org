@@ -1,3 +1,7 @@
-import { diag } from './lib';
+import answer from './answer.js';
 
-console.log( diag( 3, 4 ) ); // 5
+// Default exports from the 'entry module' are
+// exported from the bundle
+export default function () {
+	console.log( 'the answer is ' + answer );
+}
