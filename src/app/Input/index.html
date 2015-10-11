@@ -1,0 +1,75 @@
+<link rel='ractive' href='./Module.html'>
+
+<select value='{{selectedExample}}'>
+	{{#each examples}}
+		<option value='{{this}}'>{{name}}</option>
+	{{/each}}
+</select>
+
+{{#each modules :i}}
+	<Module module='{{this}}' index='{{i}}' main='{{i===0}}'/>
+{{/each}}
+
+<button class='new-module' on-tap='createModule()'><span class='icon icon-plus'></span> add module</button>
+
+<style>
+	.new-module {
+		display: block;
+		width: 100%;
+		background-color: #eee;
+		color: #3D9970;
+		border: none;
+		font-size: 1.4em;
+		padding: 0.5em;
+		cursor: pointer;
+	}
+</style>
+
+<script>
+	import { dirname, resolve, extname } from '../utils/path';
+	import tap from 'ractive-events-tap';
+
+	let uid = 1;
+
+	component.exports = {
+		oninit () {
+			this.observe({
+				selectedExample: example => {
+					const modules = Object.keys( example.modules ).map( key => {
+						return {
+							name: `${key}.js`,
+							code: example.modules[ key ].trim()
+						};
+					});
+
+					modules.sort( ( a, b ) => {
+						if ( a.name === 'main.js' ) return -1;
+						if ( b.name === 'main.js' ) return 1;
+
+						return a.name < b.name ? -1 : 1;
+					});
+
+					this.set({ modules });
+				}
+			});
+		},
+
+		removeModule ( index ) {
+			this.splice( 'modules', index, 1 );
+		},
+
+		createModule () {
+			this.push( 'modules', {
+				name: `module_${uid++}.js`,
+				contents: ''
+			});
+
+			const view = this.findAllComponents( 'Module' ).pop();
+			view.find( 'input' ).select();
+		},
+
+		events: {
+			tap
+		}
+	};
+</script>

@@ -4,14 +4,12 @@
 	<meta charset='utf-8'>
 	<title>rollup.js</title>
 
-	<!-- Material Design CSS and icon font -->
-	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/material-design-lite/1.0.4/material.min.css" media="screen" title="no title" charset="utf-8">
-	<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
 	<!-- CodeMirror styles -->
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.7.0/codemirror.min.css" media="screen" title="no title" charset="utf-8">
 
 	<!-- our styles -->
 	<link rel='stylesheet' href='min.css'>
+	<link rel='stylesheet' href='fonts/fontello-b5109ef9/css/fontello.css'>
 </head>
 
 <body>
@@ -23,8 +21,24 @@
 	</header>
 
 	<main>
+		<div class='left input'></div>
+		<div class='right'>
+			<div class='output'></div>
 
+			<section class='blurb'>
+				<h2>What is this?</h2>
+				<p>Rollup is a next-generation JavaScript module bundler. Author your app or library in ES2015 modules, distribute as browser and Node.js friendly packages.</p>
 
+				<h2>So it's like Browserify or Webpack?</h2>
+				<p>Yes, except that the resulting bundle is smaller, because ES2015 modules are more efficient than CommonJS, and make it possible to eliminate wasted bytes with <em>tree-shaking</em>.</p>
+
+				<h2>Tree-shaking?</h2>
+				<p>Normally if you <code>require</code> a module, you import the whole thing. ES2015 lets you just import the bits you need, without mucking around with custom builds. It's a revolution in how we use libraries in JavaScript, and it's happening right now.</p>
+
+				<h2>Sounds great! How do I get started?</h2>
+				<p>Visit <a href='https://github.com/rollup/rollup'>github.com/rollup/rollup</a> for installation instructions and more information.</p>
+			</section>
+		</div>
 	</main>
 
 	<footer>

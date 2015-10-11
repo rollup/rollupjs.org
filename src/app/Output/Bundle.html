@@ -1,6 +1,4 @@
-<div class='module mdl-card mdl-shadow--2dp'>
-	<div id='editor'></div>
-</div>
+<div id='editor'></div>
 
 <style>
 	.module {
@@ -13,7 +11,7 @@
 
 <script>
 	component.exports = {
-		oncomplete () {
+		onrender () {
 			let cm = CodeMirror( this.find( '#editor' ), {
 				lineNumbers: true,
 				lineWrapping: true,
@@ -22,9 +20,9 @@
 
 			cm.setSize( null, '100%' );
 
-			this.observe( 'output', output => {
-				if ( typeof output === 'string' ) {
-					cm.setValue( output );
+			this.observe( 'code', code => {
+				if ( typeof code === 'string' ) {
+					cm.setValue( code );
 				}
 			});
 		}
