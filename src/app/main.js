@@ -29,19 +29,16 @@ function update () {
 
 	/*global rollup */
 	rollup.rollup({
-		entry: '@main',
+		entry: 'main',
 		resolveId ( importee, importer ) {
 			if ( !importer ) return importee;
 			if ( importee[0] !== '.' ) return undefined;
-			return resolve( dirname( importer ), importee );
+
+			return resolve( dirname( importer ), importee ).replace( /^\.\//, '' );
 		},
 		load: function ( id ) {
-			if ( id === '@main' ) return modules[0].code;
-			if ( id.substr( 0, 2 ) === './' ) id = id.substring( 2 );
-
-			if ( extname( id ) === '' ) {
-				id += '.js';
-			}
+			if ( id === 'main' ) return modules[0].code;
+			if ( extname( id ) === '' ) id += '.js';
 
 			const module = moduleById[ id ];
 
