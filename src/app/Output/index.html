@@ -1,0 +1,26 @@
+<link rel='ractive' href='./BundleOptions.html'>
+<link rel='ractive' href='./Status.html'>
+<link rel='ractive' href='./Bundle.html'>
+
+<Status error='{{error}}'/>
+<BundleOptions options='{{options}}'/>
+<Bundle code='{{code}}'/>
+
+
+<script>
+	import tap from 'ractive-events-tap';
+
+	component.exports = {
+		data: () => ({
+			error: null,
+			options: {
+				format: 'amd',
+				moduleName: 'bundle'
+			}
+		}),
+
+		events: {
+			tap
+		}
+	};
+</script>

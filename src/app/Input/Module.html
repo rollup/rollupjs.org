@@ -1,0 +1,133 @@
+<article class='module {{main ? "main-module" : ""}}'>
+	<header>
+		{{#if main}}
+			<span class='module-name'>main.js <span class='entry-module-label'>(entry module)</span></span>
+		{{else}}
+			<input class='module-name' value='{{module.name}}' placeholder='foo.js'>
+
+			<button class='remove' on-tap='fire("remove", index)'>
+				<span class='label'>remove</span>
+				<span class='icon-cancel'></span>
+			</button>
+		{{/if}}
+	</header>
+
+	<textarea value='[[module.code]]'/>
+</article>
+
+<style>
+	.module {
+		margin: 0 0 1em 0;
+		border: 1px solid #f4f4f4;
+	}
+
+	header {
+		width: 100%;
+		border-bottom: 1px solid #f4f4f4;
+	}
+
+	.main-module {
+		border: 1px solid #ccc;
+	}
+
+	.main-module header {
+		/*background-color: #f4f4f4;*/
+	}
+
+	.module-name {
+		display: block;
+		width: 100%;
+		font-family: inherit;
+		font-size: inherit;
+		padding: 0.5em;
+		border: none;
+		outline: none;
+		line-height: 1;
+		color: #333;
+	}
+
+	.module-name:focus {
+		background-color: #eee;
+	}
+
+	.entry-module-label {
+		color: #999;
+	}
+
+	button {
+		position: absolute;
+		top: 0;
+		right: 0;
+		font-family: inherit;
+		font-size: inherit;
+		padding: 0.5em;
+		background-color: transparent;
+		border: none;
+		color: #85144b;
+		cursor: pointer;
+		outline: none;
+		opacity: 0.4;
+		-webkit-transition: opacity 0.2s;
+		transition: opacity 0.2s;
+	}
+
+	button:hover, button:active {
+		opacity: 1;
+	}
+
+	button .label {
+		position: absolute;
+		right: 100%;
+		opacity: 0;
+		-webkit-transition: opacity 0.2s;
+		transition: opacity 0.2s;
+	}
+
+	button:hover .label, button:active .label {
+		opacity: 0.6;
+	}
+
+	.icon-cancel {
+		font-size: 0.8em;
+	}
+
+	textarea {
+		width: 100%;
+		height: 100px;
+	}
+</style>
+
+<script>
+	import tap from 'ractive-events-tap';
+
+	component.exports = {
+		onrender () {
+			this.on( 'remove', index => this.parent.removeModule( index ) );
+
+			let updating = false;
+
+			const editor = CodeMirror.fromTextArea( this.find( 'textarea' ), {
+				lineNumbers: true,
+				lineWrapping: true
+			});
+
+			editor.on( 'change', instance => {
+				if ( !updating ) {
+					updating = true;
+					this.set( 'module.code', instance.getValue() );
+					updating = false;
+				}
+			});
+
+			this.observe( 'module.code', code => {
+				if ( !updating && code != null ) {
+					updating = true;
+					editor.setValue( code );
+					updating = false;
+				}
+			});
+		},
+
+		events: { tap }
+	};
+</script>

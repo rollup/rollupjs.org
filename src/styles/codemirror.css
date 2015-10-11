@@ -1,0 +1,12 @@
+.CodeMirror {
+	border-radius: 3px;
+	font-family: 'Inconsolata';
+}
+
+.CodeMirror {
+	height: auto;
+}
+
+.CodeMirror-scroll {
+	max-height: 80vh;
+}

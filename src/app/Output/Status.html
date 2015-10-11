@@ -1,0 +1,33 @@
+<div class='status {{error ? "error": "success"}}'>
+	{{#if error}}
+		<span>
+			<span class='icon icon-error'></span>
+			<strong>{{error.name}}:</strong> {{error.message}}
+		</span>
+	{{else}}
+		<span>
+			<span class='icon icon-ok'></span>
+			Rollup successful!
+		</span>
+	{{/if}}
+</div>
+
+<style>
+	.status {
+		padding: 0.5em;
+		margin: 0 0 1em 0;
+		color: white;
+	}
+
+	.success {
+		background-color: #3D9970;
+	}
+
+	.error {
+		background-color: #FF4136;
+	}
+
+	.status > span {
+		font-size: 1em;
+	}
+</style>

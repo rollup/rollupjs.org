@@ -1,4 +1,11 @@
-<section>
+<section class='quickstart'>
+	<button class='show-hide-info' on-tap='toggle("expanded")'>
+		{{#if expanded}}Hide info{{else}}Show info{{/if}}
+	</button>
+	<a href='https://github.com/rollup/rollup/wiki'>Get started</a>
+</section>
+
+<section class='blurb'>
 	<h2>What is this?</h2>
 	<p>Rollup is a next-generation JavaScript module bundler. Author your app or library in ES2015 modules, distribute as browser and Node.js friendly packages.</p>
 
@@ -12,18 +19,34 @@
 	<p>Visit <a href='https://github.com/rollup/rollup'>github.com/rollup/rollup</a> for installation instructions and more information.</p>
 </section>
 
+<div class='gradient'></div>
+
 <style>
-	section {
-		padding: 1em;
+	.expanded {
+		height: auto;
 	}
 
-	h2 {
-		font-size: 1.4em;
-		margin: 1em 0 0 0;
-		line-height: 1;
-	}
-
-	p {
-		margin: 1em 0;
+	.collapsed {
+		height: 4em;
 	}
 </style>
+
+<script>
+	import tap from 'ractive-events-tap';
+
+	component.exports = {
+		data: () => ({
+			expanded: false
+		}),
+
+		onrender () {
+			this.container = this.el;
+
+			this.observe( 'expanded', expanded => {
+				this.container.setAttribute( 'class', expanded ? 'expanded' : 'collapsed' );
+			});
+		},
+
+		events: { tap }
+	};
+</script>

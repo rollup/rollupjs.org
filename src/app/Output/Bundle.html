@@ -1,0 +1,27 @@
+<div class='bundle'></div>
+
+<style>
+	.bundle {
+		border: 1px solid #eee;
+	}
+</style>
+
+<script>
+	component.exports = {
+		onrender () {
+			let cm = CodeMirror( this.find( 'div' ), {
+				lineNumbers: true,
+				lineWrapping: true,
+				readOnly: true
+			});
+
+			cm.setSize( null, '100%' );
+
+			this.observe( 'code', code => {
+				if ( typeof code === 'string' ) {
+					cm.setValue( code );
+				}
+			});
+		}
+	};
+</script>

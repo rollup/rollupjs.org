@@ -1,0 +1,25 @@
+button {
+	font-family: inherit;
+	font-size: inherit;
+	border: none;
+	outline: none;
+	cursor: pointer;
+	background-color: #eee;
+}
+
+button:hover, button:active {
+	background-color: #eaeaea;
+}
+
+button:disabled {
+	cursor: default;
+}
+
+.icon {
+	font-size: 0.8em;
+}
+
+select {
+	font-size: inherit;
+	font-family: inherit;
+}

@@ -1,0 +1,37 @@
+* {
+	position: relative;
+	box-sizing: border-box;
+}
+
+html, body {
+	position: relative;
+	width: 100%;
+	height: 100%;
+	margin: 0;
+}
+
+body {
+	padding: 6em 0 4em 0;
+
+	& > header {
+		position: absolute;
+		top: 0;
+		left: 0;
+		width: 100%;
+		height: 6em;
+	}
+
+	& > main {
+		position: relative;
+		width: 100%;
+		height: 100%;
+	}
+
+	& > footer {
+		position: absolute;
+		bottom: 0;
+		left: 0;
+		width: 100%;
+		/*height: 4em;*/
+	}
+}
