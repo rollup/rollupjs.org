@@ -14,3 +14,9 @@
 .clearfix {
 	clear: fix;
 }
+
+.sorry {
+	max-width: 40em;
+	margin: 4em auto 0 auto;
+
+}
