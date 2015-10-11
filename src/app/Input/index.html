@@ -45,6 +45,8 @@
 		oninit () {
 			this.observe({
 				selectedExample: example => {
+					if ( !example ) return;
+
 					const modules = Object.keys( example.modules ).map( key => {
 						return {
 							name: `${key}.js`,
