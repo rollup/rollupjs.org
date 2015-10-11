@@ -4,6 +4,11 @@ button {
 	border: none;
 	outline: none;
 	cursor: pointer;
+	background-color: #eee;
+}
+
+button:hover, button:active {
+	background-color: #eaeaea;
 }
 
 button:disabled {
@@ -12,4 +17,9 @@ button:disabled {
 
 .icon {
 	font-size: 0.8em;
+}
+
+select {
+	font-size: inherit;
+	font-family: inherit;
 }

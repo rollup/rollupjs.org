@@ -15,6 +15,7 @@
     "gobble-rollup-babel": "^0.1.2",
     "gobble-spelunk": "^0.6.0",
     "gobble-uglifyjs": "^0.2.1",
+    "postcss-clearfix": "^0.2.0",
     "postcss-import": "^7.0.0",
     "postcss-nested": "^1.0.0",
     "surge": "^0.15.0"

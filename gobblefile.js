@@ -35,7 +35,8 @@ module.exports = gobble([
 				require( 'postcss-import' ),
 				require( 'autoprefixer' ),
 				require( 'postcss-nested' ),
-				require( 'cssnano' )
+				require( 'postcss-clearfix' ),
+				//require( 'cssnano' ) // commenting out until we can figure out how to disable z-index rebasing
 			]
 		})
 

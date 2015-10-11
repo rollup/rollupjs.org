@@ -1,18 +1,15 @@
-<div id='editor'></div>
+<div class='bundle'></div>
 
 <style>
-	.module {
-		padding: 5px;
-		margin: 0 auto 10px auto;
-		width: calc( 100% - 10px );
-		min-height: initial;
+	.bundle {
+		border: 1px solid #eee;
 	}
 </style>
 
 <script>
 	component.exports = {
 		onrender () {
-			let cm = CodeMirror( this.find( '#editor' ), {
+			let cm = CodeMirror( this.find( 'div' ), {
 				lineNumbers: true,
 				lineWrapping: true,
 				readOnly: true

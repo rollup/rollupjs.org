@@ -1,5 +1,6 @@
 import Input from './Input/index';
 import Output from './Output/index';
+import Footer from './Footer';
 import examples from './examples';
 import { dirname, extname, resolve } from './utils/path';
 
@@ -10,6 +11,10 @@ const input = new Input({
 
 const output = new Output({
 	el: '.output'
+});
+
+const footer = new Footer({
+	el: 'footer'
 });
 
 function update () {

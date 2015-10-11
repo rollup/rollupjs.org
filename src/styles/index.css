@@ -11,6 +11,6 @@
 @import './codemirror.css';
 
 /* misc */
-.icon {
-	
+.clearfix {
+	clear: fix;
 }
