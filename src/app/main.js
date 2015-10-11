@@ -32,7 +32,7 @@ function update () {
 		entry: 'main',
 		resolveId ( importee, importer ) {
 			if ( !importer ) return importee;
-			if ( importee[0] !== '.' ) return undefined;
+			if ( importee[0] !== '.' ) return false;
 
 			return resolve( dirname( importer ), importee ).replace( /^\.\//, '' );
 		},
@@ -49,10 +49,19 @@ function update () {
 	}).then( bundle => {
 		const generated = bundle.generate( options );
 
-		output.set( 'code', generated.code );
-		output.set( 'error', null );
+		output.set({
+			code: generated.code,
+			error: null,
+			imports: bundle.imports,
+			exports: bundle.exports
+		});
 	})
-	.catch( error => output.set( 'error', error ) );
+	.catch( error => {
+		output.set( 'error', error );
+		setTimeout( () => {
+			throw error;
+		});
+	});
 }
 
 input.observe( 'modules', update );

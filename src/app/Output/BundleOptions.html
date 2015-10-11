@@ -11,6 +11,20 @@
 	</tr>
 </table>
 
+{{#if options.format === 'iife' || options.format === 'umd'}}
+	{{#if exports.length}}
+		<div intro-outro='slide'>
+			<label><span>Bundle name</span> <input value='{{options.moduleName}}'></label>
+		</div>
+	{{/if}}
+
+	{{#each imports}}
+		<div intro-outro='slide'>
+			<label><span>{{this}}</span> <input value='{{options.globals[this]}}'></label>
+		</div>
+	{{/each}}
+{{/if}}
+
 <style>
 	table {
 		width: 100%;
@@ -34,10 +48,25 @@
 		background-color: #ccc;
 		font-weight: bold;
 	}
+
+	label {
+		display: block;
+		padding: 0 0 0 8em;
+	}
+
+	label span {
+		position: absolute;
+		display: block;
+		left: 0;
+		top: 1px;
+		padding: 0.5em;
+		line-height: 1;
+	}
 </style>
 
 <script>
 	import tap from 'ractive-events-tap';
+	import slide from 'ractive-transitions-slide';
 
 	component.exports = {
 		data: () => ({
@@ -50,6 +79,7 @@
 			]
 		}),
 
-		events: { tap }
+		events: { tap },
+		transitions: { slide }
 	};
 </script>
