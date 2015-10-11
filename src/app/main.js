@@ -51,18 +51,19 @@ const footer = new Footer({
 	el: 'footer'
 });
 
-const update = debounce( () => {
+let updating = false;
+
+function update () {
 	const modules = input.get( 'modules' );
-	const options = output.get( 'options' );
+
+	if ( updating ) return; // TODO this is inelegant...
+	updating = true;
 
 	let moduleById = {};
 
 	modules.forEach( module => {
 		moduleById[ module.name ] = module;
 	});
-
-	// save state as hash fragment
-	window.location.hash = JSON.stringify({ options, modules });
 
 	/*global rollup */
 	rollup.rollup({
@@ -84,22 +85,32 @@ const update = debounce( () => {
 			return module.code;
 		}
 	}).then( bundle => {
+		output.set({
+			imports: bundle.imports,
+			exports: bundle.exports
+		});
+
+		const options = output.get( 'options' );
 		const generated = bundle.generate( options );
 
 		output.set({
 			code: generated.code,
-			error: null,
-			imports: bundle.imports,
-			exports: bundle.exports
+			error: null
 		});
+
+		// save state as hash fragment
+		window.location.hash = JSON.stringify({ options, modules });
 	})
 	.catch( error => {
 		output.set( 'error', error );
 		setTimeout( () => {
 			throw error;
 		});
+	})
+	.then( () => {
+		updating = false;
 	});
-}, 200 );
+}
 
-input.observe( 'modules', update );
+input.observe( 'modules', debounce( update, 200 ) );
 output.observe( 'options', update );

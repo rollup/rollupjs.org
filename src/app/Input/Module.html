@@ -1,7 +1,7 @@
 <article class='module {{main ? "main-module" : ""}}'>
 	<header>
 		{{#if main}}
-			<span class='module-name'>main.js <span class='entry-module-label'>(entry module)</span></span>
+			<span class='entry-module-name'>main.js <span class='entry-module-label'>(entry module)</span></span>
 		{{else}}
 			<input class='module-name' value='{{module.name}}' placeholder='foo.js'>
 
@@ -32,6 +32,11 @@
 
 	.main-module header {
 		/*background-color: #f4f4f4;*/
+	}
+
+	.entry-module-name {
+		display: block;
+		padding: 0.5em;
 	}
 
 	.entry-module-label {

@@ -1,31 +1,48 @@
-<table>
-	<tr>
-		[[#each formats : i]]
-		<td>
-			<button
-				class='{{value === options.format ? "selected": ""}}'
-				on-tap='set("options.format", value)'
-			>{{name}}</button>
-		</td>
-		[[/each]]
-	</tr>
-</table>
+<div class='options'>
+	<section>
+		<h3>options.format</h3>
+		<table>
+			<tr>
+				[[#each formats : i]]
+				<td>
+					<button
+						class='{{value === options.format ? "selected": ""}}'
+						on-tap='set("options.format", value)'
+					>{{name}}</button>
+				</td>
+				[[/each]]
+			</tr>
+		</table>
+	</section>
 
-{{#if options.format === 'iife' || options.format === 'umd'}}
-	{{#if exports.length}}
-		<div intro-outro='slide'>
-			<label><span>Bundle name</span> <input value='{{options.moduleName}}'></label>
-		</div>
+	{{#if options.format === 'iife' || options.format === 'umd'}}
+		{{#if exports.length}}
+			<section intro-outro='slide:fast'>
+				<h3>options.moduleName</h3>
+				<input value='{{options.moduleName}}'>
+			</section>
+		{{/if}}
+
+		{{#if sortedImports.length}}
+			<section>
+				<h3 intro-outro='slide:fast'>options.globals</h3>
+				{{#each sortedImports}}
+					<div intro-outro='slide:fast'>
+						<input value='{{value}}'>
+						<code>'{{name}}'</code>
+					</div>
+				{{/each}}
+			</section>
+		{{/if}}
 	{{/if}}
-
-	{{#each imports}}
-		<div intro-outro='slide'>
-			<label><span>{{this}}</span> <input value='{{options.globals[this]}}'></label>
-		</div>
-	{{/each}}
-{{/if}}
+</div>
 
 <style>
+	.options {
+		margin: 0 0 1em 0;
+		border: 1px solid #eee;
+	}
+
 	table {
 		width: 100%;
 		border-spacing: 0;
@@ -49,17 +66,36 @@
 		font-weight: bold;
 	}
 
+	section {
+		border-bottom: 1px solid #eee;
+	}
+
+	section:last-child {
+		border: none;
+	}
+
+	h3 {
+		padding: 0.5rem;
+		margin: 0;
+		font-size: 1em;
+		font-weight: 900;
+	}
+
 	label {
 		display: block;
 		padding: 0 0 0 8em;
 	}
 
-	label span {
+	input {
+		padding-left: 1.5em;
+	}
+
+	section code {
 		position: absolute;
 		display: block;
-		left: 0;
+		right: 0;
 		top: 1px;
-		padding: 0.5em;
+		padding: 0.5em 0.5em 0.5em 1.5em;
 		line-height: 1;
 	}
 </style>
@@ -67,6 +103,12 @@
 <script>
 	import tap from 'ractive-events-tap';
 	import slide from 'ractive-transitions-slide';
+
+	const defaultGlobals = {
+		jquery: 'jQuery'
+	};
+
+	let userGlobals = {};
 
 	component.exports = {
 		data: () => ({
@@ -76,8 +118,58 @@
 				{ name: 'ES2015', value: 'es6' },
 				{ name: 'Globals', value: 'iife' },
 				{ name: 'UMD', value: 'umd' }
-			]
+			],
+
+			sortedImports: []
 		}),
+
+		oninit () {
+			let updating;
+
+			this.observe({
+				imports: imports => {
+					if ( !imports ) return;
+
+					// we only care about this stuff in IIFE/UMD mode...
+					// cheeky hack to clean `options.globals`
+					const format = this.get( 'options.format' );
+					if ( format !== 'iife' && format !== 'umd' ) imports = [];
+
+					const sortedImports = imports
+						.sort( ( a, b ) => {
+							return a < b ? -1 : 1;
+						})
+						.map( name => {
+							return {
+								name,
+								value: userGlobals[ name ] || defaultGlobals[ name ] || name
+							};
+						});
+
+					let globals = {};
+					sortedImports.forEach( ({ name, value }) => {
+						globals[ name ] = userGlobals[ name ] = value;
+					});
+
+					updating = true;
+					this.merge( 'sortedImports', sortedImports, { compare: 'name' });
+					this.set( 'options.globals', globals );
+					updating = false;
+				},
+
+				'sortedImports': sortedImports => {
+					if ( updating ) return;
+
+					updating = true;
+					let globals = {};
+					sortedImports.forEach( ({ name, value }) => {
+						globals[ name ] = userGlobals[ name ] = value;
+					});
+					this.set( 'options.globals', globals );
+					updating = false;
+				}
+			});
+		},
 
 		events: { tap },
 		transitions: { slide }
