@@ -116,6 +116,7 @@ if ( supported ) {
 	}
 
 	input.observe( 'modules', debounce( update, 200 ) );
+	input.observe( 'selectedExample', update );
 	output.observe( 'options', update );
 }
 

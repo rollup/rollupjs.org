@@ -1,0 +1,40 @@
+.blurb {
+	background-color: #424242;
+	color: #ccc;
+	padding: 1em 0.5em;
+	line-height: 1;
+	clear: fix;
+
+	.block {
+		width: 25%;
+		float: left;
+		padding: 0 0.5em;
+	}
+
+	h2 {
+		color: white;
+		margin: 0.2em 0 0.2em 0;
+	}
+
+	p {
+		margin: 0.5em 0 1em 0;
+	}
+
+	a {
+		color: white;
+	}
+
+	.cta {
+		display: block;
+		background-color: #eee;
+		color: #333;
+		padding: 0.5em;
+		text-align: center;
+		line-height: 1;
+	}
+
+	code {
+		font-family: 'Inconsolata', monospace;
+
+	}
+}
