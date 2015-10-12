@@ -5,6 +5,7 @@ button {
 	outline: none;
 	cursor: pointer;
 	background-color: #eee;
+	padding: 0.5em 1em;
 }
 
 button:hover, button:active {
@@ -23,7 +24,6 @@ select {
 	font-size: inherit;
 	font-family: inherit;
 	position: relative;
-	float: right;
 	border: none;
 	-webkit-appearance: none;
 	-moz-appearance: none;
