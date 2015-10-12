@@ -19,9 +19,9 @@ body > main {
 	.left {
 		border-right: 1px solid #eee;
 
-		h2 {
+		/*h2 {
 			text-align: right;
-		}
+		}*/
 	}
 }
 

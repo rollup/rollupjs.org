@@ -3,7 +3,6 @@
 	color: #ccc;
 	padding: 1em 0.5em;
 	line-height: 1;
-	padding: 1em;
 	clear: fix;
 
 	.block {
@@ -35,7 +34,7 @@
 	}
 
 	code {
-		font-family: Inconsolata, monospace;
-		
+		font-family: 'Inconsolata', monospace;
+
 	}
 }
