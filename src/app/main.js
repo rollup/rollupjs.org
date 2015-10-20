@@ -29,7 +29,7 @@ if ( supported ) {
 			}
 		}
 	} catch ( err ) {
-		// do nothing
+		selectedExample = examples[0];
 	}
 
 	const input = new Input({
