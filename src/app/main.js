@@ -12,7 +12,8 @@ if ( supported ) {
 	console.log( `running Rollup version %c${rollup.VERSION}`, 'font-weight: bold' );
 
 	// recover state from hash fragment
-	const json = window.location.hash.slice( 1 );
+	const json = decodeURIComponent( window.location.hash.slice( 1 ) );
+
 	let saved;
 	let selectedExample;
 	try {
@@ -102,7 +103,7 @@ if ( supported ) {
 			});
 
 			// save state as hash fragment
-			window.location.hash = JSON.stringify({ options, modules });
+			window.location.hash = encodeURIComponent( JSON.stringify({ options, modules }) );
 		})
 		.catch( error => {
 			output.set( 'error', error );
