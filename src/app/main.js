@@ -9,8 +9,7 @@ import debounce from './utils/debounce';
 const supported = !!window.Promise;
 
 if ( supported ) {
-	const small = document.querySelector('header small');
-	small.innerHTML = `(${rollup.VERSION}) ${small.innerHTML}`;
+	document.querySelector('header h1 small').innerHTML = `v${rollup.VERSION}`;
 
 	console.log( `running Rollup version %c${rollup.VERSION}`, 'font-weight: bold' );
 
