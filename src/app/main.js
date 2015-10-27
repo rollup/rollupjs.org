@@ -74,22 +74,24 @@ if ( supported ) {
 		/*global rollup */
 		rollup.rollup({
 			entry: 'main',
-			resolveId ( importee, importer ) {
-				if ( !importer ) return importee;
-				if ( importee[0] !== '.' ) return false;
+			plugins: [{
+				resolveId ( importee, importer ) {
+					if ( !importer ) return importee;
+					if ( importee[0] !== '.' ) return false;
 
-				return resolve( dirname( importer ), importee ).replace( /^\.\//, '' );
-			},
-			load: function ( id ) {
-				if ( id === 'main' ) return modules[0].code;
-				if ( extname( id ) === '' ) id += '.js';
+					return resolve( dirname( importer ), importee ).replace( /^\.\//, '' );
+				},
+				load: function ( id ) {
+					if ( id === 'main' ) return modules[0].code;
+					if ( extname( id ) === '' ) id += '.js';
 
-				const module = moduleById[ id ];
+					const module = moduleById[ id ];
 
-				if ( !module ) throw new Error( `missing module ${id}` ); // TODO...
+					if ( !module ) throw new Error( `missing module ${id}` ); // TODO...
 
-				return module.code;
-			}
+					return module.code;
+				}
+			}]
 		}).then( bundle => {
 			output.set({
 				imports: bundle.imports,
