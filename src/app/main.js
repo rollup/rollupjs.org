@@ -9,6 +9,8 @@ import debounce from './utils/debounce';
 const supported = !!window.Promise;
 
 if ( supported ) {
+	document.querySelector('header h1 small').innerHTML = `v${rollup.VERSION}`;
+
 	console.log( `running Rollup version %c${rollup.VERSION}`, 'font-weight: bold' );
 
 	// recover state from hash fragment
