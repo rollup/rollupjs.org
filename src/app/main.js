@@ -51,7 +51,7 @@ if ( supported ) {
 		el: '.output',
 		data: {
 			options: saved ? saved.options : {
-				format: 'amd',
+				format: 'cjs',
 				moduleName: 'myBundle'
 			}
 		}
