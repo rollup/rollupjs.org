@@ -15,6 +15,13 @@
 		</table>
 	</section>
 
+	{{#if options.format === 'amd' || options.format === 'umd'}}
+		<section intro-outro='slide:fast'>
+			<h3>options.moduleId</h3>
+			<input value='{{options.moduleId}}' placeholder='leave blank for anonymous module'>
+		</section>
+	{{/if}}
+
 	{{#if options.format === 'iife' || options.format === 'umd'}}
 		{{#if exports.length}}
 			<section intro-outro='slide:fast'>
