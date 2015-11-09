@@ -4,6 +4,9 @@ module.exports = gobble([
 	gobble( 'src/files' ),
 
 	gobble( 'node_modules/rollup/dist' ),
+	gobble( 'node_modules/codemirror' )
+		.include([ 'lib/**', 'mode/javascript/**' ])
+		.moveTo( 'codemirror' ),
 
 	gobble([
 		gobble( 'src/app' ).transform( 'ractive', { type: 'es6' }),
