@@ -4,8 +4,8 @@
 
 /* sections */
 @import './header.css';
+@import './blurb.css';
 @import './main.css';
-@import './footer.css';
 
 /* overrides */
 @import './codemirror.css';

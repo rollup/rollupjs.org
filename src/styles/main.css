@@ -1,6 +1,12 @@
 body > main {
 	min-height: 100%;
 	overflow: hidden;
+	background-color: white;
+	z-index: 6;
+
+	h2 {
+		margin: 0 0 1em 0;
+	}
 
 	.left, .right {
 		width: 50%;
@@ -12,6 +18,10 @@ body > main {
 
 	.left {
 		border-right: 1px solid #eee;
+
+		/*h2 {
+			text-align: right;
+		}*/
 	}
 }
 

@@ -9,10 +9,13 @@ import debounce from './utils/debounce';
 const supported = !!window.Promise;
 
 if ( supported ) {
+	document.querySelector('header h1 small').innerHTML = `v${rollup.VERSION}`;
+
 	console.log( `running Rollup version %c${rollup.VERSION}`, 'font-weight: bold' );
 
 	// recover state from hash fragment
-	const json = window.location.hash.slice( 1 );
+	const json = decodeURIComponent( window.location.hash.slice( 1 ) );
+
 	let saved;
 	let selectedExample;
 	try {
@@ -29,7 +32,7 @@ if ( supported ) {
 			}
 		}
 	} catch ( err ) {
-		// do nothing
+		selectedExample = examples[0];
 	}
 
 	const input = new Input({
@@ -48,7 +51,7 @@ if ( supported ) {
 		el: '.output',
 		data: {
 			options: saved ? saved.options : {
-				format: 'amd',
+				format: 'cjs',
 				moduleName: 'myBundle'
 			}
 		}
@@ -71,22 +74,24 @@ if ( supported ) {
 		/*global rollup */
 		rollup.rollup({
 			entry: 'main',
-			resolveId ( importee, importer ) {
-				if ( !importer ) return importee;
-				if ( importee[0] !== '.' ) return false;
+			plugins: [{
+				resolveId ( importee, importer ) {
+					if ( !importer ) return importee;
+					if ( importee[0] !== '.' ) return false;
 
-				return resolve( dirname( importer ), importee ).replace( /^\.\//, '' );
-			},
-			load: function ( id ) {
-				if ( id === 'main' ) return modules[0].code;
-				if ( extname( id ) === '' ) id += '.js';
+					return resolve( dirname( importer ), importee ).replace( /^\.\//, '' );
+				},
+				load: function ( id ) {
+					if ( id === 'main' ) return modules[0].code;
+					if ( extname( id ) === '' ) id += '.js';
 
-				const module = moduleById[ id ];
+					const module = moduleById[ id ];
 
-				if ( !module ) throw new Error( `missing module ${id}` ); // TODO...
+					if ( !module ) throw new Error( `missing module ${id}` ); // TODO...
 
-				return module.code;
-			}
+					return module.code;
+				}
+			}]
 		}).then( bundle => {
 			output.set({
 				imports: bundle.imports,
@@ -102,7 +107,7 @@ if ( supported ) {
 			});
 
 			// save state as hash fragment
-			window.location.hash = JSON.stringify({ options, modules });
+			window.location.hash = encodeURIComponent( JSON.stringify({ options, modules }) );
 		})
 		.catch( error => {
 			output.set( 'error', error );
@@ -116,6 +121,7 @@ if ( supported ) {
 	}
 
 	input.observe( 'modules', debounce( update, 200 ) );
+	input.observe( 'selectedExample', update );
 	output.observe( 'options', update );
 }
 

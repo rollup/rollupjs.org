@@ -1,22 +1,4 @@
 @font-face{
-	font-family: 'Voltaire';
-	src: url('fonts/Voltaire/Voltaire.eot');
-	src: url('fonts/Voltaire/Voltaire.eot?#iefix') format('embedded-opentype'),
-	     url('fonts/Voltaire/Voltaire.woff') format('woff'),
-	     url('fonts/Voltaire/Voltaire.ttf') format('truetype'),
-	     url('fonts/Voltaire/Voltaire.svg#webfont') format('svg');
-}
-
-@font-face{
-	font-family: 'Questrial';
-	src: url('fonts/Questrial/Questrial.eot');
-	src: url('fonts/Questrial/Questrial.eot?#iefix') format('embedded-opentype'),
-	     url('fonts/Questrial/Questrial.woff') format('woff'),
-	     url('fonts/Questrial/Questrial.ttf') format('truetype'),
-	     url('fonts/Questrial/Questrial.svg#webfont') format('svg');
-}
-
-@font-face{
 	font-family: 'Inconsolata';
 	src: url('fonts/Inconsolata/Inconsolata-Regular.ttf') format('truetype');
 }
@@ -27,15 +9,37 @@
 	font-weight: 500;
 }
 
+/*@font-face{
+	font-family: 'Source Code Pro';
+	src: url('fonts/Source_Code_Pro/SourceCodePro-Regular.ttf') format('truetype');
+}*/
+
+@font-face{
+	font-family: 'Source Sans Pro';
+	src: url('fonts/Source_Sans_Pro/SourceSansPro-Regular.ttf') format('truetype');
+}
+
+@font-face{
+	font-family: 'Source Sans Pro';
+	src: url('fonts/Source_Sans_Pro/SourceSansPro-Light.ttf') format('truetype');
+	font-weight: 200;
+}
+
+@font-face{
+	font-family: 'Source Sans Pro';
+	src: url('fonts/Source_Sans_Pro/SourceSansPro-Semibold.ttf') format('truetype');
+	font-weight: 500;
+}
+
 body {
-	font-family: 'Questrial';
+	font-family: 'Source Sans Pro';
 	color: #555;
 	line-height: 1.5;
 	-webkit-font-smoothing: antialiased;
 }
 
 h1, h2 {
-	font-family: 'Questrial';
+	font-family: 'Source Sans Pro';
 	margin: 0;
 	font-weight: normal;
 	color: #222;
@@ -46,7 +50,7 @@ h1 {
 }
 
 h3, h4, h5, h6 {
-	font-family: 'Questrial';
+	font-family: 'Source Sans Pro';
 	font-weight: 500;
 	margin: 0 0 0.5em 0;
 	color: #222;

@@ -1,14 +1,16 @@
 <link rel='ractive' href='./Module.html'>
 
 <header class='start-here clearfix'>
-	<strong>Write ES6 modules here...</strong>
+	<!-- <strong>Write ES6 modules here...</strong> -->
 
 	<select value='{{selectedExample}}'>
-		<option disabled>...or select an example</option>
+		<option disabled>Select an example...</option>
 		{{#each examples}}
 			<option value='{{this}}'>{{name}}</option>
 		{{/each}}
 	</select>
+
+	<button on-tap='clear()'>Start over</button>
 </header>
 
 {{#each modules :i}}
@@ -32,6 +34,10 @@
 		color: #3D9970;
 		border: none;
 		padding: 1em;
+	}
+
+	button {
+		float: right;
 	}
 </style>
 
@@ -82,6 +88,13 @@
 
 			const view = this.findAllComponents( 'Module' ).pop();
 			view.find( 'input' ).select();
+		},
+
+		clear () {
+			this.set({
+				modules: [{ name: 'main.js', code: '' }],
+				selectedExample: null
+			});
 		},
 
 		events: {

@@ -14,43 +14,58 @@
 
 <body>
 	<header>
-		<h1>rollup.js</h1>
+		<h1>rollup.js <small style="font-size:small;opacity:.7;"></small></h1>
 		<small>the next-generation JavaScript module bundler</small>
 
 		<a class='github' href='https://github.com/rollup/rollup'>GitHub</a>
+
+		<div class='gradient'></div>
 	</header>
 
+	<section class='blurb'>
+		<div class='block'>
+			<h2>What is this?</h2>
+			<p>Rollup is a next-generation JavaScript module bundler. Author your app or library using ES2015 modules, then efficiently bundle them up into a single file for use in browsers and Node.js &ndash; even if you use advanced features like <a href='https://github.com/rollup/rollup/wiki/Bindings'>bindings</a> and <a href='https://github.com/rollup/rollup/wiki/Cycles'>cycles</a>.</p>
+		</div>
+
+		<div class='block'>
+			<h2>So, like Browserify?</h2>
+			<p>Yes, except that the resulting bundle is always smaller than the Browserify or Webpack equivalent, because ES2015 modules are inherently more efficient than CommonJS modules. You can even eliminate unused library code with <em>tree-shaking</em>.</p>
+		</div>
+
+		<div class='block'>
+			<h2>Tree-shaking?</h2>
+			<p>Normally if you <code>require</code> a module, you import the whole thing. ES2015 lets you just import the bits you need, without mucking around with custom builds. It's a revolution in how we use libraries in JavaScript, and it's happening right now.</p>
+		</div>
+
+		<div class='block'>
+			<h2>Sounds great!</h2>
+			<p>Visit <a href='https://github.com/rollup/rollup'>github.com/rollup/rollup</a> for installation instructions and more information.</p>
+
+			<a class='cta' href='https://github.com/rollup/rollup'>Get started on GitHub&nbsp;&raquo;</a>
+		</div>
+	</section>
+
 	<main>
-		<div class='left input'></div>
+
+		<div class='left'>
+			<h2>ES2015 modules go in...</h2>
+			<div class='input'></div>
+		</div>
 		<div class='right'>
+			<h2>...bundle comes out</h2>
 			<div class='output'></div>
-
-
 		</div>
 	</main>
 
-	<footer class='collapsed'>
+	<!-- <footer class='collapsed'>
 		<section class='quickstart'>
 			<button class='show-hide-info'>Show info</button>
 			<a href='https://github.com/rollup/rollup/wiki'>Get started</a>
 		</section>
 
-		<section class='blurb'>
-			<h2>What is this?</h2>
-			<p>Rollup is a next-generation JavaScript module bundler. Author your app or library in ES2015 modules, distribute as browser and Node.js friendly packages.</p>
-
-			<h2>So it's like Browserify or Webpack?</h2>
-			<p>Yes, except that the resulting bundle is smaller, because ES2015 modules are more efficient than CommonJS, and make it possible to eliminate wasted bytes with <em>tree-shaking</em>.</p>
-
-			<h2>Tree-shaking?</h2>
-			<p>Normally if you <code>require</code> a module, you import the whole thing. ES2015 lets you just import the bits you need, without mucking around with custom builds. It's a revolution in how we use libraries in JavaScript, and it's happening right now.</p>
-
-			<h2>Sounds great! How do I get started?</h2>
-			<p>Visit <a href='https://github.com/rollup/rollup'>github.com/rollup/rollup</a> for installation instructions and more information.</p>
-		</section>
-
 		<div class='gradient'></div>
-	</footer>
+	</footer> -->
 
 	<!-- CodeMirror JS -->
 	<script src='https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.7.0/codemirror.min.js'></script>
