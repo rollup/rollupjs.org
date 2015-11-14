@@ -73,23 +73,22 @@ if ( supported ) {
 
 		/*global rollup */
 		rollup.rollup({
-			entry: 'main',
+			entry: 'main.js',
 			plugins: [{
 				resolveId ( importee, importer ) {
 					if ( !importer ) return importee;
 					if ( importee[0] !== '.' ) return false;
 
-					return resolve( dirname( importer ), importee ).replace( /^\.\//, '' );
+					let resolved = resolve( dirname( importer ), importee ).replace( /^\.\//, '' );
+					if ( resolved in moduleById ) return resolved;
+
+					resolved += '.js';
+					if ( resolved in moduleById ) return resolved;
+
+					throw new Error( `Could not resolve '${importee}' from '${importer}'` );
 				},
 				load: function ( id ) {
-					if ( id === 'main' ) return modules[0].code;
-					if ( extname( id ) === '' ) id += '.js';
-
-					const module = moduleById[ id ];
-
-					if ( !module ) throw new Error( `missing module ${id}` ); // TODO...
-
-					return module.code;
+					return moduleById[ id ].code;
 				}
 			}]
 		}).then( bundle => {
