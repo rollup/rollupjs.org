@@ -3,11 +3,18 @@ var gobble = require( 'gobble' );
 module.exports = gobble([
 	gobble( 'src/files' ),
 
+	// node_modules
 	gobble( 'node_modules/rollup/dist' ),
+
+	gobble( 'node_modules/ractive' )
+		.include( 'ractive.js' )
+		.moveTo( 'ractive' ),
+
 	gobble( 'node_modules/codemirror' )
 		.include([ 'lib/**', 'mode/javascript/**' ])
 		.moveTo( 'codemirror' ),
 
+	// app
 	gobble([
 		gobble( 'src/app' ).transform( 'ractive', { type: 'es6' }),
 		gobble( 'src/examples' ).transform( 'spelunk', {
@@ -15,19 +22,18 @@ module.exports = gobble([
 			type: 'es6'
 		})
 	])
-		.transform( 'rollup-babel', {
+		.transform( 'rollup', {
 			entry: 'main.js',
 			dest: 'app.js',
-			format: 'cjs',
-			external: [
-				'ractive'
+			format: 'iife',
+			external: [ 'ractive' ],
+			plugins: [
+				require( 'rollup-plugin-babel' )(),
+				require( 'rollup-plugin-npm' )({
+					jsnext: true,
+					skip: [ 'ractive' ]
+				})
 			]
-		})
-		.transform( 'browserify', {
-			entries: [ './app' ],
-			dest: 'app.js',
-			debug: true,
-			standalone: 'app'
 		}),
 
 	gobble( 'src/styles' )
