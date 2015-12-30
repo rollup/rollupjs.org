@@ -35,6 +35,6 @@
     "ractive": "^0.7.3",
     "ractive-events-tap": "^0.3.0",
     "ractive-transitions-slide": "^0.3.0",
-    "rollup": "^0.22.2"
+    "rollup": "^0.23.1"
   }
 }
