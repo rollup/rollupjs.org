@@ -47,4 +47,8 @@
 	p, ul {
 		max-width: 48em;
 	}
+
+	li {
+		margin: 0;
+	}
 }

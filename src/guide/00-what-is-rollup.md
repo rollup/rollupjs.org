@@ -43,7 +43,7 @@ In short, modules help us write code that is
 * easier to collaborate on, because Alice and Bob can work on the same app simultaneously (Alice can work on `dictionary` while Bob fixes `extractWords`) without stomping each other's changes
 * more bug-resistant, because we don't need to worry about things like naming conflicts between modules
 
-For a while, JavaScript have been using CommonJS modules and AMD modules as well as various ad hoc formats, but the modern `import`/`export` syntax has a number of [crucial advantages](#why-are-es2015-modules-better-than-amd-and-commonjs-).
+For a while, JavaScripters have been using CommonJS modules and AMD modules as well as various ad hoc formats, but the modern `import`/`export` syntax has a number of [crucial advantages](#why-are-es2015-modules-better-than-amd-and-commonjs-).
 
 
 ### Why do we need to bundle our modules?
@@ -52,4 +52,7 @@ For one thing, ES2015 modules don't yet work in browsers or Node.js, so we need 
 
 But there are also some major advantages to bundling your code:
 
-TK
+* A bundle is more portable and easier to consume than a collection of files
+* Compression works better with fewer bigger files than with lots of small ones
+* In the browser, a 100kb bundle loads much faster than 5 20kb files (that will change when HTTP/2 gains widespread adoption, but we're not there yet)
+* By bundling code, we can take advantage of [tree-shaking](#what-is-tree-shaking-), resulting in fewer wasted bytes
