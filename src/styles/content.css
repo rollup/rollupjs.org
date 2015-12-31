@@ -2,7 +2,7 @@
 	width: 100%;
 	padding: 0 1em 0 13em;
 
-	h3 {
+	h2 {
 		padding: 1rem 0 0 0;
 		margin: 0 0 1rem 0;
 		font-size: 1.8em;
@@ -12,12 +12,20 @@
 		margin: 0 0 1em 0;
 	}
 
+	code {
+		background-color: #f9f9f9;
+		padding: 0.2em 0.4em;
+		border-radius: 3px;
+	}
+
 	section:first-child h3 {
 		border: none;
 	}
 
 	section {
 		border-bottom: 1px solid #eee;
+		max-width: 64em;
+		margin: 0 auto;
 	}
 
 	section:last-child {
@@ -34,5 +42,9 @@
 	section > pre {
 		padding: 12px 8px 12px 12px;
 		border-radius: 3px;
+	}
+
+	p, ul {
+		max-width: 48em;
 	}
 }
