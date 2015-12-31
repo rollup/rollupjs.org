@@ -4,25 +4,18 @@
 	<meta charset='utf-8'>
 	<title>rollup.js</title>
 
-	<link rel='icon' type='image/png' href='images/favicon.png'>
+	<link rel='icon' type='image/png' href='/images/favicon.png'>
 
 	<!-- CodeMirror styles -->
 	<link rel="stylesheet" href="/codemirror/lib/codemirror.css" media="screen" title="no title" charset="utf-8">
 
 	<!-- our styles -->
-	<link rel='stylesheet' href='min.css'>
-	<link rel='stylesheet' href='fonts/fontello-b5109ef9/css/fontello.css'>
+	<link rel='stylesheet' href='/min.css'>
+	<link rel='stylesheet' href='/fonts/fontello-b5109ef9/css/fontello.css'>
 </head>
 
 <body>
-	<header>
-		<h1>rollup.js <small style="font-size:small;opacity:.7;"></small></h1>
-		<small>the next-generation JavaScript module bundler</small>
-
-		<a class='github' href='https://github.com/rollup/rollup'>GitHub</a>
-
-		<div class='gradient'></div>
-	</header>
+	{{>header}}
 
 	<section class='blurb'>
 		<div class='block'>
@@ -48,8 +41,7 @@
 		</div>
 	</section>
 
-	<main>
-
+	<main style='overflow: hidden;'>
 		<div class='left'>
 			<h2>ES2015 modules go in...</h2>
 			<div class='input'></div>
@@ -59,15 +51,6 @@
 			<div class='output'></div>
 		</div>
 	</main>
-
-	<!-- <footer class='collapsed'>
-		<section class='quickstart'>
-			<button class='show-hide-info'>Show info</button>
-			<a href='https://github.com/rollup/rollup/wiki'>Get started</a>
-		</section>
-
-		<div class='gradient'></div>
-	</footer> -->
 
 	<!-- CodeMirror JS -->
 	<script src='/codemirror/lib/codemirror.js'></script>

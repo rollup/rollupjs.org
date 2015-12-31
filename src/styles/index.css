@@ -7,6 +7,10 @@
 @import './blurb.css';
 @import './main.css';
 
+/* guide */
+@import './sidebar.css';
+@import './content.css';
+
 /* overrides */
 @import './codemirror.css';
 

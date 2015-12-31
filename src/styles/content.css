@@ -1,0 +1,38 @@
+.content {
+	width: 100%;
+	padding: 0 1em 0 13em;
+
+	h3 {
+		padding: 1rem 0 0 0;
+		margin: 0 0 1rem 0;
+		font-size: 1.8em;
+	}
+
+	p {
+		margin: 0 0 1em 0;
+	}
+
+	section:first-child h3 {
+		border: none;
+	}
+
+	section {
+		border-bottom: 1px solid #eee;
+	}
+
+	section:last-child {
+		border: none;
+	}
+
+	section > pre, .CodeMirror {
+		background-color: #f9f9f9;
+		border-left: 2px solid #eee;
+		padding: 8px;
+		margin: 0 0 1em 0;
+	}
+
+	section > pre {
+		padding: 12px 8px 12px 12px;
+		border-radius: 3px;
+	}
+}
