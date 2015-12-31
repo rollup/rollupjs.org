@@ -2,4 +2,4 @@
 title: Frequently asked questions
 ---
 
-TODO
+### Why are ES2015 modules better than AMD and CommonJS?
