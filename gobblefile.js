@@ -112,7 +112,8 @@ module.exports = gobble([
 				require( 'postcss-nested' ),
 				require( 'postcss-clearfix' )
 				//require( 'cssnano' ) // commenting out until we can figure out how to disable z-index rebasing
-			]
+			],
+			map: true
 		})
 
 // minify on deploy, but don't bother in development
