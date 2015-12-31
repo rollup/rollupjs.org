@@ -77,7 +77,7 @@ module.exports = gobble([
 		.moveTo( 'ractive' ),
 
 	gobble( 'node_modules/codemirror' )
-		.include([ 'lib/**', 'mode/javascript/**' ])
+		.include([ 'lib/**', 'mode/javascript/**', 'mode/shell/**' ])
 		.moveTo( 'codemirror' ),
 
 	// app

@@ -30,16 +30,19 @@
 	<!-- CodeMirror JS -->
 	<script src='/codemirror/lib/codemirror.js'></script>
 	<script src='/codemirror/mode/javascript/javascript.js'></script>
+	<script src='/codemirror/mode/shell/shell.js'></script>
 
 	<script>
 		[].forEach.call( document.querySelectorAll( 'pre' ), function ( pre ) {
 			var value = pre.textContent;
+			var lang = pre.querySelector( 'code' ).getAttribute( 'class' ).replace( 'lang-', '' );
 
 			var cm = CodeMirror( function ( element ) {
 				pre.parentNode.replaceChild( element, pre );
 			}, {
 				value: value.trim(),
-				readOnly: true
+				readOnly: true,
+				mode: { js: 'javascript', bash: 'shell' }[ lang ] || lang
 			});
 			console.log( 'pre', pre )
 		});

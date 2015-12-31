@@ -25,7 +25,8 @@
 	section {
 		border-bottom: 1px solid #eee;
 		max-width: 64em;
-		margin: 0 auto;
+		margin: 0 auto 2em auto;
+		padding: 0 0 2em 0;
 	}
 
 	section:last-child {
