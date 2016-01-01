@@ -28,7 +28,8 @@ cd my-rollup-project
 First, we need an *entry point*:
 
 ```bash
-echo "import foo from './foo.js';\nconsole.log(foo);" > src/main.js
+echo "import foo from './foo.js';" >> src/main.js
+echo "export default function () {\n  console.log(foo);\n}" >> src/main.js
 ```
 
 Then, let's create the `foo.js` module that our entry point imports:
@@ -48,7 +49,11 @@ This will print the bundle straight to `stdout`:
 ```js
 var foo = 42;
 
-console.log(foo);
+function main () {
+  console.log(foo);
+}
+
+export default main;
 ```
 
 You can save the bundle as a file like so:
@@ -58,5 +63,34 @@ rollup src/main.js --output bundle.js # or rollup main.js -o bundle.js
 ```
 
 (You could also do `rollup src/main.js > bundle.js`, but as we'll see later, this is less flexible if you're generating sourcemaps.)
+
+Of course, this code won't actually *run*, because it's still an ES2015 module with an `export` statement. So let's create a CommonJS module, which will run in Node.js:
+
+```bash
+rollup src/main.js --output bundle.js --format cjs
+# or rollup src/main.js -o bundle.js -f cjs
+```
+
+This creates the following bundle – anything exported from the entry module (in this case, a function that logs the answer to life, the universe and everything) becomes part of the bundle's exports:
+
+```js
+'use strict';
+
+var foo = 42;
+
+function main () {
+  console.log(foo);
+}
+
+module.exports = main;
+```
+
+Try running the code:
+
+```bash
+node
+> var myBundle = require('./bundle.js');
+> myBundle();
+```
 
 Congratulations! You've created your first bundle with Rollup.

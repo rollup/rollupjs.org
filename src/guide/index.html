@@ -35,7 +35,7 @@
 	<script>
 		[].forEach.call( document.querySelectorAll( 'pre' ), function ( pre ) {
 			var value = pre.textContent;
-			var lang = pre.querySelector( 'code' ).getAttribute( 'class' ).replace( 'lang-', '' );
+			var lang = ( pre.querySelector( 'code' ).getAttribute( 'class' ) || '' ).replace( 'lang-', '' );
 
 			var cm = CodeMirror( function ( element ) {
 				pre.parentNode.replaceChild( element, pre );
