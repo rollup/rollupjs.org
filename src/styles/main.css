@@ -1,6 +1,5 @@
 body > main {
 	min-height: 100%;
-	overflow: hidden;
 	background-color: white;
 	z-index: 6;
 
