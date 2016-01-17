@@ -28,8 +28,12 @@ cd my-rollup-project
 First, we need an *entry point*:
 
 ```bash
-echo "import foo from './foo.js';" >> src/main.js
-echo "export default function () {\n  console.log(foo);\n}" >> src/main.js
+cat <<EOS > src/main.js
+import foo from './foo.js';
+export default function () {
+  console.log(foo);
+}
+EOS
 ```
 
 Then, let's create the `foo.js` module that our entry point imports:
@@ -91,6 +95,7 @@ Try running the code:
 node
 > var myBundle = require('./bundle.js');
 > myBundle();
+42
 ```
 
 Congratulations! You've created your first bundle with Rollup.

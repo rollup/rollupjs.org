@@ -21,7 +21,7 @@ module.exports = gobble([
 
 	gobble( 'src/guide' )
 		.transform( function ( inputdir, outputdir, options, done ) {
-			var markdownFiles = sander.readdirSync( inputdir ).filter( file => /\.md/.test( file ) );
+			var markdownFiles = sander.readdirSync( inputdir ).filter( file => /\.md$/.test( file ) );
 
 			var templates = {
 				index: sander.readFileSync( inputdir, 'index.html', asString ),
