@@ -6,6 +6,7 @@ button {
 	cursor: pointer;
 	background-color: #eee;
 	padding: 0.5em 1em;
+	margin-bottom: 1em;
 }
 
 button:hover, button:active {
@@ -25,11 +26,10 @@ select {
 	font-family: inherit;
 	position: relative;
 	border: none;
-	-webkit-appearance: none;
-	-moz-appearance: none;
 	appearance: none;
 	border-radius: 0;
 	padding: 0.5em 3em 0.5em 0.5em;
+	margin-bottom: 1em;
 	background: #eee url(images/select-arrow.svg) no-repeat 100% 50%;
 	background-size: auto 100%;
 	outline: none;

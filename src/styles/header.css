@@ -1,7 +1,15 @@
 body > header {
+	@media (min-width: 45rem) {
+		z-index: 10;
+		position: fixed;
+		width: 100%;
+		top: 0;
+	}
+	overflow: hidden;
 	background-color: #e94c43;
+	box-shadow: 0 0 1em rgba(0,0,0,0.5);
 	color: white;
-	padding: 1.3em 1em 1.5em 6em;
+	padding: 1.3em 1em 1em 6em;
 
 	.logo {
 		position: absolute;
@@ -22,28 +30,22 @@ body > header {
 	}
 
 	small {
+		display: inline-block;
 		font-size: 1em;
+		margin-bottom: .5em;
+	}
+
+	.version {
+		font-size: small;
+		opacity: .7;
+		margin-bottom: 0;
 	}
 
 	.links {
-		display: inline-block;
-		position: absolute;
-		bottom: 1.5em;
-		right: 1.5em;
-		line-height: 1;
+		float: right;
 	}
 
 	.links a {
 		color: white;
 	}
-}
-
-.gradient {
-	position: absolute;
-	left: 0;
-	bottom: -1em;
-	width: 100%;
-	height: 1em;
-	background: linear-gradient(to bottom, rgba(0,0,0,0.15) 0%,rgba(0,0,0,0.01) 100%);
-	z-index: 3;
 }

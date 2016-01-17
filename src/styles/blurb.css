@@ -1,4 +1,6 @@
 .blurb {
+	display: flex;
+	flex-wrap: wrap;
 	background-color: #424242;
 	color: #ccc;
 	padding: 1em 0.5em;
@@ -6,9 +8,13 @@
 	clear: fix;
 
 	.block {
-		width: 25%;
-		float: left;
+		flex: 1 0 25%;
 		padding: 0 0.5em;
+		width: 25%;
+		min-width: 15rem;
+		@media (max-width: 15rem) {
+			min-width: 100%;
+		}
 	}
 
 	h2 {
