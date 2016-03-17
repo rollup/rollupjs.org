@@ -1,9 +1,14 @@
 // TODO does this all work on windows?
 
-export const absolutePath = /^(?:\/|(?:[A-Za-z]:)?\\)/;
+export const absolutePath = /^(?:\/|(?:[A-Za-z]:)?[\\|\/])/;
+export const relativePath = /^\.?\.\//;
 
 export function isAbsolute ( path ) {
 	return absolutePath.test( path );
+}
+
+export function isRelative ( path ) {
+	return relativePath.test( path );
 }
 
 export function basename ( path ) {
@@ -11,33 +16,34 @@ export function basename ( path ) {
 }
 
 export function dirname ( path ) {
-	const match = /(\/|\\)[^\/\\]+$/.exec( path );
+	const match = /(\/|\\)[^\/\\]*$/.exec( path );
 	if ( !match ) return '.';
-	return path.slice( 0, -match[0].length );
+
+	const dir = path.slice( 0, -match[0].length );
+
+	// If `dir` is the empty string, we're at root.
+	return dir ? dir : '/';
 }
 
 export function extname ( path ) {
-	const match = /\.[^\.]+$/.exec( path );
+	const match = /\.[^\.]+$/.exec( basename( path ) );
 	if ( !match ) return '';
 	return match[0];
 }
 
 export function relative ( from, to ) {
-	const fromParts = from.split( /[\/\\]/ );
-	const toParts = to.split( /[\/\\]/ );
+	const fromParts = from.split( /[\/\\]/ ).filter( Boolean );
+	const toParts = to.split( /[\/\\]/ ).filter( Boolean );
 
 	while ( fromParts[0] && toParts[0] && fromParts[0] === toParts[0] ) {
 		fromParts.shift();
 		toParts.shift();
 	}
 
-	while ( toParts[0] && toParts[0][0] === '.' ) {
-		if ( toParts[0] === '.' ) {
-			toParts.shift();
-		} else if ( toParts[0] === '..' ) {
+	while ( toParts[0] === '.' || toParts[0] === '..' ) {
+		const toPart = toParts.shift();
+		if ( toPart === '..' ) {
 			fromParts.pop();
-		} else {
-			throw new Error( `Unexpected path part (${toParts[0]})` );
 		}
 	}
 
@@ -57,10 +63,9 @@ export function resolve ( ...paths ) {
 		} else {
 			const parts = path.split( /[\/\\]/ );
 
-			while ( parts[0] && parts[0][0] === '.' ) {
-				if ( parts[0] === '.' ) {
-					parts.shift();
-				} else if ( parts[0] === '..' ) {
+			while ( parts[0] === '.' || parts[0] === '..' ) {
+				const part = parts.shift();
+				if ( part === '..' ) {
 					resolvedParts.pop();
 				}
 			}
