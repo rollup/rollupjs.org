@@ -34,10 +34,10 @@
     "predeploy": "npm run build"
   },
   "dependencies": {
-    "codemirror": "^5.13.0",
+    "codemirror": "^5.13.2",
     "ractive": "^0.7.3",
     "ractive-events-tap": "^0.3.0",
     "ractive-transitions-slide": "^0.4.0",
-    "rollup": "^0.25.5"
+    "rollup": "^0.25.6"
   }
 }
