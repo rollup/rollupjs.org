@@ -51,7 +51,7 @@ To run, create one script in package.json
 
 ```js
 "scripts": {
-    "build": "node_modules/rollup/bin/rollup src/main.js --output bundle.js"
+    "build": "rollup src/main.js --output bundle.js"
 }
 ```
 
