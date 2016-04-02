@@ -95,7 +95,7 @@ module.exports = gobble([
 			external: [ 'ractive' ],
 			plugins: [
 				require( 'rollup-plugin-babel' )(),
-				require( 'rollup-plugin-npm' )({
+				require( 'rollup-plugin-node-resolve' )({
 					jsnext: true,
 					skip: [ 'ractive' ]
 				})
