@@ -82,7 +82,7 @@ module.exports = gobble([
 
 	// app
 	gobble([
-		gobble( 'src/app' ).transform( 'ractive', { type: 'es6' }),
+		gobble( 'src/app' ),
 		gobble( 'src/examples' ).transform( 'spelunk', {
 			dest: 'examples.js',
 			type: 'es6'
@@ -94,7 +94,8 @@ module.exports = gobble([
 			format: 'iife',
 			external: [ 'ractive' ],
 			plugins: [
-				require( 'rollup-plugin-babel' )(),
+				require( 'rollup-plugin-ractive' )(),
+				require( 'rollup-plugin-buble' )(),
 				require( 'rollup-plugin-node-resolve' )({
 					jsnext: true,
 					skip: [ 'ractive' ]

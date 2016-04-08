@@ -1,6 +1,6 @@
-import Input from './Input/index';
-import Output from './Output/index';
-import Footer from './Footer';
+import Input from './Input/index.html';
+import Output from './Output/index.html';
+import Footer from './Footer.html';
 import examples from './examples';
 import { dirname, extname, resolve } from './utils/path';
 import examplesMatch from './utils/examplesMatch';
