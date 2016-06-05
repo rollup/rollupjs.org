@@ -22,7 +22,7 @@ We'll start by adding a `package.json` file to our project. A `package.json` fil
 Now, install rollup-plugin-json as a *development dependency*:
 
 ```bash
-npm install --save-dev rollup-plugin-json # or rollup i -D rollup-plugin-json
+npm install --save-dev rollup-plugin-json # or npm i -D rollup-plugin-json
 ```
 
 (We're using `--save-dev` rather than `--save` because our code doesn't actually depend on the plugin when it runs – only when we're building the bundle.)
