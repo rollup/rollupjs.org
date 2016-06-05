@@ -18,7 +18,7 @@
     "postcss-clearfix": "^1.0.0",
     "postcss-import": "^8.1.2",
     "postcss-nested": "^1.0.0",
-    "rollup-plugin-buble": "^0.7.0",
+    "rollup-plugin-buble": "^0.10.0",
     "rollup-plugin-commonjs": "^2.2.1",
     "rollup-plugin-node-resolve": "^1.5.0",
     "rollup-plugin-ractive": "^1.2.0",
