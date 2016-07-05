@@ -70,7 +70,7 @@ module.exports = gobble([
 		.moveTo( 'guide' ),
 
 	// node_modules
-	gobble( 'node_modules/rollup/dist' ),
+	gobble( 'node_modules/rollup/dist/rollup.browser.js' ),
 
 	gobble( 'node_modules/ractive' )
 		.include( 'ractive.js' )
