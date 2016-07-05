@@ -3,25 +3,25 @@
   "author": "Rich Harris",
   "version": "0.1.0",
   "devDependencies": {
-    "autoprefixer": "^6.3.6",
-    "cssnano": "^3.7.0",
-    "eslint": "^2.11.1",
+    "autoprefixer": "^6.3.7",
+    "cssnano": "^3.7.1",
+    "eslint": "^3.0.1",
     "eslint-plugin-html": "^1.5.1",
     "gobble": "^0.11.3",
     "gobble-cli": "^0.7.0",
     "gobble-postcss": "^0.3.0",
     "gobble-replace": "^0.3.1",
-    "gobble-rollup": "^0.29.0",
+    "gobble-rollup": "^0.33.0",
     "gobble-spelunk": "^0.6.0",
     "gobble-uglifyjs": "^0.2.1",
     "marked": "^0.3.5",
     "postcss-clearfix": "^1.0.0",
     "postcss-import": "^8.1.2",
     "postcss-nested": "^1.0.0",
-    "rollup-plugin-buble": "^0.10.0",
-    "rollup-plugin-commonjs": "^3.0.0",
-    "rollup-plugin-node-resolve": "^1.7.0",
-    "rollup-plugin-ractive": "^1.2.0",
+    "rollup-plugin-buble": "^0.12.1",
+    "rollup-plugin-commonjs": "^3.1.0",
+    "rollup-plugin-node-resolve": "^1.7.1",
+    "rollup-plugin-ractive": "^1.2.1",
     "sander": "^0.5.1",
     "surge": "^0.18.0"
   },
@@ -33,10 +33,10 @@
     "predeploy": "npm run build"
   },
   "dependencies": {
-    "codemirror": "^5.15.2",
+    "codemirror": "^5.16.0",
     "ractive": "^0.7.3",
     "ractive-events-tap": "^0.3.0",
     "ractive-transitions-slide": "^0.4.0",
-    "rollup": "^0.30.0"
+    "rollup": "^0.33.0"
   }
 }
