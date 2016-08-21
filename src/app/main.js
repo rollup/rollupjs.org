@@ -14,7 +14,20 @@ if ( supported ) {
 	console.log( `running Rollup version %c${rollup.VERSION}`, 'font-weight: bold' );
 
 	// recover state from hash fragment
-	const json = decodeURIComponent( window.location.hash.slice( 1 ) );
+	let json;
+	const match = /shareable=(.+)$/.exec( window.location.search );
+	if ( match ) {
+		try {
+			json = decodeURIComponent( atob( match[1] ) );
+		} catch ( err ) {
+			// noop
+		}
+	}
+
+	if ( !match ) {
+		// legacy
+		json = decodeURIComponent( window.location.hash.slice( 1 ) );
+	}
 
 	let saved;
 	let selectedExample;
@@ -106,7 +119,7 @@ if ( supported ) {
 			});
 
 			// save state as hash fragment
-			window.location.hash = encodeURIComponent( JSON.stringify({ options, modules }) );
+			history.replaceState( {}, 'x', `/?shareable=${btoa( encodeURIComponent( JSON.stringify({ options, modules }) ) )}` );
 		})
 		.catch( error => {
 			output.set( 'error', error );
