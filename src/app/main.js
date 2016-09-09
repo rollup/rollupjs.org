@@ -2,11 +2,11 @@ import Input from './Input/index.html';
 import Output from './Output/index.html';
 import Footer from './Footer.html';
 import examples from './examples';
-import { dirname, extname, resolve } from './utils/path';
+import { dirname, resolve } from './utils/path';
 import examplesMatch from './utils/examplesMatch';
 import debounce from './utils/debounce';
 
-const supported = !!window.Promise;
+const supported = !!window.Promise && !!window.Map && !!window.Set;
 
 if ( supported ) {
 	document.querySelector('header h1 small').innerHTML = `v${rollup.VERSION}`;
@@ -130,7 +130,7 @@ if ( supported ) {
 		.then( () => {
 			updating = false;
 		});
-	}
+	};
 
 	input.observe( 'modules', debounce( update, 200 ) );
 	input.observe( 'selectedExample', update );
@@ -140,11 +140,11 @@ if ( supported ) {
 else {
 	document.querySelector( 'main' ).innerHTML = `
 		<div class='sorry'>
-			<p>The browser build of Rollup uses ES6 Promises, which aren't supported here. I <em>could</em> fix it, but then there'd probably be something else to fix, and frankly life is too short. Use Chrome or Firefox or a recent version of Safari or, hell, anything except what you're currently using.</p>
+			<p>The browser build of Rollup uses features that aren't supported here. I <em>could</em> fix it, but then there'd probably be something else to fix, and frankly life is too short. Use Chrome or Firefox or a recent version of Safari or, hell, anything except what you're currently using.</p>
 
 			<p>Sorry.</p>
 		</div>
-	`
+	`;
 }
 
 new Footer({
