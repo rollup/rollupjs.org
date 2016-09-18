@@ -119,7 +119,7 @@ if ( supported ) {
 			});
 
 			// save state as hash fragment
-			history.replaceState( {}, 'x', `/?shareable=${btoa( encodeURIComponent( JSON.stringify({ options, modules }) ) )}` );
+			history.replaceState( {}, 'x', `/?version=${rollup.VERSION}&shareable=${btoa( encodeURIComponent( JSON.stringify({ options, modules }) ) )}` );
 		})
 		.catch( error => {
 			output.set( 'error', error );

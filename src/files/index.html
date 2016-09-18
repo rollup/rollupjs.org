@@ -53,16 +53,38 @@
 		</div>
 	</main>
 
+	<!-- load selected version of Rollup, then the app -->
+	<script>
+		(function () {
+			function loadScript ( src ) {
+				return new Promise( ( fulfil, reject ) => {
+					var script = document.createElement( 'script' );
+					script.onload = fulfil;
+					script.onerror = reject;
+
+					script.src = src;
+
+					document.querySelector( 'head' ).appendChild( script );
+				});
+			}
+
+			var versionMatch = /version=([^&]+)/.exec( window.location.search );
+			var path = versionMatch ?
+				'https://unpkg.com/rollup@' + versionMatch[1] + '/dist/rollup.browser.js' :
+				'https://unpkg.com/rollup/dist/rollup.browser.js';
+
+			loadScript( path ).then( function () {
+				loadScript( 'app.js' );
+			});
+		}());
+	</script>
+
 	<!-- CodeMirror JS -->
 	<script src='/codemirror/lib/codemirror.js'></script>
 	<script src='/codemirror/mode/javascript/javascript.js'></script>
 
 	<!-- Ractive -->
 	<script src='/ractive/ractive.js'></script>
-
-	<!-- Rollup and app -->
-	<script src='https://unpkg.com/rollup/dist/rollup.browser.js'></script>
-	<script src='app.js'></script>
 
 	<!-- Google Analytics -->
 	<script>
