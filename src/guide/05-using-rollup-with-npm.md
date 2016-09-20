@@ -24,7 +24,7 @@ First, we need an file package.json, thereunto run the command
 
 Then just install the rollup
 
-  ``npm install --save rollup``
+  ``npm install --save-dev rollup``
 
 Create your file using of module es2015
 
