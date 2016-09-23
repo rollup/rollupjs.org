@@ -8,9 +8,15 @@
 	clear: fix;
 
 	.block {
-		flex: 1 0 25%;
+		@media (min-width: 60rem) {
+			flex: 1 0 25%;
+			width: 25%;
+		}
+		@media (min-width: 45rem) {
+			flex: 1 0 50%;
+			width: 50%;
+		}
 		padding: 0 0.5em;
-		width: 25%;
 		min-width: 15rem;
 		@media (max-width: 15rem) {
 			min-width: 100%;
