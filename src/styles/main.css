@@ -10,11 +10,11 @@ body > main {
 	}
 
 	.left, .right {
-    width: 100%;
-    @media (min-width: 45rem) {
-      flex: 1 0 50%;
-      width: 50%;
-    }
+		width: 100%;
+		@media (min-width: 45rem) {
+			flex: 1 0 50%;
+			width: 50%;
+		}
 		height: 100%;
 		float: left;
 		overflow-y: auto;
@@ -26,9 +26,9 @@ body > main {
 	}
 
 	.left {
-    @media (min-width: 45rem) {
-      border-right: 1px solid #eee;
-    }
+		@media (min-width: 45rem) {
+			border-right: 1px solid #eee;
+		}
 
 		/*h2 {
 			text-align: right;
