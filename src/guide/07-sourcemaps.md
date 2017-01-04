@@ -2,7 +2,7 @@
 title: Sourcemaps
 ---
 
-Sourcemaps can be enabled by adding the `--sourcemap` flag using the command line too, or by adding `sourceMap: true` to your configuration file.
+Sourcemaps can be enabled by adding the `--sourcemap` flag using the CLI, or by adding `sourceMap: true` to your configuration file.
 
 ```js
 export default {
