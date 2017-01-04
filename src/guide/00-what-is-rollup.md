@@ -53,6 +53,6 @@ For one thing, ES2015 modules don't yet work in browsers or Node.js, so we need 
 But there are also some major advantages to bundling your code:
 
 * A bundle is more portable and easier to consume than a collection of files
-* Compression works better with fewer bigger files than with lots of small ones
+* Compression works better with fewer, bigger files than with lots of small ones
 * In the browser, a 100kb bundle loads much faster than 5 20kb files (that will change when HTTP/2 gains widespread adoption, but we're not there yet)
 * By bundling code, we can take advantage of [tree-shaking](#what-is-tree-shaking-), resulting in fewer wasted bytes
