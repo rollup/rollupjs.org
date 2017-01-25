@@ -2,7 +2,7 @@
 title: Using Rollup with npm
 ---
 
-First, we need an file package.json, thereunto run the command
+First, we need a package.json file, thereunto run the command
 
   ``npm init``
   
