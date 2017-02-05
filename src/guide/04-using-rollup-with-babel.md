@@ -26,7 +26,7 @@ export default {
 
 Before Babel will actually compile your code, it needs to be configured. Create a new file, `src/.babelrc`:
 
-```json
+``js
 {
   "presets": [
     [

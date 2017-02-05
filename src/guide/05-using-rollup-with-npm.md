@@ -8,7 +8,7 @@ First, we need a package.json file, thereunto run the command
   
  which returns the file
   
-  ```json
+  ``js
   {
     "name": "name-your-project",
     "version": "1.0.0",
