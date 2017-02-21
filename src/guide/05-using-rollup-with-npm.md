@@ -4,40 +4,40 @@ title: Using Rollup with npm
 
 First, we need a package.json file, thereunto run the command
 
-  ``npm init``
+``npm init``
   
  which returns the file
   
-  ```js
-  {
-    "name": "name-your-project",
-    "version": "1.0.0",
-    "description": "",
-    "main": "index.js",
-    "scripts": {
-      "test": "echo \"Error: no test specified\" && exit 1"
-    },
-    "author": "",
-    "license": "ISC"
-  }
-  ```
+```js
+{
+  "name": "name-your-project",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC"
+}
+```
 
 Then just install the rollup
 
-  ``npm install --save-dev rollup``
+``npm install --save-dev rollup``
 
 Create your file using of module es2015
 
-  ```js
-  //src/main.js
+```js
+//src/main.js
+
+import foo from './foo.js';
+
+export default function () {
+  console.log(foo);
+}
   
-  import foo from './foo.js';
-  
-  export default function () {
-    console.log(foo);
-  }
-  
-  ```
+```
 
 and create your module
  
