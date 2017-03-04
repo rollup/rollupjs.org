@@ -66,8 +66,8 @@ module.exports = gobble([
 			sander.writeFileSync( outputdir, 'index.html', html );
 			done();
 		})
-		.transform( 'replace', replaceOptions )
-		.moveTo( 'guide' ),
+		.transform( 'replace', replaceOptions ),
+		// .moveTo( 'guide' ),
 
 	gobble( 'node_modules/ractive' )
 		.include( 'ractive.js' )

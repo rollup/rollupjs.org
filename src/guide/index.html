@@ -34,6 +34,10 @@
 	<script src='/codemirror/mode/shell/shell.js'></script>
 
 	<script>
+		if ( /shareable=/.test( window.location.search ) ) {
+			window.location.href = '/repl' + window.location.search;
+		}
+
 		[].forEach.call( document.querySelectorAll( 'pre' ), function ( pre ) {
 			var value = pre.textContent;
 			var lang = ( pre.querySelector( 'code' ).getAttribute( 'class' ) || '' ).replace( 'lang-', '' );
