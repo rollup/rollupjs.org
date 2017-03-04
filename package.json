@@ -32,7 +32,8 @@
     "lint": "node node_modules/eslint/bin/eslint src --ext .js --ext .html",
     "build": "gobble build -f dist",
     "deploy": "surge dist rollupjs.org",
-    "predeploy": "npm run build"
+    "predeploy": "npm run build",
+    "update_overview": "node scripts/update_overview"
   },
   "dependencies": {
     "codemirror": "^5.16.0",
