@@ -25,69 +25,51 @@ mkdir -p my-rollup-project/src
 cd my-rollup-project
 ```
 
-First, we need an *entry point*:
+First, we need an *entry point*. Paste this into a new file called `src/main.js`:
 
-```bash
-cat <<EOS > src/main.js
+```js
+// src/main.js
 import foo from './foo.js';
 export default function () {
   console.log(foo);
 }
-EOS
 ```
 
 Then, let's create the `foo.js` module that our entry point imports:
 
-```bash
-echo "export default 42;" > src/foo.js
+```js
+// src/foo.js
+export default 42;
 ```
 
 Now we're ready to create a bundle:
 
 ```bash
-rollup src/main.js
+rollup src/main.js --format cjs
 ```
 
-This will print the bundle straight to `stdout`:
-
-```js
-var foo = 42;
-
-function main () {
-  console.log(foo);
-}
-
-export default main;
-```
-
-You can save the bundle as a file like so:
-
-```bash
-rollup src/main.js --output bundle.js # or rollup main.js -o bundle.js
-```
-
-(You could also do `rollup src/main.js > bundle.js`, but as we'll see later, this is less flexible if you're generating sourcemaps.)
-
-Of course, this code won't actually *run*, because it's still an ES2015 module with an `export` statement. So let's create a CommonJS module, which will run in Node.js:
-
-```bash
-rollup src/main.js --output bundle.js --format cjs
-# or rollup src/main.js -o bundle.js -f cjs
-```
-
-This creates the following bundle – anything exported from the entry module (in this case, a function that logs the answer to life, the universe and everything) becomes part of the bundle's exports:
+The `--format` option specifies what kind of bundle we're creating — in this case, CommonJS (which will run in Node.js). Because we didn't specify an output file, it will be printed straight to `stdout`:
 
 ```js
 'use strict';
 
 var foo = 42;
 
-function main () {
+var main = function () {
   console.log(foo);
-}
+};
 
 module.exports = main;
 ```
+
+You can save the bundle as a file like so:
+
+```bash
+rollup src/main.js --format cjs --output bundle.js
+# or `rollup main.js -f cjs -o bundle.js`
+```
+
+(You could also do `rollup src/main.js > bundle.js`, but as we'll see later, this is less flexible if you're generating sourcemaps.)
 
 Try running the code:
 
