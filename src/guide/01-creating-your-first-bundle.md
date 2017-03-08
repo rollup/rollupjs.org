@@ -39,7 +39,7 @@ Then, let's create the `foo.js` module that our entry point imports:
 
 ```js
 // src/foo.js
-export default 42;
+export default 'hello world!';
 ```
 
 Now we're ready to create a bundle:
@@ -53,7 +53,7 @@ The `--format` option specifies what kind of bundle we're creating — in this c
 ```js
 'use strict';
 
-var foo = 42;
+var foo = 'hello world!';
 
 var main = function () {
   console.log(foo);
@@ -77,7 +77,7 @@ Try running the code:
 node
 > var myBundle = require('./bundle.js');
 > myBundle();
-42
+'hello world!'
 ```
 
 Congratulations! You've created your first bundle with Rollup.
