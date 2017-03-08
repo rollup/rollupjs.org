@@ -9,6 +9,7 @@ To save repeating ourselves, we can create a config file containing all the opti
 Create a file in the project root called `rollup.config.js`, and add the following code:
 
 ```js
+// rollup.config.js
 export default {
   entry: 'src/main.js',
   format: 'cjs',

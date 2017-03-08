@@ -10,47 +10,32 @@ For that, we use *plugins*, which change the behaviour of Rollup at key points i
 
 For this tutorial, we'll use [rollup-plugin-json](https://github.com/rollup/rollup-plugin-json), which allows Rollup to import data from a JSON file.
 
-We'll start by adding a `package.json` file to our project. A `package.json` file contains essential metadata about your project, such as the current version, and which other packages it depends on:
-
-```js
-{
-  "name": "my-rollup-project",
-  "version": "1.0.0"
-}
-```
-
-Now, install rollup-plugin-json as a *development dependency*:
+Install rollup-plugin-json as a development dependency:
 
 ```bash
-npm install --save-dev rollup-plugin-json # or npm i -D rollup-plugin-json
+npm install --save-dev rollup-plugin-json
 ```
 
 (We're using `--save-dev` rather than `--save` because our code doesn't actually depend on the plugin when it runs – only when we're building the bundle.)
 
-Take a look at your `package.json`. It should look something like this:
+Update your `src/main.js` file so that it imports from your package.json:
 
 ```js
-{
-  "name": "my-rollup-project",
-  "version": "1.0.0",
-  "devDependencies": {
-    "rollup-plugin-json": "^2.0.0"
-  }
-}
-```
-
-Delete `src/foo.js`, and replace the contents of `src/main.js` with the following:
-
-```js
+// src/main.js
 import { version } from '../package.json';
+import foo from './foo.js';
+
+console.log('version ' + version);
+
 export default function () {
-  console.log('current version is ' + version);
+  console.log(foo);
 }
 ```
 
 Edit your `rollup.config.js` file to include the JSON plugin:
 
 ```js
+// rollup.config.js
 import json from 'rollup-plugin-json';
 
 export default {
@@ -61,18 +46,22 @@ export default {
 };
 ```
 
-Run Rollup with `rollup -c`. The result should look like this:
+Run Rollup with `npm run build`. The result should look like this:
 
 ```js
 'use strict';
 
 var version = "1.0.0";
 
-function main () {
-  console.log('current version is ' + version);
-}
+var foo = 42;
+
+console.log('version ' + version);
+
+var main = function () {
+  console.log(foo);
+};
 
 module.exports = main;
 ```
 
-(Notice that only the data we actually need gets imported – the `name` and `devDependencies` parts of the `package.json` are ignored. That's [tree-shaking](#what-is-tree-shaking-) in action!)
+(Notice that only the data we actually need gets imported – `name` and `devDependencies` and other parts of `package.json` are ignored. That's [tree-shaking](#what-is-tree-shaking-) in action!)
