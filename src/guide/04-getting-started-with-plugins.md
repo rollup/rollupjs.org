@@ -18,17 +18,14 @@ npm install --save-dev rollup-plugin-json
 
 (We're using `--save-dev` rather than `--save` because our code doesn't actually depend on the plugin when it runs – only when we're building the bundle.)
 
-Update your `src/main.js` file so that it imports from your package.json:
+Update your `src/main.js` file so that it imports from your package.json instead of `src/foo.js`:
 
 ```js
 // src/main.js
 import { version } from '../package.json';
-import foo from './foo.js';
-
-console.log('version ' + version);
 
 export default function () {
-  console.log(foo);
+  console.log('version ' + version);
 }
 ```
 
@@ -53,12 +50,8 @@ Run Rollup with `npm run build`. The result should look like this:
 
 var version = "1.0.0";
 
-var foo = 42;
-
-console.log('version ' + version);
-
 var main = function () {
-  console.log(foo);
+  console.log('version ' + version);
 };
 
 module.exports = main;
