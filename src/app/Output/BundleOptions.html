@@ -3,14 +3,14 @@
 		<h3>options.format</h3>
 		<table>
 			<tr>
-				[[#each formats : i]]
+				{{#each formats as format, i}}
 				<td>
 					<button
 						class='{{value === options.format ? "selected": ""}}'
-						on-tap='set("options.format", value)'
-					>{{name}}</button>
+						on:tap='set({ format: value })'
+					>{{format.name}}</button>
 				</td>
-				[[/each]]
+				{{/each}}
 			</tr>
 		</table>
 	</section>
@@ -18,7 +18,7 @@
 	{{#if options.format === 'amd' || options.format === 'umd'}}
 		<section intro-outro='slide:fast'>
 			<h3>options.moduleId</h3>
-			<input value='{{options.moduleId}}' placeholder='leave blank for anonymous module'>
+			<input bind:value='moduleId' placeholder='leave blank for anonymous module'>
 		</section>
 	{{/if}}
 
@@ -26,17 +26,17 @@
 		{{#if exports.length}}
 			<section intro-outro='slide:fast'>
 				<h3>options.moduleName</h3>
-				<input value='{{options.moduleName}}'>
+				<input bind:value='moduleName'>
 			</section>
 		{{/if}}
 
 		{{#if sortedImports.length}}
 			<section>
 				<h3 intro-outro='slide:fast'>options.globals</h3>
-				{{#each sortedImports}}
+				{{#each sortedImports as x @name}}
 					<div intro-outro='slide:fast'>
-						<input value='{{value}}'>
-						<code>'{{name}}'</code>
+						<input value='{{x.value}}'>
+						<code>'{{x.name}}'</code>
 					</div>
 				{{/each}}
 			</section>
@@ -117,7 +117,7 @@
 
 	let userGlobals = {};
 
-	component.exports = {
+	export default {
 		data: () => ({
 			formats: [
 				{ name: 'AMD', value: 'amd' },
@@ -127,58 +127,90 @@
 				{ name: 'UMD', value: 'umd' }
 			],
 
+			format: 'amd',
+			moduleName: 'myBundle',
+			moduleId: '',
+
 			sortedImports: []
 		}),
 
-		oninit () {
+		oncreate () {
+			let options;
 			let updating;
 
-			this.observe({
-				imports: imports => {
-					if ( !imports ) return;
+			this.observe( 'options', o => {
+				this.set( options = o );
+			});
 
-					// we only care about this stuff in IIFE/UMD mode...
-					// cheeky hack to clean `options.globals`
-					const format = this.get( 'options.format' );
-					if ( format !== 'iife' && format !== 'umd' ) imports = [];
+			this.observe( 'imports', imports => {
+				if ( !imports ) return;
 
-					const sortedImports = imports
-						.sort( ( a, b ) => {
-							return a < b ? -1 : 1;
-						})
-						.map( name => {
-							return {
-								name,
-								value: userGlobals[ name ] || defaultGlobals[ name ] || name
-							};
-						});
+				// we only care about this stuff in IIFE/UMD mode...
+				// cheeky hack to clean `options.globals`
+				const format = this.get( 'options.format' );
+				if ( format !== 'iife' && format !== 'umd' ) imports = [];
 
-					let globals = {};
-					sortedImports.forEach( ({ name, value }) => {
-						globals[ name ] = userGlobals[ name ] = value;
+				const sortedImports = imports
+					.sort( ( a, b ) => {
+						return a < b ? -1 : 1;
+					})
+					.map( name => {
+						return {
+							name,
+							value: userGlobals[ name ] || defaultGlobals[ name ] || name
+						};
 					});
 
-					updating = true;
-					this.merge( 'sortedImports', sortedImports, { compare: 'name' });
-					this.set( 'options.globals', globals );
-					updating = false;
-				},
+				let globals = {};
+				sortedImports.forEach( ({ name, value }) => {
+					globals[ name ] = userGlobals[ name ] = value;
+				});
 
-				'sortedImports': sortedImports => {
-					if ( updating ) return;
+				updating = true;
+				this.set({ sortedImports });
 
-					updating = true;
-					let globals = {};
-					sortedImports.forEach( ({ name, value }) => {
-						globals[ name ] = userGlobals[ name ] = value;
-					});
-					this.set( 'options.globals', globals );
-					updating = false;
-				}
+				const options = this.get( 'options' );
+				options.globals = globals;
+				this.set({ options });
+
+				updating = false;
+			});
+
+			this.observe( 'sortedImports', sortedImports => {
+				if ( updating ) return;
+
+				updating = true;
+				let globals = {};
+				sortedImports.forEach( ({ name, value }) => {
+					globals[ name ] = userGlobals[ name ] = value;
+				});
+
+				const options = this.get( 'options' );
+				options.globals = globals;
+				this.set({ options });
+				updating = false;
+			});
+
+			// two-way binding
+			this.observe( 'format', format => {
+				options.format = format;
+				this.set({ options });
+			});
+
+			this.observe( 'moduleName', moduleName => {
+				options.moduleName = moduleName;
+				this.set({ options });
+			});
+
+			this.observe( 'moduleId', moduleId => {
+				options.moduleId = moduleId;
+				this.set({ options });
 			});
 		},
 
 		events: { tap },
-		transitions: { slide }
+
+		// TODO reinstate slide transitions on option boxes
+		// transitions: { slide }
 	};
 </script>

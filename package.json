@@ -23,7 +23,7 @@
     "rollup-plugin-buble": "^0.13.0",
     "rollup-plugin-commonjs": "^3.1.0",
     "rollup-plugin-node-resolve": "^2.0.0",
-    "rollup-plugin-ractive": "^1.2.1",
+    "rollup-plugin-svelte": "^1.6.0",
     "sander": "^0.5.1",
     "surge": "^0.18.0"
   },

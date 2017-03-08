@@ -1,16 +1,14 @@
-<link rel='ractive' href='./BundleOptions.html'>
-<link rel='ractive' href='./Status.html'>
-<link rel='ractive' href='./Bundle.html'>
-
 <Status error='{{error}}'/>
-<BundleOptions options='{{options}}' imports='{{imports}}' exports='{{exports}}'/>
+<BundleOptions bind:options imports='{{imports}}' exports='{{exports}}'/>
 <Bundle code='{{code}}'/>
 
-
 <script>
+	import BundleOptions from './BundleOptions.html';
+	import Status from './Status.html';
+	import Bundle from './Bundle.html';
 	import tap from 'ractive-events-tap';
 
-	component.exports = {
+	export default {
 		data: () => ({
 			error: null,
 			options: {
@@ -18,6 +16,12 @@
 				moduleName: 'bundle'
 			}
 		}),
+
+		components: {
+			BundleOptions,
+			Status,
+			Bundle
+		},
 
 		events: {
 			tap

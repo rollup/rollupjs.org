@@ -69,10 +69,6 @@ module.exports = gobble([
 		.transform( 'replace', replaceOptions ),
 		// .moveTo( 'guide' ),
 
-	gobble( 'node_modules/ractive' )
-		.include( 'ractive.js' )
-		.moveTo( 'ractive' ),
-
 	gobble( 'node_modules/codemirror' )
 		.include([ 'lib/**', 'mode/javascript/**', 'mode/shell/**' ])
 		.moveTo( 'codemirror' ),
@@ -89,15 +85,14 @@ module.exports = gobble([
 			entry: 'main.js',
 			dest: 'app.js',
 			format: 'iife',
-			external: [ 'ractive' ],
 			plugins: [
-				require( 'rollup-plugin-ractive' )(),
+				require( 'rollup-plugin-svelte' )({ dev: true }),
 				require( 'rollup-plugin-buble' )(),
 				require( 'rollup-plugin-node-resolve' )({
-					jsnext: true,
-					skip: [ 'ractive' ]
+					jsnext: true
 				})
-			]
+			],
+			sourceMap: true
 		}),
 
 	gobble( 'src/styles' )

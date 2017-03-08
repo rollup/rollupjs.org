@@ -49,7 +49,7 @@ if ( supported ) {
 	}
 
 	const input = new Input({
-		el: '.input',
+		target: document.querySelector( '.input' ),
 		data: {
 			examples,
 			selectedExample
@@ -58,10 +58,10 @@ if ( supported ) {
 
 	input.set({ selectedExample });
 
-	if ( saved ) input.set( 'modules', saved.modules );
+	if ( saved ) input.set({ modules: saved.modules });
 
 	const output = new Output({
-		el: '.output',
+		target: document.querySelector( '.output' ),
 		data: {
 			options: saved ? saved.options : {
 				format: 'cjs',
@@ -122,7 +122,7 @@ if ( supported ) {
 			history.replaceState( {}, 'x', `/repl?version=${rollup.VERSION}&shareable=${btoa( encodeURIComponent( JSON.stringify({ options, modules }) ) )}` );
 		})
 		.catch( error => {
-			output.set( 'error', error );
+			output.set({ error });
 			setTimeout( () => {
 				throw error;
 			});
@@ -147,6 +147,7 @@ else {
 	`;
 }
 
-new Footer({
-	el: 'footer'
-});
+// TODO where did this live before?
+// new Footer({
+// 	target: document.querySelector( 'footer' )
+// });

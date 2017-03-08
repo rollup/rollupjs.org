@@ -1,4 +1,4 @@
-<div class='bundle'></div>
+<div ref:container class='bundle'></div>
 
 <style>
 	.bundle {
@@ -7,9 +7,9 @@
 </style>
 
 <script>
-	component.exports = {
-		onrender () {
-			let cm = CodeMirror( this.find( 'div' ), {
+	export default {
+		oncreate () {
+			let cm = CodeMirror( this.refs.container, {
 				lineNumbers: true,
 				lineWrapping: true,
 				readOnly: true

@@ -1,23 +1,23 @@
-<link rel='ractive' href='./Module.html'>
-
 <header class='start-here clearfix'>
 	<!-- <strong>Write ES6 modules here...</strong> -->
 
-	<select value='{{selectedExample}}'>
+	<select bind:value='selectedExample'>
 		<option disabled>Select an example...</option>
-		{{#each examples}}
-			<option value='{{this}}'>{{name}}</option>
+		{{#each examples as example}}
+			<option value='{{example}}'>{{example.name}}</option>
 		{{/each}}
 	</select>
 
-	<button on-tap='clear()'>Start over</button>
+	<button on:tap='clear()'>Start over</button>
 </header>
 
-{{#each modules :i}}
-	<Module module='{{this}}' index='{{i}}' main='{{i===0}}'/>
+{{#each modules as module, i}}
+	<!-- BREADCRUMB: this binding isn't updating... -->
+	{{console.log('module:', module) || ''}}
+	<Module bind:module index='{{i}}' main='{{i===0}}'/>
 {{/each}}
 
-<button class='new-module' on-tap='createModule()'><span class='icon icon-plus'></span> add module</button>
+<button class='new-module' on:tap='createModule()'><span class='icon icon-plus'></span> add module</button>
 
 <style>
 	strong {
@@ -39,59 +39,72 @@
 </style>
 
 <script>
+	import Module from './Module.html';
 	import { dirname, resolve, extname } from '../utils/path';
 	import tap from 'ractive-events-tap';
 
 	let uid = 1;
 
-	component.exports = {
+	export default {
 		data: () => ({
-			selectedExample: null
+			selectedExample: null,
+			modules: []
 		}),
 
-		oninit () {
-			this.observe({
-				selectedExample: example => {
-					if ( !example ) return;
+		components: {
+			Module,
+		},
 
-					const modules = Object.keys( example.modules ).map( key => {
-						return {
-							name: `${key}.js`,
-							code: example.modules[ key ].trim()
-						};
-					});
+		oncreate () {
+			this.observe( 'selectedExample', example => {
+				if ( !example ) return;
 
-					modules.sort( ( a, b ) => {
-						if ( a.name === 'main.js' ) return -1;
-						if ( b.name === 'main.js' ) return 1;
+				// console.group( 'selectedExample changed' );
+				// console.log( `example`, example )
 
-						return a.name < b.name ? -1 : 1;
-					});
+				const modules = Object.keys( example.modules ).map( key => {
+					return {
+						name: `${key}.js`,
+						code: example.modules[ key ].trim()
+					};
+				});
 
-					this.set({ modules });
-				}
+				modules.sort( ( a, b ) => {
+					if ( a.name === 'main.js' ) return -1;
+					if ( b.name === 'main.js' ) return 1;
+
+					return a.name < b.name ? -1 : 1;
+				});
+
+				// console.log( modules );
+
+				this.set({ modules });
+
+				// console.groupEnd();
 			});
 		},
 
-		removeModule ( index ) {
-			this.splice( 'modules', index, 1 );
-		},
+		methods: {
+			removeModule ( index ) {
+				this.splice( 'modules', index, 1 );
+			},
 
-		createModule () {
-			this.push( 'modules', {
-				name: `module_${uid++}.js`,
-				code: ''
-			});
+			createModule () {
+				this.push( 'modules', {
+					name: `module_${uid++}.js`,
+					code: ''
+				});
 
-			const view = this.findAllComponents( 'Module' ).pop();
-			view.find( 'input' ).select();
-		},
+				const view = this.findAllComponents( 'Module' ).pop();
+				view.find( 'input' ).select();
+			},
 
-		clear () {
-			this.set({
-				modules: [{ name: 'main.js', code: '' }],
-				selectedExample: null
-			});
+			clear () {
+				this.set({
+					modules: [{ name: 'main.js', code: '' }],
+					selectedExample: null
+				});
+			}
 		},
 
 		events: {
