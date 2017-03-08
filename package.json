@@ -36,9 +36,6 @@
     "update_overview": "node scripts/update_overview"
   },
   "dependencies": {
-    "codemirror": "^5.16.0",
-    "ractive": "^0.7.3",
-    "ractive-events-tap": "^0.3.0",
-    "ractive-transitions-slide": "^0.4.0"
+    "codemirror": "^5.16.0"
   }
 }
