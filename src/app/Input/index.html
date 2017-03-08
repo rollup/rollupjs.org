@@ -1,6 +1,4 @@
 <header class='start-here clearfix'>
-	<!-- <strong>Write ES6 modules here...</strong> -->
-
 	<select bind:value='selectedExample'>
 		<option disabled>Select an example...</option>
 		{{#each examples as example}}
@@ -8,16 +6,14 @@
 		{{/each}}
 	</select>
 
-	<button on:tap='clear()'>Start over</button>
+	<button on:click='clear()'>Start over</button>
 </header>
 
 {{#each modules as module, i}}
-	<!-- BREADCRUMB: this binding isn't updating... -->
-	{{console.log('module:', module) || ''}}
 	<Module bind:module index='{{i}}' main='{{i===0}}'/>
 {{/each}}
 
-<button class='new-module' on:tap='createModule()'><span class='icon icon-plus'></span> add module</button>
+<button class='new-module' on:click='createModule()'><span class='icon icon-plus'></span> add module</button>
 
 <style>
 	strong {
@@ -41,7 +37,6 @@
 <script>
 	import Module from './Module.html';
 	import { dirname, resolve, extname } from '../utils/path';
-	import tap from 'ractive-events-tap';
 
 	let uid = 1;
 
@@ -105,10 +100,6 @@
 					selectedExample: null
 				});
 			}
-		},
-
-		events: {
-			tap
 		}
 	};
 </script>

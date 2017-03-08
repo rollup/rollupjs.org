@@ -5,7 +5,7 @@
 		{{else}}
 			<input class='module-name' value='{{module.name}}' placeholder='foo.js'>
 
-			<button class='remove' on-tap='fire("remove", index)'>
+			<button class='remove' on:click='fire("remove", index)'>
 				<span class='label'>remove</span>
 				<span class='icon-cancel'></span>
 			</button>
@@ -87,12 +87,8 @@
 </style>
 
 <script>
-	import tap from 'ractive-events-tap';
-
 	export default {
 		oncreate () {
-			console.group( 'create module', this.get( 'module' ).name );
-
 			this.on( 'remove', index => this.parent.removeModule( index ) );
 
 			let updating = false;
@@ -113,24 +109,12 @@
 			});
 
 			this.observe( 'module', ({ code }) => {
-				console.log( `code`, code )
-
 				if ( !updating && code != null ) {
 					updating = true;
 					editor.setValue( code );
 					updating = false;
 				}
 			});
-
-			console.groupEnd();
-		},
-
-		ondestroy () {
-			console.group( 'destroy module', this.get( 'module' ).name );
-
-			console.groupEnd();
-		},
-
-		events: { tap }
+		}
 	};
 </script>

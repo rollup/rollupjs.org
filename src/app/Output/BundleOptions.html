@@ -6,8 +6,8 @@
 				{{#each formats as format, i}}
 				<td>
 					<button
-						class='{{value === options.format ? "selected": ""}}'
-						on:tap='set({ format: value })'
+						class='{{format.value === options.format ? "selected": ""}}'
+						on:click='set({ format: format.value })'
 					>{{format.name}}</button>
 				</td>
 				{{/each}}
@@ -108,7 +108,6 @@
 </style>
 
 <script>
-	import tap from 'ractive-events-tap';
 	import slide from 'ractive-transitions-slide';
 
 	const defaultGlobals = {
@@ -122,7 +121,7 @@
 			formats: [
 				{ name: 'AMD', value: 'amd' },
 				{ name: 'CommonJS', value: 'cjs' },
-				{ name: 'ES2015', value: 'es6' },
+				{ name: 'ES2015', value: 'es' },
 				{ name: 'Globals', value: 'iife' },
 				{ name: 'UMD', value: 'umd' }
 			],
@@ -207,8 +206,6 @@
 				this.set({ options });
 			});
 		},
-
-		events: { tap },
 
 		// TODO reinstate slide transitions on option boxes
 		// transitions: { slide }
