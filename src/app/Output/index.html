@@ -1,4 +1,4 @@
-<Status error='{{error}}'/>
+<Status error='{{error}}' warnings='{{warnings}}'/>
 <BundleOptions bind:options imports='{{imports}}' exports='{{exports}}'/>
 <Bundle code='{{code}}'/>
 
@@ -14,7 +14,8 @@
 			options: {
 				format: 'amd',
 				moduleName: 'bundle'
-			}
+			},
+			warnings: []
 		}),
 
 		components: {

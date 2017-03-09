@@ -11,8 +11,6 @@ const supported = !!window.Promise && !!window.Map && !!window.Set;
 if ( supported ) {
 	document.querySelector('header h1 small').innerHTML = `v${rollup.VERSION}`;
 
-	console.log( `running Rollup version %c${rollup.VERSION}`, 'font-weight: bold' );
-
 	// recover state from hash fragment
 	let json;
 	const match = /shareable=(.+)$/.exec( window.location.search );
@@ -78,11 +76,16 @@ if ( supported ) {
 		if ( updating ) return; // TODO this is inelegant...
 		updating = true;
 
+		console.clear();
+		console.log( `running Rollup version %c${rollup.VERSION}`, 'font-weight: bold' );
+
 		let moduleById = {};
 
 		modules.forEach( module => {
 			moduleById[ module.name ] = module;
 		});
+
+		const warnings = [];
 
 		/*global rollup */
 		rollup.rollup({
@@ -103,7 +106,24 @@ if ( supported ) {
 				load: function ( id ) {
 					return moduleById[ id ].code;
 				}
-			}]
+			}],
+			onwarn ( warning ) {
+				warnings.push( warning );
+
+				console.group( warning.loc ? warning.loc.file : '' );
+
+				console.warn( warning.message );
+
+				if ( warning.frame ) {
+					console.log( warning.frame );
+				}
+
+				if ( warning.url ) {
+					console.log( `See ${warning.url} for more information` );
+				}
+
+				console.groupEnd();
+			}
 		}).then( bundle => {
 			output.set({
 				imports: bundle.imports,
@@ -115,7 +135,8 @@ if ( supported ) {
 
 			output.set({
 				code: generated.code,
-				error: null
+				error: null,
+				warnings
 			});
 
 			// save state as hash fragment

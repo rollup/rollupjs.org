@@ -8,6 +8,10 @@
 		<span>
 			<span class='icon icon-ok'></span>
 			Rollup successful!
+
+			{{#if warnings.length}}
+				({{warnings.length}} {{warnings.length === 1 ? 'warning' : 'warnings'}} — check the console)
+			{{/if}}
 		</span>
 	{{/if}}
 </div>
