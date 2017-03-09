@@ -14,10 +14,10 @@ https.get( 'https://raw.githubusercontent.com/rollup/rollup/master/README.md', r
 		body = body.slice( 0, body.indexOf( '<p' ) ) + body.slice( body.indexOf( '</p>' ) + 4 ); // remove badges
 
 		body = body
-			.replace( '# Rollup', `---\ntitle: Overview\n---` ) // add YAML front matter
+			.replace( '# Rollup', `---\ntitle: Introduction\n---` ) // add YAML front matter
 			.replace( /^#+\s*$/gm, '' )
 			.replace( /^#/gm, '##' ); // h2 -> h3
 
-		fs.writeFileSync( 'src/guide/00-overview.md', body );
+		fs.writeFileSync( 'src/guide/00-introduction.md', body );
 	});
 });
