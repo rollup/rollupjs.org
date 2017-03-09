@@ -3,7 +3,7 @@
 		{{#if main}}
 			<span class='entry-module-name'>main.js <span class='entry-module-label'>(entry module)</span></span>
 		{{else}}
-			<input class='module-name' value='{{module.name}}' placeholder='foo.js'>
+			<input class='module-name' value='{{name}}' placeholder='foo.js'>
 
 			<button class='remove' on:click='fire("remove")'>
 				<span class='label'>remove</span>
@@ -12,7 +12,7 @@
 		{{/if}}
 	</header>
 
-	<textarea ref:textarea value='[[module.code]]'/>
+	<textarea ref:textarea value='{{code}}'/>
 </article>
 
 <style>
@@ -99,20 +99,14 @@
 			});
 
 			editor.on( 'change', instance => {
-				console.log( 'change' );
 				if ( !updating ) {
 					updating = true;
-					const module = this.get( 'module' );
-					module.code = instance.getValue();
-					this.set({ module });
+					this.set({ code: instance.getValue() });
 					updating = false;
 				}
 			});
 
 			this.observe( 'code', code => {
-				console.log( 'module' );
-				if ( count++ > 100 ) debugger;
-
 				if ( !updating && code != null ) {
 					updating = true;
 					editor.setValue( code );
