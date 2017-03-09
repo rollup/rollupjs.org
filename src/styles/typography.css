@@ -27,21 +27,19 @@
 }
 
 body {
-	font-family: 'Source Sans Pro';
+	font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
 	color: #555;
 	line-height: 1.5;
 	-webkit-font-smoothing: antialiased;
 }
 
 h1, h2 {
-	font-family: 'Source Sans Pro';
 	margin: 0;
 	font-weight: normal;
 	color: #222;
 }
 
 h3, h4, h5, h6 {
-	font-family: 'Source Sans Pro';
 	font-weight: 500;
 	margin: 0 0 0.5em 0;
 	color: #222;

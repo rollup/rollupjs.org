@@ -1,6 +1,6 @@
 .CodeMirror {
 	border-radius: 3px;
-	font-family: 'Inconsolata';
+	font-family: 'Inconsolata', monospace;
 }
 
 .CodeMirror {
