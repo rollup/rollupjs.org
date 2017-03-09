@@ -5,7 +5,7 @@
 		{{else}}
 			<input class='module-name' value='{{module.name}}' placeholder='foo.js'>
 
-			<button class='remove' on:click='fire("remove", index)'>
+			<button class='remove' on:click='fire("remove")'>
 				<span class='label'>remove</span>
 				<span class='icon-cancel'></span>
 			</button>
@@ -87,10 +87,10 @@
 </style>
 
 <script>
+	let count = 0;
+
 	export default {
 		oncreate () {
-			this.on( 'remove', index => this.parent.removeModule( index ) );
-
 			let updating = false;
 
 			const editor = CodeMirror.fromTextArea( this.refs.textarea, {
@@ -99,6 +99,7 @@
 			});
 
 			editor.on( 'change', instance => {
+				console.log( 'change' );
 				if ( !updating ) {
 					updating = true;
 					const module = this.get( 'module' );
@@ -108,7 +109,10 @@
 				}
 			});
 
-			this.observe( 'module', ({ code }) => {
+			this.observe( 'code', code => {
+				console.log( 'module' );
+				if ( count++ > 100 ) debugger;
+
 				if ( !updating && code != null ) {
 					updating = true;
 					editor.setValue( code );

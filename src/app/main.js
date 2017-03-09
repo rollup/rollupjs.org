@@ -1,6 +1,5 @@
 import Input from './Input/index.html';
 import Output from './Output/index.html';
-import Footer from './Footer.html';
 import examples from './examples';
 import { dirname, resolve } from './utils/path';
 import examplesMatch from './utils/examplesMatch';
@@ -9,8 +8,6 @@ import debounce from './utils/debounce';
 const supported = !!window.Promise && !!window.Map && !!window.Set;
 
 if ( supported ) {
-	document.querySelector('header h1 small').innerHTML = `v${rollup.VERSION}`;
-
 	// recover state from hash fragment
 	let json;
 	const match = /shareable=(.+)$/.exec( window.location.search );

@@ -10,7 +10,7 @@
 </header>
 
 {{#each modules as module, i}}
-	<Module bind:module index='{{i}}' main='{{i===0}}'/>
+	<Module bind:name='module.name' bind:code='module.code' index='{{i}}' main='{{i===0}}' on:remove='removeModule(i)'/>
 {{/each}}
 
 <button class='new-module' on:click='createModule()'><span class='icon icon-plus'></span> add module</button>
@@ -71,27 +71,27 @@
 					return a.name < b.name ? -1 : 1;
 				});
 
-				// console.log( modules );
-
 				this.set({ modules });
-
-				// console.groupEnd();
 			});
 		},
 
 		methods: {
 			removeModule ( index ) {
-				this.splice( 'modules', index, 1 );
+				console.log( `index`, index )
+				const modules = this.get( 'modules' );
+				modules.splice( index, 1 );
+
+				this.set({ modules });
 			},
 
 			createModule () {
-				this.push( 'modules', {
+				const modules = this.get( 'modules' );
+				modules.push({
 					name: `module_${uid++}.js`,
 					code: ''
 				});
 
-				const view = this.findAllComponents( 'Module' ).pop();
-				view.find( 'input' ).select();
+				this.set({ modules });
 			},
 
 			clear () {
