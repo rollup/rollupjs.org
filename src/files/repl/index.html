@@ -29,10 +29,6 @@
 		</div>
 	</main>
 
-	<!-- CodeMirror JS -->
-	<script src='/codemirror/lib/codemirror.js'></script>
-	<script src='/codemirror/mode/javascript/javascript.js'></script>
-
 	<!-- Google Analytics -->
 	<script>
 		(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
@@ -46,16 +42,22 @@
 		var supported = !!window.Promise && !!window.Map && !!window.Set;
 
 		if ( supported ) {
+			var cache = {};
+
 			window.loadScript = function loadScript ( src ) {
-				return new Promise( function ( fulfil, reject ) {
-					var script = document.createElement( 'script' );
-					script.onload = fulfil;
-					script.onerror = reject;
+				if ( !cache[ src ] ) {
+					cache[ src ] = new Promise( function ( fulfil, reject ) {
+						var script = document.createElement( 'script' );
+						script.onload = fulfil;
+						script.onerror = reject;
 
-					script.src = src;
+						script.src = src;
 
-					document.querySelector( 'head' ).appendChild( script );
-				});
+						document.querySelector( 'head' ).appendChild( script );
+					});
+				}
+
+				return cache[ src ];
 			};
 
 			loadScript( '/app.js' );

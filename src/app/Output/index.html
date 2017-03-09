@@ -1,12 +1,16 @@
 <Status error='{{error}}' warnings='{{warnings}}'/>
 <BundleOptions bind:options imports='{{imports}}' exports='{{exports}}'/>
-<Bundle code='{{code}}'/>
+
+{{#if codemirrorReady}}
+	<Bundle code='{{code}}'/>
+{{else}}
+	<p>loading...</p>
+{{/if}}
 
 <script>
 	import BundleOptions from './BundleOptions.html';
 	import Status from './Status.html';
 	import Bundle from './Bundle.html';
-	import tap from 'ractive-events-tap';
 
 	export default {
 		data: () => ({
@@ -15,7 +19,8 @@
 				format: 'amd',
 				moduleName: 'bundle'
 			},
-			warnings: []
+			warnings: [],
+			codemirrorReady: false
 		}),
 
 		components: {
@@ -24,8 +29,12 @@
 			Bundle
 		},
 
-		events: {
-			tap
+		oncreate () {
+			window.loadScript( '/codemirror/lib/codemirror.js' )
+				.then( () => window.loadScript( '/codemirror/mode/javascript/javascript.js' ) )
+				.then( () => {
+					this.set({ codemirrorReady: true });
+				});
 		}
 	};
 </script>

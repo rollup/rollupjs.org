@@ -9,11 +9,15 @@
 	<button on:click='clear()'>Start over</button>
 </header>
 
-{{#each modules as module, i}}
-	<Module bind:name='module.name' bind:code='module.code' index='{{i}}' main='{{i===0}}' on:remove='removeModule(i)'/>
-{{/each}}
+{{#if codemirrorReady}}
+	{{#each modules as module, i}}
+		<Module bind:name='module.name' bind:code='module.code' index='{{i}}' main='{{i===0}}' on:remove='removeModule(i)'/>
+	{{/each}}
 
-<button class='new-module' on:click='createModule()'><span class='icon icon-plus'></span> add module</button>
+	<button class='new-module' on:click='createModule()'><span class='icon icon-plus'></span> add module</button>
+{{else}}
+	<p>loading...</p>
+{{/if}}
 
 <style>
 	strong {
@@ -37,13 +41,15 @@
 <script>
 	import Module from './Module.html';
 	import { dirname, resolve, extname } from '../utils/path';
+	import loadCodemirror from '../utils/loadCodemirror.js';
 
 	let uid = 1;
 
 	export default {
 		data: () => ({
 			selectedExample: null,
-			modules: []
+			modules: [],
+			codemirrorReady: false
 		}),
 
 		components: {
@@ -73,6 +79,12 @@
 
 				this.set({ modules });
 			});
+
+			window.loadScript( '/codemirror/lib/codemirror.js' )
+				.then( () => window.loadScript( '/codemirror/mode/javascript/javascript.js' ) )
+				.then( () => {
+					this.set({ codemirrorReady: true });
+				});
 		},
 
 		methods: {
