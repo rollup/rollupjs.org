@@ -38,7 +38,7 @@
 
 	<script>
 		if ( /shareable=/.test( window.location.search ) ) {
-			window.location.href = '/repl' + window.location.search;
+			window.location.href = '/repl/' + window.location.search;
 		}
 
 		[].forEach.call( document.querySelectorAll( 'pre' ), function ( pre ) {
