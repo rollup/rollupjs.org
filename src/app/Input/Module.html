@@ -3,7 +3,7 @@
 		{{#if main}}
 			<span class='entry-module-name'>main.js <span class='entry-module-label'>(entry module)</span></span>
 		{{else}}
-			<input class='module-name' value='{{name}}' placeholder='foo.js'>
+			<input class='module-name' bind:value='name' placeholder='foo.js'>
 
 			<button class='remove' on:click='fire("remove")'>
 				<span class='label'>remove</span>
