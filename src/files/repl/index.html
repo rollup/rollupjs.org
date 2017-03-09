@@ -29,30 +29,6 @@
 		</div>
 	</main>
 
-	<!-- load selected version of Rollup, then the app -->
-	<script>
-		function loadScript ( src ) {
-			return new Promise( function ( fulfil, reject ) {
-				var script = document.createElement( 'script' );
-				script.onload = fulfil;
-				script.onerror = reject;
-
-				script.src = src;
-
-				document.querySelector( 'head' ).appendChild( script );
-			});
-		}
-
-		var ready = (function () {
-			var versionMatch = /version=([^&]+)/.exec( window.location.search );
-			var url = versionMatch ?
-				'https://unpkg.com/rollup@' + versionMatch[1] + '/dist/rollup.browser.js' :
-				'https://unpkg.com/rollup/dist/rollup.browser.js';
-
-			return loadScript( url );
-		}());
-	</script>
-
 	<!-- CodeMirror JS -->
 	<script src='/codemirror/lib/codemirror.js'></script>
 	<script src='/codemirror/mode/javascript/javascript.js'></script>
@@ -67,9 +43,31 @@
 		ga('create', 'UA-5602942-9', 'auto');
 		ga('send', 'pageview');
 
-		ready.then( function () {
+		var supported = !!window.Promise && !!window.Map && !!window.Set;
+
+		if ( supported ) {
+			window.loadScript = function loadScript ( src ) {
+				return new Promise( function ( fulfil, reject ) {
+					var script = document.createElement( 'script' );
+					script.onload = fulfil;
+					script.onerror = reject;
+
+					script.src = src;
+
+					document.querySelector( 'head' ).appendChild( script );
+				});
+			};
+
 			loadScript( '/app.js' );
-		});
+		} else {
+			document.querySelector( 'main' ).innerHTML = `
+				<div class='sorry'>
+					<p>The browser build of Rollup uses features that aren't supported here. I <em>could</em> fix it, but then there'd probably be something else to fix, and frankly life is too short. Use Chrome or Firefox or a recent version of Safari or, hell, anything except what you're currently using.</p>
+
+					<p>Sorry.</p>
+				</div>
+			`;
+		}
 	</script>
 </body>
 </html>
