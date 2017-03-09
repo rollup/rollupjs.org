@@ -25,6 +25,11 @@ body > main {
 		}
 	}
 
+	@media (min-width: 45rem) {
+		position: fixed;
+		top: 3.6em;
+	}
+
 	.left {
 		@media (min-width: 45rem) {
 			border-right: 1px solid #eee;
