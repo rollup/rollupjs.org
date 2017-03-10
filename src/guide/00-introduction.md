@@ -10,7 +10,7 @@ Rollup is a module bundler for JavaScript which compiles small pieces of code in
 
 ### Quick Start Guide
 
-Install with `npm install --global rollup`. Rollup can be used either through a [command line interface](https://github.com/rollup/rollup/wiki/Command-Line-Interface) with an optional configuration file, or else through its [JavaScript API](https://github.com/rollup/rollup/wiki/JavaScript-API). Run `rollup --help` to see the available options and parameters. The [starter project template](https://github.com/rollup/rollup-starter-project) demonstrates common configuration options, and more detailed instructions are available in the [user guide](http://rollupjs.org/guide/).
+Install with `npm install --global rollup`. Rollup can be used either through a [command line interface](https://github.com/rollup/rollup/wiki/Command-Line-Interface) with an optional configuration file, or else through its [JavaScript API](https://github.com/rollup/rollup/wiki/JavaScript-API). Run `rollup --help` to see the available options and parameters. The [starter project template](https://github.com/rollup/rollup-starter-project) demonstrates common configuration options, and more detailed instructions are available throughout this user guide.
 
 #### Commands
 
@@ -19,21 +19,21 @@ These commands assume the entry point to your application is named main.js, and 
 For browsers:
 
 ```bash
-## compile to a <script> containing a self-executing function
+# compile to a <script> containing a self-executing function
 $ rollup main.js --format iife --output bundle.js
 ```
 
 For Node.js:
 
 ```bash
-## compile to a CommonJS module
+# compile to a CommonJS module
 $ rollup main.js --format cjs --output bundle.js
 ```
 
 For both browsers and Node.js:
 
 ```bash
-## UMD format requires a bundle name
+# UMD format requires a bundle name
 $ rollup main.js --format umd --name "myBundle" --output bundle.js
 ```
 
