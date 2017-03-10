@@ -52,16 +52,3 @@ body > main {
 		margin: 1em 0;
 	}
 }
-
-.hero {
-	max-width: 64em;
-	margin: 0 auto 2em auto;
-	border-bottom: 2px solid rgba(239,51,53,0.4);
-}
-
-.hero strong {
-	position: relative;
-	font-size: 8em;
-	font-weight: 400;
-	left: -0.03em;
-}

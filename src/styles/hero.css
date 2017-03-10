@@ -1,0 +1,22 @@
+.hero {
+	max-width: 64em;
+	margin: 0 auto 2em auto;
+	border-bottom: 2px solid rgba(239,51,53,0.4);
+	display: none;
+}
+
+.hero strong {
+	position: relative;
+	font-weight: 400;
+	left: -0.03em;
+}
+
+@media (min-width: 720px) {
+	.hero {
+		display: block;
+	}
+
+	.hero strong {
+		font-size: 8em;
+	}
+}

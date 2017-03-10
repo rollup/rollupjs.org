@@ -10,6 +10,7 @@
 /* guide */
 @import './sidebar.css';
 @import './content.css';
+@import './hero.css';
 
 /* overrides */
 @import './codemirror.css';
