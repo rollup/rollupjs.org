@@ -97,8 +97,6 @@
 	import { dirname, resolve } from './utils/path';
 	import * as store from '../../store.js';
 
-	const { saved, selectedExample } = recoverState();
-
 	const versionMatch = typeof window !== 'undefined' ? /version=([^&]+)/.exec( window.location.search ) : null;
 
 	export default {
@@ -108,6 +106,8 @@
 		},
 
 		data () {
+			const { saved, selectedExample } = recoverState();
+
 			return {
 				codemirrorReady: false,
 				rollupReady: false,
