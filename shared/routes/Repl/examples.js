@@ -1,0 +1,2 @@
+// this file is auto-generated, don't edit it
+export default [{"id":"00","title":"Tree-shaking"},{"id":"01","title":"Default exports"},{"id":"02","title":"Named exports"},{"id":"03","title":"External imports"},{"id":"04","title":"Static namespaces"},{"id":"05","title":"Dynamic namespaces"}];

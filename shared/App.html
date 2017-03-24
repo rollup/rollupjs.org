@@ -1,0 +1,19 @@
+<!-- this component isn't rendered anywhere, but we use it
+     collect all the CSS together into one file -->
+<Nav/>
+<Guide/>
+<Repl/>
+
+<script>
+	import Nav from './components/Nav.html';
+	import Guide from './routes/Guide.html';
+	import Repl from './routes/Repl/index.html';
+
+	export default {
+		components: {
+			Nav,
+			Guide,
+			Repl
+		}
+	};
+</script>

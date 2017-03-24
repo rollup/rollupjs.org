@@ -1,0 +1,99 @@
+<header class='start-here clearfix'>
+	<select bind:value='selectedExample'>
+		<option disabled>Select an example...</option>
+		{{#each examples as example}}
+			<option value='{{example.id}}'>{{example.title}}</option>
+		{{/each}}
+	</select>
+
+	<button on:click='clear()'>Start over</button>
+</header>
+
+{{#if codemirrorReady}}
+	{{#each modules as module, i}}
+		<Module bind:name='module.name' bind:code='module.code' index='{{i}}' main='{{i===0}}' on:remove='removeModule(i)'/>
+	{{/each}}
+
+	<button class='new-module' on:click='createModule()'><span class='icon icon-plus'></span> add module</button>
+{{else}}
+	<p>loading...</p>
+{{/if}}
+
+<style>
+	strong {
+		line-height: 2;
+	}
+
+	.new-module {
+		display: block;
+		width: 100%;
+		color: #3D9970;
+		border: none;
+		padding: 1em;
+		margin-bottom: 0;
+	}
+
+	button {
+		float: right;
+	}
+</style>
+
+<script>
+	import Module from './Module.html';
+	import { dirname, resolve, extname } from '../utils/path';
+	import examples from '../examples.js';
+	import * as store from '../../../store.js';
+
+	let uid = 1;
+
+	export default {
+		data: () => ({
+			examples,
+			selectedExample: null,
+			modules: [],
+			codemirrorReady: false
+		}),
+
+		components: {
+			Module,
+		},
+
+		oncreate () {
+			this.observe( 'selectedExample', id => {
+				console.log( `id`, id )
+				if ( !id ) return;
+
+				store.getJSON( `/examples/${id}.json` ).then( example => {
+					console.log( `example`, example )
+					this.set({ modules: example.modules });
+				});
+			});
+		},
+
+		methods: {
+			removeModule ( index ) {
+				const modules = this.get( 'modules' );
+				modules.splice( index, 1 );
+
+				this.set({ modules });
+			},
+
+			createModule () {
+				const modules = this.get( 'modules' );
+				modules.push({
+					name: `module_${uid++}.js`,
+					code: ''
+				});
+
+				this.set({ modules });
+			},
+
+			clear () {
+				this.set({
+					modules: [{ name: 'main.js', code: '' }],
+					selectedExample: null
+				});
+			}
+		}
+	};
+</script>

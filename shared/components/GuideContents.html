@@ -1,0 +1,76 @@
+<ul class='guide-toc'>
+	{{#each contents as section}}
+		<li>
+			<a class='section {{section.slug === active ? "active": ""}}' href='/#{{section.slug}}'>{{section.metadata.title}}</a>
+			<!--{{#each section.subsections as subsection}}
+				<a class='subsection {{subsection.slug === active ? "active": ""}}' href='/#{{subsection.slug}}'>{{subsection.title}}</a>
+			{{/each}}-->
+		</li>
+	{{/each}}
+</ul>
+
+<style>
+	.guide-toc {
+		margin: 0;
+		padding: 0 0 0 1em;
+	}
+
+	.guide-toc li {
+		display: block;
+		list-style: none;
+		margin: 0 0 0.5em 0;
+		line-height: 1.5;
+	}
+
+	.section {
+		display: block;
+		font-weight: 300;
+		color: #666;
+		font-size: 1rem;
+		margin: 0 0 0.15em 0;
+	}
+
+	/*.subsection {
+		display: block;
+		font-weight: 500;
+		color:#727272;
+		font-size: 1em;
+		margin: 0 0 0.15em 0;
+	}*/
+
+	.section.active, .subsection.active {
+		color: #333;
+	}
+
+	li::before {
+		position: absolute;
+		left: -1em;
+		content: '»';
+		color: #ccc;
+	}
+</style>
+
+<script>
+	import contents from './guide-summary.json';
+
+	export default {
+		data () {
+			return {
+				contents
+			};
+		},
+
+		oncreate () {
+			const onhashchange = () => {
+				this.set({ active: window.location.hash.slice( 1 ) });
+			};
+
+			window.addEventListener( 'hashchange', onhashchange, false );
+			this.on( 'teardown', () => {
+				window.removeEventListener( 'hashchange', onhashchange, false );
+			});
+
+			onhashchange();
+		}
+	};
+</script>

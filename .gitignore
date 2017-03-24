@@ -2,3 +2,8 @@
 node_modules
 .gobble*
 dist
+public/js
+public/css
+public/guide.json
+public/examples
+public/service-worker*

@@ -1,0 +1,240 @@
+<div class='repl'>
+	<div class='left'>
+		<h2>ES6 modules go in...</h2>
+		<div class='input'>
+			<Input :selectedExample bind:modules :codemirrorReady/>
+		</div>
+	</div>
+	<div class='right'>
+		<h2>...bundle comes out</h2>
+		<div class='output'>
+			<Output :options :code :error :warnings :codemirrorReady/>
+		</div>
+	</div>
+</div>
+
+<style>
+	.repl {
+		height: calc(100% - 3.6em);
+	}
+
+	.left, .right {
+		width: 100%;
+		height: 100%;
+		float: left;
+		overflow-y: auto;
+		padding: 1em;
+	}
+
+	button {
+		font-family: inherit;
+		font-size: inherit;
+		border: none;
+		outline: none;
+		cursor: pointer;
+		background-color: #eee;
+		padding: 0.5em 1em;
+		margin-bottom: 1em;
+	}
+
+	button:hover, button:active {
+		background-color: #eaeaea;
+	}
+
+	button:disabled {
+		cursor: default;
+	}
+
+	.icon {
+		font-size: 0.8em;
+	}
+
+	select {
+		font-size: inherit;
+		font-family: inherit;
+		position: relative;
+		border: none;
+		-webkit-appearance: none;
+		-moz-appearance: none;
+		appearance: none;
+		border-radius: 0;
+		padding: 0.5em 3em 0.5em 0.5em;
+		margin-bottom: 1em;
+		background: #eee url(images/select-arrow.svg) no-repeat 100% 50%;
+		background-size: auto 100%;
+		outline: none;
+	}
+
+	input {
+		display: block;
+		width: 100%;
+		font-family: inherit;
+		font-size: inherit;
+		padding: 0.5em;
+		border: none;
+		outline: none;
+		line-height: 1;
+		color: #333;
+	}
+
+	input:focus {
+		background-color: #eee;
+	}
+
+
+	@media (min-width: 45rem) {
+		.left, .right {
+			width: 50%;
+		}
+	}
+</style>
+
+<script>
+	import Input from './Input/index.html';
+	import Output from './Output/index.html';
+	import recoverState from './utils/recoverState.js';
+	import debounce from './utils/debounce.js';
+	import { dirname, resolve } from './utils/path';
+
+	const { saved, selectedExample } = recoverState();
+
+	export default {
+		components: {
+			Input,
+			Output
+		},
+
+		data () {
+			return {
+				codemirrorReady: false,
+				rollupReady: false,
+
+				selectedExample,
+				modules: saved ? saved.modules : [],
+
+				options: saved ? saved.options : {
+					format: 'cjs',
+					moduleName: 'myBundle'
+				},
+
+				warnings: []
+			};
+		},
+
+		oncreate () {
+			curl([ '/codemirror.js' ])
+				.then( CodeMirror => {
+					window.CodeMirror = CodeMirror;
+					this.set({ codemirrorReady: true });
+				});
+
+			const versionMatch = /version=([^&]+)/.exec( window.location.search );
+			const url = versionMatch ?
+				'https://unpkg.com/rollup@' + versionMatch[1] + '/dist/rollup.browser.js' :
+				'https://unpkg.com/rollup/dist/rollup.browser.js';
+
+			curl([ url ])
+				.then( rollup => {
+					window.rollup = rollup;
+					this.set({ rollupReady: true });
+
+					let updating = false;
+
+					const update = () => {
+						const modules = this.get( 'modules' );
+
+						if ( updating ) return; // TODO this is inelegant...
+						updating = true;
+
+						console.clear();
+						console.log( `running Rollup version %c${rollup.VERSION}`, 'font-weight: bold' );
+
+						let moduleById = {};
+
+						modules.forEach( module => {
+							moduleById[ module.name ] = module;
+						});
+
+						const warnings = [];
+
+						/*global rollup */
+						rollup.rollup({
+							entry: 'main.js',
+							plugins: [{
+								resolveId ( importee, importer ) {
+									if ( !importer ) return importee;
+									if ( importee[0] !== '.' ) return false;
+
+									let resolved = resolve( dirname( importer ), importee ).replace( /^\.\//, '' );
+									if ( resolved in moduleById ) return resolved;
+
+									resolved += '.js';
+									if ( resolved in moduleById ) return resolved;
+
+									throw new Error( `Could not resolve '${importee}' from '${importer}'` );
+								},
+								load: function ( id ) {
+									return moduleById[ id ].code;
+								}
+							}],
+							onwarn ( warning ) {
+								warnings.push( warning );
+
+								console.group( warning.loc ? warning.loc.file : '' );
+
+								console.warn( warning.message );
+
+								if ( warning.frame ) {
+									console.log( warning.frame );
+								}
+
+								if ( warning.url ) {
+									console.log( `See ${warning.url} for more information` );
+								}
+
+								console.groupEnd();
+							}
+						}).then( bundle => {
+							this.set({
+								imports: bundle.imports,
+								exports: bundle.exports
+							});
+
+							const options = this.get( 'options' );
+							const generated = bundle.generate( options );
+
+							console.log( `generated`, generated )
+
+							this.set({
+								code: generated.code,
+								error: null,
+								warnings
+							});
+
+							// save state as hash fragment
+							history.replaceState( {}, 'x', `/repl?version=${rollup.VERSION}&shareable=${btoa( encodeURIComponent( JSON.stringify({ options, modules }) ) )}` );
+						})
+						.catch( error => {
+							this.set({ error });
+							setTimeout( () => {
+								throw error;
+							});
+						})
+						.then( () => {
+							updating = false;
+						});
+					};
+
+					this.observe( 'modules', debounce( update, 200 ) );
+					this.observe( 'selectedExample', update );
+					this.observe( 'options', update );
+				});
+		},
+
+		methods: {
+			updateUrl () {
+
+			}
+		}
+	};
+</script>
