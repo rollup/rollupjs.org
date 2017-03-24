@@ -13,12 +13,11 @@ function get ( url ) {
 export function getJSON ( url ) {
 	if ( !cache[ url ] ) {
 		cache[ url ] = get( url )
-			.then( JSON.parse )
 			.catch( err => {
 				cache[ url ] = null;
 				throw err;
 			});
 	}
 
-	return cache[ url ];
+	return cache[ url ].then( JSON.parse );
 }

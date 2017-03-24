@@ -7,3 +7,5 @@ public/css
 public/guide.json
 public/examples
 public/service-worker*
+server/routes
+server/components
