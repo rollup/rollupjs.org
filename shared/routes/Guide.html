@@ -210,7 +210,7 @@
 
 	export default {
 		oncreate () {
-			const anchors = this.refs.container.querySelectorAll( '[id]' );
+			const anchors = this.refs.container.querySelectorAll( 'section[id]' );
 			let positions;
 
 			const onresize = () => {
