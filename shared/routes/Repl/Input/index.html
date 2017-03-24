@@ -1,6 +1,6 @@
 <header class='start-here clearfix'>
 	<select bind:value='selectedExample'>
-		<option disabled>Select an example...</option>
+		<option disabled selected value='{{null}}'>Select an example...</option>
 		{{#each examples as example}}
 			<option value='{{example.id}}'>{{example.title}}</option>
 		{{/each}}
@@ -42,7 +42,6 @@
 	import Module from './Module.html';
 	import { dirname, resolve, extname } from '../utils/path';
 	import examples from '../examples.js';
-	import * as store from '../../../store.js';
 
 	let uid = 1;
 
@@ -56,18 +55,6 @@
 
 		components: {
 			Module,
-		},
-
-		oncreate () {
-			this.observe( 'selectedExample', id => {
-				console.log( `id`, id )
-				if ( !id ) return;
-
-				store.getJSON( `/examples/${id}.json` ).then( example => {
-					console.log( `example`, example )
-					this.set({ modules: example.modules });
-				});
-			});
 		},
 
 		methods: {

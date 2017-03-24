@@ -1,5 +1,4 @@
 import examples from '../examples.js';
-import examplesMatch from './examplesMatch.js';
 
 export default function recoverState () {
 	const search = typeof window !== 'undefined' ? window.location.search : '';
@@ -15,20 +14,11 @@ export default function recoverState () {
 	}
 
 	let saved;
-	let selectedExample;
+	let selectedExample = null;
 
 	try {
 		saved = JSON.parse( json );
-		let example;
-
-		// does this match an existing example?
-		for ( let i = 0; i < examples.length; i += 1 ) {
-			example = examples[i];
-
-			if ( examplesMatch( example.modules, saved.modules ) ) {
-				selectedExample = example.id;
-			}
-		}
+		selectedExample = saved.example;
 	} catch ( err ) {
 		selectedExample = examples[0].id;
 	}

@@ -2,13 +2,13 @@
 	<div class='left'>
 		<h2>ES6 modules go in...</h2>
 		<div class='input'>
-			<Input :selectedExample bind:modules :codemirrorReady/>
+			<Input bind:selectedExample bind:modules :codemirrorReady/>
 		</div>
 	</div>
 	<div class='right'>
 		<h2>...bundle comes out</h2>
 		<div class='output'>
-			<Output :options :code :error :warnings :codemirrorReady/>
+			<Output bind:options :code :error :warnings :imports :exports :codemirrorReady/>
 		</div>
 	</div>
 </div>
@@ -95,8 +95,11 @@
 	import recoverState from './utils/recoverState.js';
 	import debounce from './utils/debounce.js';
 	import { dirname, resolve } from './utils/path';
+	import * as store from '../../store.js';
 
 	const { saved, selectedExample } = recoverState();
+
+	const versionMatch = typeof window !== 'undefined' ? /version=([^&]+)/.exec( window.location.search ) : null;
 
 	export default {
 		components: {
@@ -117,7 +120,9 @@
 					moduleName: 'myBundle'
 				},
 
-				warnings: []
+				warnings: [],
+				imports: [],
+				exports: []
 			};
 		},
 
@@ -128,10 +133,21 @@
 					this.set({ codemirrorReady: true });
 				});
 
-			const versionMatch = /version=([^&]+)/.exec( window.location.search );
 			const url = versionMatch ?
 				'https://unpkg.com/rollup@' + versionMatch[1] + '/dist/rollup.browser.js' :
 				'https://unpkg.com/rollup/dist/rollup.browser.js';
+
+			let settingModulesViaExample = false;
+
+			this.observe( 'selectedExample', id => {
+				if ( !id ) return;
+
+				store.getJSON( `/examples/${id}.json` ).then( example => {
+					settingModulesViaExample = true;
+					this.set({ modules: example.modules });
+					settingModulesViaExample = false;
+				});
+			});
 
 			curl([ url ])
 				.then( rollup => {
@@ -148,6 +164,7 @@
 
 						console.clear();
 						console.log( `running Rollup version %c${rollup.VERSION}`, 'font-weight: bold' );
+						this.updateUrl();
 
 						let moduleById = {};
 
@@ -203,16 +220,11 @@
 							const options = this.get( 'options' );
 							const generated = bundle.generate( options );
 
-							console.log( `generated`, generated )
-
 							this.set({
 								code: generated.code,
 								error: null,
 								warnings
 							});
-
-							// save state as hash fragment
-							history.replaceState( {}, 'x', `/repl?version=${rollup.VERSION}&shareable=${btoa( encodeURIComponent( JSON.stringify({ options, modules }) ) )}` );
 						})
 						.catch( error => {
 							this.set({ error });
@@ -225,15 +237,39 @@
 						});
 					};
 
-					this.observe( 'modules', debounce( update, 200 ) );
-					this.observe( 'selectedExample', update );
+					this.observe( 'modules', () => {
+						if ( !settingModulesViaExample ) {
+							this.set({ selectedExample: null }); // TODO this doesn't update the UI — why? Svelte bug?
+						}
+						update();
+					});
 					this.observe( 'options', update );
 				});
 		},
 
 		methods: {
 			updateUrl () {
+				if ( typeof history === 'undefined' ) return;
 
+				const params = {};
+				if ( typeof rollup !== 'undefined' ) {
+					params.version = rollup.VERSION;
+				} else if ( versionMatch ) {
+					params.version = versionMatch[1];
+				}
+
+				const json = JSON.stringify({
+					modules: this.get( 'modules' ),
+					options: this.get( 'options' ),
+					example: this.get( 'selectedExample' )
+				});
+
+				params.shareable = btoa( encodeURIComponent( json ) );
+
+				const queryString = Object.keys( params ).map( key => `${key}=${params[key]}` ).join( '&' );
+				const url = `/repl?${queryString}`;
+
+				history.replaceState( {}, 'x', url );
 			}
 		}
 	};
