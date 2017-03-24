@@ -36,7 +36,7 @@ roadtrip
 			document.title = 'rollup.js • guide';
 
 			// preload blog and guide
-			store.getJSON( `/guide.json` ).then( sections => {
+			return store.getJSON( `/guide.json` ).then( sections => {
 				if ( view ) {
 					view.destroy();
 				} else {
@@ -50,7 +50,19 @@ roadtrip
 					}
 				});
 
-				window.scrollTo( route.scrollX, route.scrollY );
+				view.on( 'scroll', id => {
+					nav.set({ active: id });
+				});
+
+				if ( route.scrollY === 0 ) {
+					// scroll to section
+					if ( window.location.hash.length > 1 ) {
+						const h = main.querySelector( window.location.hash );
+						if ( h ) window.scrollTo( 0, h.getBoundingClientRect().top );
+					}
+				} else {
+					window.scrollTo( route.scrollX, route.scrollY );
+				}
 			});
 		}
 	})
@@ -69,6 +81,8 @@ roadtrip
 			view = new Repl({
 				target: main
 			});
+
+			window.scrollTo( 0, 0 );
 		}
 	});
 
