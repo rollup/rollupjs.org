@@ -192,6 +192,19 @@
 				const tokens = [];
 
 				function addToken ( token ) {
+					if ( token.end < token.start ) {
+						while ( c > token.start ) {
+							const lastToken = tokens.pop();
+							c = lastToken.start;
+						}
+
+						return;
+					}
+
+					if ( token.start < c ) {
+						throw new Error( 'gah' );
+					}
+
 					if ( c < token.start ) {
 						tokens.push({
 							start: c,
@@ -253,6 +266,7 @@
 				for ( ; i < lines.length; i += 1 ) {
 					const oldLine = oldLines[i];
 					const newLine = lines[i];
+
 					const end = c + newLine.length + 1;
 
 					let lineHtml = '';
