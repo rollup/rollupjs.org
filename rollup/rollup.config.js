@@ -16,7 +16,11 @@ export default {
 	plugins: [
 		json(),
 		nodeResolve(),
-		commonjs(),
+		commonjs({
+			namedExports: {
+				'node_modules/acorn/dist/acorn.js': [ 'parse' ]
+			}
+		}),
 		svelte({
 			// in development mode, we want to ship the CSS so that
 			// changes to components don't result in a hash mismatch

@@ -111,6 +111,7 @@
 
 			return {
 				codemirrorReady: false,
+				code: '',
 				rollupReady: false,
 
 				selectedExample,
@@ -238,11 +239,13 @@
 						});
 					};
 
+					const debouncedUpdate = debounce( update, 100 );
+
 					this.observe( 'modules', () => {
 						if ( !settingModulesViaExample ) {
 							this.set({ selectedExample: null }); // TODO this doesn't update the UI — why? Svelte bug?
 						}
-						update();
+						debouncedUpdate();
 					});
 					this.observe( 'options', update );
 				});

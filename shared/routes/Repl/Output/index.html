@@ -1,16 +1,11 @@
 <Status :error :warnings/>
 <BundleOptions bind:options :imports :exports/>
-
-{{#if codemirrorReady}}
-	<Bundle :code/>
-{{else}}
-	<p>loading...</p>
-{{/if}}
+<Editor :code readonly/>
 
 <script>
 	import BundleOptions from './BundleOptions.html';
 	import Status from './Status.html';
-	import Bundle from './Bundle.html';
+	import Editor from '../../../components/Editor.html';
 
 	export default {
 		data: () => ({
@@ -20,7 +15,7 @@
 		components: {
 			BundleOptions,
 			Status,
-			Bundle
+			Editor
 		}
 	};
 </script>

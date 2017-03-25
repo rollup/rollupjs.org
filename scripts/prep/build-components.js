@@ -2,6 +2,7 @@ const fs = require( 'fs' );
 const path = require( 'path' );
 const rollup = require( 'rollup' );
 const svelte = require( 'rollup-plugin-svelte' );
+const commonjs = require( 'rollup-plugin-commonjs' );
 const resolve = require( 'rollup-plugin-node-resolve' );
 const json = require( 'rollup-plugin-json' );
 const { mkdirp } = require( './utils.js' );
@@ -21,6 +22,11 @@ module.exports = () => {
 				entry: `${root}/shared/${entry}.html`,
 				plugins: [
 					resolve(),
+					commonjs({
+						namedExports: {
+							'node_modules/acorn/dist/acorn.js': [ 'parse' ]
+						}
+					}),
 					json(),
 					svelte({
 						generate: 'ssr',

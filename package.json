@@ -41,6 +41,7 @@
     "prep": "node scripts/prep && npm run bundle"
   },
   "dependencies": {
+    "acorn": "^4.0.11",
     "codemirror": "^5.25.0",
     "locate-character": "^2.0.0",
     "roadtrip": "^0.4.1"

@@ -1,0 +1,399 @@
+<div class='mirror-container'>
+	<div ref:mirrorInner class='mirror-container-inner'>
+		<div class='gutters'></div>
+		<div class='selection'>
+			<div class='cursor {{showCursor ? "visible": ""}}' ref:cursor/>
+			<div class='selection-block' ref:selA style='height: 23px;'/>
+			<div class='selection-block' ref:selB style='width: 100%; left: 0;'/>
+			<div class='selection-block' ref:selC style='left: 0; height: 23px;'/>
+		</div>
+		<div ref:measure class='measure'></div>
+
+		<textarea ref:textarea bind:value='code' on:keydown='handleKeydown(event)' on:blur='blur()' spellcheck='{{false}}'/>
+		<pre class='mirror' ref:mirror spellcheck='false'/>
+	</div>
+</div>
+
+<style>
+	.mirror-container {
+		position: relative;
+		overflow-x: hidden;
+		overflow-y: auto;
+		tab-size: 4;
+	}
+
+	.mirror-container-inner {
+		padding: 0 0 0 32px;
+	}
+
+	.gutters {
+		position: absolute;
+		left: 0;
+		top: 0;
+		width: 32px;
+		height: 100%;
+		background-color: #f9f9f9;
+		border-right: 1px solid #eee;
+	}
+
+	.selection {
+		top: -2px;
+	}
+
+	.selection > div, .measure {
+		position: absolute;
+	}
+
+	.selection-block {
+		background-color: rgb(200,200,220);
+	}
+
+	.cursor {
+		display: none;
+		width: 1px;
+		height: 26px;
+		background-color: #333;
+	}
+
+	.cursor.visible {
+		display: block;
+		animation-name: blink;
+		animation-duration: 1.2s;
+		animation-iteration-count: infinite;
+	}
+
+	.measure {
+		white-space: pre-wrap;
+		pointer-events: none;
+		padding-left: 6px;
+		color: transparent;
+		font-family: 'Inconsolata', monospace;
+		line-height: 1.4;
+		font-size: 16px;
+	}
+
+	.mirror {
+		padding: 5px;
+		font-size: 16px;
+		line-height: 1.4;
+		white-space: pre-wrap;
+		pointer-events: none;
+		color: #333;
+		overflow-x: visible;
+		margin: 0;
+	}
+
+	.line::before {
+		position: absolute;
+		content: attr(data-linenum);
+		width: 2em;
+		text-align: right;
+		left: -3em;
+		color: #999;
+	}
+
+	textarea {
+		position: absolute;
+		width: calc(100% - 32px);
+		height: 100%;
+		font-family: 'Inconsolata', monospace;
+		font-size: 16px;
+		border: none;
+		resize: none;
+		padding: 5px;
+		line-height: 1.4;
+		outline: none;
+		color: rgba(200,0,0,0.4);
+		opacity: 0;
+	}
+
+	@keyframes blink {
+		0% { opacity: 1; }
+		40% { opacity: 1; }
+		50% { opacity: 0; }
+		90% { opacity: 0; }
+		100% { opacity: 1; }
+	}
+</style>
+
+<script>
+	import { getLocator, locate } from 'locate-character';
+	import * as acorn from 'acorn/dist/acorn.es.js';
+
+	if ( typeof window !== 'undefined' ) {
+		window.editors = [];
+	}
+
+	function detach ( node ) {
+		node.parentNode.removeChild( node );
+	}
+
+	const NBSP = String.fromCharCode( 160 );
+
+	export default {
+		data () {
+			return {
+				selectionRange: {
+					start: 0,
+					end: 0
+				}
+			};
+		},
+
+		oncreate () {
+			console.log( 'creating editor' );
+
+			let updating = false;
+
+			this.refs.textarea.value = this.get( 'code' );
+
+			this.refs.textarea.addEventListener( 'scroll', () => {
+				this.refs.mirrorInner.scrollTop = this.refs.textarea.scrollTop;
+			});
+
+			let oldHtml = '';
+			let oldLines = [];
+			let lineElements = [];
+
+			this.observe( 'code', ( newCode, oldCode ) => {
+				let newHtml = '';
+
+				const tokens = [];
+
+				const ast = acorn.parse( newCode, {
+					sourceType: 'module',
+					ecmaVersion: 8,
+					onComment: tokens,
+					onToken: tokens
+				});
+
+				const newLines = newCode.split( '\n' );
+				const newLineElements = [];
+
+				let i = 0;
+				let t = 0;
+
+				for ( ; i < newLines.length; i += 1 ) {
+					const oldLine = oldLines[i];
+					const newLine = newLines[i];
+
+					if ( oldLine === newLine ) continue;
+
+					if ( i < lineElements.length ) {
+						const div = lineElements[i];
+						div.textContent = newLine || NBSP;
+					} else {
+						const div = document.createElement( 'div' );
+						div.className = 'line';
+						div.setAttribute( 'data-linenum', i + 1 );
+						div.textContent = newLine || NBSP;
+						this.refs.mirror.appendChild( div );
+						lineElements.push( div );
+					}
+				}
+
+				for ( ; i < lineElements.length; i += 1 ) {
+					detach( lineElements[i] );
+				}
+
+				oldLines = newLines;
+				lineElements.length = newLines.length;
+
+				this.updateSelectionRange();
+			});
+
+			document.addEventListener( 'selectionchange', event => {
+				if ( this.refs.textarea !== document.activeElement ) {
+					return;
+				}
+
+				this.updateSelectionRange();
+			});
+
+			this.observe( 'selectionRange', range => {
+				if ( range.start === range.end ) {
+					if ( this.refs.textarea === document.activeElement ) this.showCursor( range.start );
+					this.hideSelection();
+				} else {
+					this.hideCursor();
+					this.showSelection( range );
+				}
+			});
+		},
+
+		methods: {
+			mirror () {
+				this.refs.mirror.innerHTML = this.refs.textarea.value.split( '\n' )
+					.map( ( line, i ) => {
+						return `<div class='line' data-linenum='${i + 1}'>${line || '&nbsp;'}</div>`;
+					})
+					.join( '' );
+			},
+
+			getCoords ( char ) {
+				const code = this.get( 'code' );
+				const lines = code.split( '\n' );
+				const loc = locate( code, char );
+
+				const lineElement = this.refs.mirror.children[ loc.line ];
+
+				const line = ( lines[ loc.line ] + ' ' );
+
+				this.refs.measure.innerHTML = `${line.slice( 0, loc.column )}<span/>${line.slice( loc.column )}`;
+
+				const spans = this.refs.measure.children;
+				const span = spans[0];
+
+				return {
+					top: ~~( lineElement.offsetTop + span.offsetTop ),
+					left: ~~( lineElement.offsetLeft + span.offsetLeft ) - 7
+				};
+			},
+
+			hideCursor () {
+				this.set({ showCursor: false });
+			},
+
+			hideSelection () {
+				this.refs.selA.style.display = this.refs.selB.style.display = this.refs.selC.style.display = 'none';
+			},
+
+			showCursor ( char ) {
+				const { top, left } = this.getCoords( char );
+
+				Object.assign( this.refs.cursor.style, {
+					top: ( top - 2 ) + 'px',
+					left: left + 'px'
+				});
+
+				this.set({ showCursor: false });
+				setTimeout( () => {
+					// to reset the CSS animation
+					this.set({ showCursor: true });
+				});
+			},
+
+			showSelection ({ start, end }) {
+				const code = this.get( 'code' );
+				const locate = getLocator( code );
+				const lines = code.split( '\n' );
+
+				const startLoc = locate( start );
+				const endLoc = locate( end );
+
+				const startLineElement = this.refs.mirror.children[ startLoc.line ];
+				const endLineElement = this.refs.mirror.children[ endLoc.line ];
+
+				this.refs.measure.style.top = startLineElement.offsetTop;
+				this.refs.measure.innerHTML = ( lines[ startLoc.line ] + ' ' )
+					.split( '' )
+					.map( char => `<span>${char}</span>` )
+					.join( '' );
+
+				let spans = this.refs.measure.children;
+				let char = spans[ startLoc.column ];
+
+				const startTop = startLineElement.offsetTop + char.offsetTop;
+				const startLeft = endLineElement.offsetLeft + char.offsetLeft;
+
+				if ( endLineElement !== startLineElement ) {
+					this.refs.measure.style.top = endLineElement.offsetTop;
+					this.refs.measure.innerHTML = ( lines[ endLoc.line ] + ' ' )
+						.split( '' )
+						.map( char => `<span>${char}</span>` )
+						.join( '' );
+
+					spans = this.refs.measure.children;
+				}
+
+				char = spans[ endLoc.column ];
+				if ( !char ) {
+					console.log( `endLoc`, endLoc )
+				}
+
+				const endTop = endLineElement.offsetTop + char.offsetTop;
+				const endLeft = endLineElement.offsetLeft + char.offsetLeft;
+
+				Object.assign( this.refs.selA.style, {
+					display: 'block',
+					top: startTop + 'px',
+					left: ( startLeft - 7 ) + 'px'
+				});
+
+				if ( startTop === endTop ) {
+					// same line
+					this.refs.selA.style.right = 'auto';
+					this.refs.selA.style.width = ( endLeft - startLeft ) + 'px';
+
+					this.refs.selB.style.display = this.refs.selC.style.display = 'none';
+				} else {
+					this.refs.selA.style.right = 0;
+					this.refs.selA.style.width = 'auto';
+
+					this.refs.selC.style.top = endTop;
+					this.refs.selC.style.width = endLeft + 'px';
+
+					if ( endTop > startTop + 23 ) {
+						// three lines
+						Object.assign( this.refs.selB.style, {
+							display: 'block',
+							top: startTop + 23,
+							height: endTop - ( startTop + 23 )
+						});
+					} else {
+						// two lines
+						this.refs.selB.style.display = 'none';
+					}
+
+					this.refs.selC.style.display = 'block';
+				}
+			},
+
+			updateSelectionRange () {
+				const { selectionStart, selectionEnd } = this.refs.textarea;
+				this.set({
+					selectionRange: {
+						start: selectionStart,
+						end: selectionEnd
+					}
+				});
+			},
+
+			blur () {
+				this.hideSelection();
+				this.hideCursor();
+			},
+
+			handleKeydown ( event ) {
+				const range = this.get( 'selectionRange' );
+
+				if ( event.keyCode === 191 && event.metaKey ) {
+					event.preventDefault();
+					this.toggleComments();
+				}
+
+				if ( event.keyCode === 9) {
+					event.preventDefault();
+
+					if ( range.end === range.start ) {
+						// insert tab at cursor
+						const code = this.get( 'code' );
+						this.set({
+							code: code.slice( 0, range.start ) + '\t' + code.slice( range.start )
+						});
+					} else {
+						this.indentLines( event.shiftKey );
+					}
+				}
+			},
+
+			toggleComments () {
+				console.log( 'TODO toggle comments' );
+			},
+
+			indentLines ( deindent ) {
+				console.log( `${deindent ? 'deindenting' : 'indenting'} code` );
+			}
+		}
+	};
+</script>
