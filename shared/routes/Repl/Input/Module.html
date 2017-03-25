@@ -39,8 +39,9 @@
 		color: #999;
 	}
 
-	button {
+	.remove {
 		position: absolute;
+		display: block;
 		top: 0;
 		right: 0;
 		font-family: inherit;
@@ -56,11 +57,12 @@
 		transition: opacity 0.2s;
 	}
 
-	button:hover, button:active {
+	.remove:hover, .remove:active {
 		opacity: 1;
+		background-color: transparent;
 	}
 
-	button .label {
+	.remove .label {
 		position: absolute;
 		right: 100%;
 		opacity: 0;
@@ -68,12 +70,13 @@
 		transition: opacity 0.2s;
 	}
 
-	button:hover .label, button:active .label {
+	.remove:hover .label, .remove:active .label {
 		opacity: 0.6;
 	}
 
 	.icon-cancel {
 		font-size: 0.8em;
+		top: 0.3em;
 	}
 </style>
 
