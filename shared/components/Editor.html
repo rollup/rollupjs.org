@@ -9,7 +9,19 @@
 		</div>
 		<div ref:measure class='measure'></div>
 
-		<textarea ref:textarea bind:value='code' on:keydown='handleKeydown(event)' on:focus='focus()' on:blur='blur()' spellcheck='{{false}}'/>
+		<textarea
+			ref:textarea
+			bind:value='code'
+			on:select='updateSelectionRange()'
+			on:click='updateSelectionRange()'
+			on:drag='updateSelectionRange()'
+			on:keydown='handleKeydown(event)'
+			on:keyup='updateSelectionRange()'
+			on:focus='focus()'
+			on:blur='blur()'
+			on:scroll='syncScroll()'
+			spellcheck='{{false}}'
+		/>
 		<pre class='mirror' ref:mirror spellcheck='false'/>
 	</div>
 </div>
@@ -18,7 +30,7 @@
 	.mirror-container {
 		position: relative;
 		overflow-x: hidden;
-		overflow-y: auto;
+		overflow-y: hidden;
 		tab-size: 4;
 	}
 
@@ -125,9 +137,11 @@
 <script>
 	import { getLocator, locate } from 'locate-character';
 	import * as acorn from 'acorn/dist/acorn_loose.js';
+	import selectionchange from './selectionchange.js';
 
 	if ( typeof window !== 'undefined' ) {
 		window.editors = [];
+		selectionchange.start();
 	}
 
 	function detach ( node ) {
@@ -164,6 +178,8 @@
 		return /^\s*\/\//.test( line );
 	}
 
+	const isFirefox = typeof InstallTrigger === 'object';
+
 	export default {
 		data () {
 			return {
@@ -178,10 +194,6 @@
 			let updating = false;
 
 			this.refs.textarea.value = this.get( 'code' );
-
-			this.refs.textarea.addEventListener( 'scroll', () => {
-				this.refs.mirrorInner.scrollTop = this.refs.textarea.scrollTop;
-			});
 
 			let oldHtml = '';
 			let oldLines = [];
@@ -530,6 +542,36 @@
 						this.refs.textarea.setSelectionRange( range.start + m, range.end + m * d );
 					}
 				}
+			},
+
+			syncScroll () {
+				this.refs.mirrorInner.scrollTop = this.refs.textarea.scrollTop;
+			}
+		},
+
+		events: {
+			drag ( node, callback ) {
+				function handleMousedown () {
+					function handleMousemove ( event ) {
+						callback.call( this, event );
+					}
+
+					function handleMouseup ( event ) {
+						node.removeEventListener( 'mousemove', handleMousemove );
+						node.removeEventListener( 'mouseup', handleMouseup );
+					}
+
+					node.addEventListener( 'mousemove', handleMousemove );
+					node.addEventListener( 'mouseup', handleMouseup );
+				}
+
+				node.addEventListener( 'mousedown', handleMousedown );
+
+				return {
+					teardown () {
+						node.removeEventListener( 'mousedown', handleMousedown );
+					}
+				};
 			}
 		}
 	};
