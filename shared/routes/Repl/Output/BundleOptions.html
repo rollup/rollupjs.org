@@ -1,18 +1,12 @@
 <div class='options'>
-	<section>
+	<section class='clearfix'>
 		<h3>options.format</h3>
-		<table>
-			<tr>
-				{{#each formats as format, i}}
-				<td>
-					<button
-						class='{{format.value === options.format ? "selected": ""}}'
-						on:click='set({ format: format.value })'
-					>{{format.name}}</button>
-				</td>
-				{{/each}}
-			</tr>
-		</table>
+		{{#each formats as format, i}}
+			<button
+				class='{{format.value === options.format ? "selected": ""}}'
+				on:click='set({ format: format.value })'
+			>{{format.name}}</button>
+		{{/each}}
 	</section>
 
 	{{#if options.format === 'amd' || options.format === 'umd'}}
@@ -50,22 +44,14 @@
 		border: 1px solid #eee;
 	}
 
-	table {
-		width: 100%;
-		border-spacing: 0;
-	}
-
-	td {
-		width: 1%;
-		padding: 0;
-		font-size: 0.8em;
-	}
-
 	button {
 		display: block;
-		width: 100%;
-		height: 100%;
-		padding: 1em 0;
+		width: 20%;
+		float: left;
+		/*height: 100%;*/
+		padding: 0.75em 0;
+		font-size: 0.8em;
+		margin: 0;
 	}
 
 	.selected {
@@ -117,11 +103,11 @@
 	export default {
 		data: () => ({
 			formats: [
-				{ name: 'AMD', value: 'amd' },
-				{ name: 'CommonJS', value: 'cjs' },
-				{ name: 'ES2015', value: 'es' },
-				{ name: 'Globals', value: 'iife' },
-				{ name: 'UMD', value: 'umd' }
+				{ name: 'amd', value: 'amd' },
+				{ name: 'cjs', value: 'cjs' },
+				{ name: 'es', value: 'es' },
+				{ name: 'iife', value: 'iife' },
+				{ name: 'umd', value: 'umd' }
 			],
 
 			format: 'amd',
