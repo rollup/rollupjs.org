@@ -29,21 +29,31 @@
   "scripts": {
     "start": "node server",
     "lint": "node node_modules/eslint/bin/eslint src --ext .js --ext .html",
-    "build": "gobble build -f dist",
-    "deploy": "surge dist rollupjs.org",
-    "predeploy": "npm run update_overview && npm run build",
     "update_overview": "node scripts/update_overview",
     "bundle": "npm run bundle:main && npm run bundle:sw",
     "bundle:main": "rollup -c rollup/rollup.config.js",
     "bundle:sw": "rollup -c rollup/rollup.config.sw.js",
     "rollup:dev": "export DEV=true && rollup -c rollup/rollup.config.js -w",
     "dev": "npm run rollup:dev & ( export DEV=true && node scripts/prep && node server )",
-    "prep": "node scripts/prep && npm run bundle"
+    "prep": "node scripts/prep && npm run bundle",
+    "prestage": "npm run prep",
+    "predeploy": "npm run prep",
+    "predeploy:ci": "npm run prep",
+    "stage": "now",
+    "deploy": "now && now alias",
+    "deploy:ci": "now --token $NOW_TOKEN && now alias --token $NOW_TOKEN"
   },
   "dependencies": {
     "acorn": "^4.0.11",
     "codemirror": "^5.25.0",
     "locate-character": "^2.0.0",
     "roadtrip": "^0.4.1"
+  },
+  "now": {
+    "alias": "rollupjs.org",
+    "files": [
+      "public",
+      "server"
+    ]
   }
 }
