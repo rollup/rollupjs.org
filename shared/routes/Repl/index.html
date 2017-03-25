@@ -242,10 +242,12 @@
 					const debouncedUpdate = debounce( update, 100 );
 
 					this.observe( 'modules', () => {
-						if ( !settingModulesViaExample ) {
+						if ( settingModulesViaExample ) {
+							update();
+						} else {
 							this.set({ selectedExample: null }); // TODO this doesn't update the UI — why? Svelte bug?
+							debouncedUpdate();
 						}
-						debouncedUpdate();
 					});
 					this.observe( 'options', update );
 				});

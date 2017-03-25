@@ -1,6 +1,15 @@
 <Status :error :warnings/>
 <BundleOptions bind:options :imports :exports/>
-<Editor :code readonly/>
+
+<div class='output'>
+	<Editor :code readonly/>
+</div>
+
+<style>
+	.output {
+		border: 1px solid #eee;
+	}
+</style>
 
 <script>
 	import BundleOptions from './BundleOptions.html';

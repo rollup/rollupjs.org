@@ -21,7 +21,8 @@ module.exports = () => {
 			resolve(),
 			commonjs({
 				namedExports: {
-					'node_modules/acorn/dist/acorn.js': [ 'parse' ]
+					'node_modules/acorn/dist/acorn.js': [ 'parse, tokenizer' ],
+					'node_modules/acorn/dist/acorn_loose.js': [ 'parse_dammit', 'tokTypes' ]
 				}
 			}),
 			json(),

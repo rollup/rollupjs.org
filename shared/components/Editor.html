@@ -107,6 +107,12 @@
 		opacity: 0;
 	}
 
+	.comment { color: #a50; }
+	.keyword { color: #708; }
+	.name { color: #333; }
+	.string { color: #a11; }
+	.num { color: #164; }
+
 	@keyframes blink {
 		0% { opacity: 1; }
 		40% { opacity: 1; }
@@ -118,7 +124,7 @@
 
 <script>
 	import { getLocator, locate } from 'locate-character';
-	import * as acorn from 'acorn/dist/acorn.es.js';
+	import * as acorn from 'acorn/dist/acorn_loose.js';
 
 	if ( typeof window !== 'undefined' ) {
 		window.editors = [];
@@ -129,6 +135,30 @@
 	}
 
 	const NBSP = String.fromCharCode( 160 );
+
+	const typeLookup = {
+		name: 'name',
+		comment: 'comment',
+		num: 'num',
+		string: 'string'
+	};
+
+	function getType ( tokType ) {
+		if ( tokType.keyword ) return 'keyword';
+		if ( tokType.label in typeLookup ) return typeLookup[ tokType.label ];
+	}
+
+	const escaped = {
+		'"': '&quot;',
+		"'": '&#39;',
+		'&': '&amp;',
+		'<': '&lt;',
+		'>': '&gt;'
+	};
+
+	function escape ( html ) {
+		return String( html ).replace( /["'&<>]/g, match => escaped[ match ] );
+	}
 
 	export default {
 		data () {
@@ -141,8 +171,6 @@
 		},
 
 		oncreate () {
-			console.log( 'creating editor' );
-
 			let updating = false;
 
 			this.refs.textarea.value = this.get( 'code' );
@@ -156,37 +184,85 @@
 			let lineElements = [];
 
 			this.observe( 'code', ( newCode, oldCode ) => {
-				let newHtml = '';
-
+				let c = 0;
 				const tokens = [];
 
-				const ast = acorn.parse( newCode, {
+				function addToken ( token ) {
+					if ( c < token.start ) {
+						tokens.push({
+							start: c,
+							end: token.start
+						});
+					}
+
+					tokens.push( token );
+					c = token.end;
+				}
+
+				const ast = acorn.parse_dammit( newCode, {
 					sourceType: 'module',
 					ecmaVersion: 8,
-					onComment: tokens,
-					onToken: tokens
+					onComment: ( block, value, start, end ) => {
+						addToken({
+							start,
+							end,
+							type: {
+								label: 'comment'
+							}
+						});
+					},
+					onToken: addToken
 				});
 
-				const newLines = newCode.split( '\n' );
-				const newLineElements = [];
+				let newHtml = '';
+				const lines = [];
+				let currentLine = '';
+
+				tokens.forEach( token => {
+					const value = newCode.slice( token.start, token.end );
+					const chunks = value.split( '\n' );
+
+					for ( let i = 0; i < chunks.length; i += 1 ) {
+						const chunk = chunks[i];
+
+						if ( i > 0 ) {
+							lines.push( currentLine );
+							currentLine = '';
+						}
+
+						const type = token.type && getType( token.type );
+
+						if ( type ) {
+							currentLine += `<span class="${type}">${escape(chunk)}</span>`;
+						} else {
+							currentLine += escape( chunk );
+						}
+					}
+				});
+
+				lines.push( currentLine );
 
 				let i = 0;
 				let t = 0;
+				let currentToken = null;
 
-				for ( ; i < newLines.length; i += 1 ) {
+				for ( ; i < lines.length; i += 1 ) {
 					const oldLine = oldLines[i];
-					const newLine = newLines[i];
+					const newLine = lines[i];
+					const end = c + newLine.length + 1;
+
+					let lineHtml = '';
 
 					if ( oldLine === newLine ) continue;
 
 					if ( i < lineElements.length ) {
 						const div = lineElements[i];
-						div.textContent = newLine || NBSP;
+						div.innerHTML = newLine || NBSP;
 					} else {
 						const div = document.createElement( 'div' );
 						div.className = 'line';
 						div.setAttribute( 'data-linenum', i + 1 );
-						div.textContent = newLine || NBSP;
+						div.innerHTML = newLine || NBSP;
 						this.refs.mirror.appendChild( div );
 						lineElements.push( div );
 					}
@@ -196,8 +272,8 @@
 					detach( lineElements[i] );
 				}
 
-				oldLines = newLines;
-				lineElements.length = newLines.length;
+				oldLines = lines;
+				lineElements.length = lines.length;
 
 				this.updateSelectionRange();
 			});

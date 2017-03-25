@@ -2,6 +2,7 @@ import svelte from 'rollup-plugin-svelte';
 import nodeResolve from 'rollup-plugin-node-resolve';
 import commonjs from 'rollup-plugin-commonjs';
 import json from 'rollup-plugin-json';
+import alias from 'rollup-plugin-alias';
 import uglify from 'rollup-plugin-uglify';
 import buble from 'rollup-plugin-buble';
 
@@ -15,10 +16,15 @@ export default {
 	format: 'iife',
 	plugins: [
 		json(),
+		// alias({
+		// 	acorn: 'node_modules/acorn/dist/acorn.js',
+		// 	acorn_loose: 'node_modules/acorn/dist/acorn_loose.js'
+		// }),
 		nodeResolve(),
 		commonjs({
 			namedExports: {
-				'node_modules/acorn/dist/acorn.js': [ 'parse' ]
+				'node_modules/acorn/dist/acorn.js': [ 'parse, tokenizer' ],
+				'node_modules/acorn/dist/acorn_loose.js': [ 'parse_dammit', 'tokTypes' ]
 			}
 		}),
 		svelte({
