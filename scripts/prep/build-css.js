@@ -9,6 +9,7 @@ const CleanCSS = require( 'clean-css' );
 const { mkdirp } = require( './utils.js' );
 
 const root = path.resolve( __dirname, '../..' );
+const dev = !!process.env.DEV;
 
 module.exports = () => {
 	console.group( 'generating CSS' );
@@ -32,9 +33,10 @@ module.exports = () => {
 			.replace( '__codemirror__', fs.readFileSync( `${root}/node_modules/codemirror/lib/codemirror.css`, 'utf-8' ) )
 			.replace( '__components__', m.exports.renderCss().css );
 
-		const minified = new CleanCSS().minify( css );
+		const result = dev ? css : new CleanCSS().minify( css ).styles;
+
 		mkdirp( `${root}/public/css` );
-		fs.writeFileSync( `${root}/public/css/main.css`, minified.styles );
+		fs.writeFileSync( `${root}/public/css/main.css`, result );
 		console.groupEnd();
 	});
 };
