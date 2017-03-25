@@ -9,7 +9,7 @@
 		</div>
 		<div ref:measure class='measure'></div>
 
-		<textarea ref:textarea bind:value='code' on:keydown='handleKeydown(event)' on:blur='blur()' spellcheck='{{false}}'/>
+		<textarea ref:textarea bind:value='code' on:keydown='handleKeydown(event)' on:focus='focus()' on:blur='blur()' spellcheck='{{false}}'/>
 		<pre class='mirror' ref:mirror spellcheck='false'/>
 	</div>
 </div>
@@ -160,6 +160,10 @@
 		return String( html ).replace( /["'&<>]/g, match => escaped[ match ] );
 	}
 
+	function isCommented ( line ) {
+		return /^\s*\/\//.test( line );
+	}
+
 	export default {
 		data () {
 			return {
@@ -274,8 +278,6 @@
 
 				oldLines = lines;
 				lineElements.length = lines.length;
-
-				this.updateSelectionRange();
 			});
 
 			document.addEventListener( 'selectionchange', event => {
@@ -298,12 +300,12 @@
 		},
 
 		methods: {
-			mirror () {
-				this.refs.mirror.innerHTML = this.refs.textarea.value.split( '\n' )
-					.map( ( line, i ) => {
-						return `<div class='line' data-linenum='${i + 1}'>${line || '&nbsp;'}</div>`;
-					})
-					.join( '' );
+			focus () {
+				this.refs.textarea.focus();
+				setTimeout( () => {
+					// to reset the CSS animation
+					this.set({ showCursor: true });
+				});
 			},
 
 			getCoords ( char ) {
@@ -350,50 +352,13 @@
 			},
 
 			showSelection ({ start, end }) {
-				const code = this.get( 'code' );
-				const locate = getLocator( code );
-				const lines = code.split( '\n' );
-
-				const startLoc = locate( start );
-				const endLoc = locate( end );
-
-				const startLineElement = this.refs.mirror.children[ startLoc.line ];
-				const endLineElement = this.refs.mirror.children[ endLoc.line ];
-
-				this.refs.measure.style.top = startLineElement.offsetTop;
-				this.refs.measure.innerHTML = ( lines[ startLoc.line ] + ' ' )
-					.split( '' )
-					.map( char => `<span>${char}</span>` )
-					.join( '' );
-
-				let spans = this.refs.measure.children;
-				let char = spans[ startLoc.column ];
-
-				const startTop = startLineElement.offsetTop + char.offsetTop;
-				const startLeft = endLineElement.offsetLeft + char.offsetLeft;
-
-				if ( endLineElement !== startLineElement ) {
-					this.refs.measure.style.top = endLineElement.offsetTop;
-					this.refs.measure.innerHTML = ( lines[ endLoc.line ] + ' ' )
-						.split( '' )
-						.map( char => `<span>${char}</span>` )
-						.join( '' );
-
-					spans = this.refs.measure.children;
-				}
-
-				char = spans[ endLoc.column ];
-				if ( !char ) {
-					console.log( `endLoc`, endLoc )
-				}
-
-				const endTop = endLineElement.offsetTop + char.offsetTop;
-				const endLeft = endLineElement.offsetLeft + char.offsetLeft;
+				const { top: startTop, left: startLeft } = this.getCoords( start );
+				const { top: endTop, left: endLeft } = this.getCoords( end );
 
 				Object.assign( this.refs.selA.style, {
 					display: 'block',
 					top: startTop + 'px',
-					left: ( startLeft - 7 ) + 'px'
+					left: startLeft + 'px'
 				});
 
 				if ( startTop === endTop ) {
@@ -448,27 +413,101 @@
 					this.toggleComments();
 				}
 
-				if ( event.keyCode === 9) {
+				if ( event.keyCode === 9 ) {
 					event.preventDefault();
+					this.indentLines( event.shiftKey );
+				}
 
-					if ( range.end === range.start ) {
-						// insert tab at cursor
-						const code = this.get( 'code' );
-						this.set({
-							code: code.slice( 0, range.start ) + '\t' + code.slice( range.start )
-						});
-					} else {
-						this.indentLines( event.shiftKey );
-					}
+				if ( event.keyCode === 13 || event.keyCode === 8 ) {
+					// for some reason, this doesn't trigger a selectionchange event
+					setTimeout( () => {
+						this.updateSelectionRange();
+					});
 				}
 			},
 
 			toggleComments () {
-				console.log( 'TODO toggle comments' );
+				const code = this.get( 'code' );
+				const range = this.get( 'selectionRange' );
+
+				const startLoc = locate( code, range.start );
+				const endLoc = locate( code, range.end );
+
+				const lines = code.split( '\n' );
+				const slice = lines.slice( startLoc.line, endLoc.line + 1 );
+
+				const uncomment = slice.every( isCommented );
+
+				let { start, end } = range;
+
+				for ( let i = startLoc.line; i <= endLoc.line; i += 1 ) {
+					let line = lines[i];
+
+					if ( uncomment ) {
+						if ( isCommented( line ) ) {
+							line = line.replace( /^(\s*)(\/\/\s?)/, ( match, leadingWhitespace, commentStart ) => {
+								end -= commentStart.length;
+								if ( i === startLoc.line ) start -= commentStart.length;
+								return leadingWhitespace;
+							});
+						}
+					} else {
+						line = '// ' + line;
+						end += 3;
+						if ( i === startLoc.line ) start += 3;
+					}
+
+					lines[i] = line;
+				}
+
+				const newCode = lines.join( '\n' );
+
+				if ( newCode !== code ) { // we do this test to avoid moving cursor backwards when outdenting has no effect
+					this.set({
+						code: lines.join( '\n' )
+					});
+
+					this.refs.textarea.setSelectionRange( start, end );
+				}
 			},
 
-			indentLines ( deindent ) {
-				console.log( `${deindent ? 'deindenting' : 'indenting'} code` );
+			indentLines ( outdent ) {
+				const code = this.get( 'code' );
+				const range = this.get( 'selectionRange' );
+
+				const startLoc = locate( code, range.start );
+				const endLoc = locate( code, range.end );
+
+				const sameLine = startLoc.line === endLoc.line;
+
+				if ( sameLine && !outdent ) {
+					// insert tab at cursor
+					this.set({
+						code: code.slice( 0, range.start ) + '\t' + code.slice( range.end )
+					});
+					this.refs.textarea.setSelectionRange( range.start + 1, range.start + 1 );
+				}
+
+				else {
+					const lines = code.split( '\n' );
+					for ( let i = startLoc.line; i <= endLoc.line; i += 1 ) {
+						const line = lines[i];
+						lines[i] = outdent ? line.replace( /^(\t|  )/, '' ) : `\t${line}`;
+					}
+
+					const newCode = lines.join( '\n' );
+
+					if ( newCode !== code ) { // we do this test to avoid moving cursor backwards when outdenting has no effect
+						this.set({
+							code: lines.join( '\n' )
+						});
+
+						const m = outdent ? -1 : 1;
+						const d = ( endLoc.line - startLoc.line ) + 1;
+
+						this.refs.textarea.setSelectionRange( range.start + m, range.end + m * d );
+					}
+				}
 			}
 		}
 	};

@@ -3,7 +3,7 @@
 		{{#if main}}
 			<span class='entry-module-name'>main.js <span class='entry-module-label'>(entry module)</span></span>
 		{{else}}
-			<input class='module-name' bind:value='name' placeholder='foo.js'>
+			<input class='module-name' bind:value='name' on:tab='focusEditor(event)' placeholder='foo.js'>
 
 			<button class='remove' on:click='fire("remove")'>
 				<span class='label'>remove</span>
@@ -12,22 +12,7 @@
 		{{/if}}
 	</header>
 
-	<Editor bind:code/>
-	<!--<div class='mirror-container'>
-		<div ref:mirrorInner class='mirror-container-inner'>
-			<div class='gutters'></div>
-			<div class='selection'>
-				<div class='cursor {{showCursor ? "visible": ""}}' ref:cursor/>
-				<div class='selection-block' ref:selA style='height: 23px;'/>
-				<div class='selection-block' ref:selB style='width: 100%; left: 0;'/>
-				<div class='selection-block' ref:selC style='left: 0; height: 23px;'/>
-			</div>
-			<div ref:measure class='measure'></div>
-
-			<textarea ref:textarea bind:value='code' on:keydown='handleKeydown(event)' on:blur='blur()' spellcheck='{{false}}'/>
-			<pre class='mirror' ref:mirror spellcheck='false'/>
-		</div>
-	</div>-->
+	<Editor ref:editor bind:code/>
 </article>
 
 <style>
@@ -43,10 +28,6 @@
 
 	.main-module {
 		border: 1px solid #ccc;
-	}
-
-	.main-module header {
-		/*background-color: #f4f4f4;*/
 	}
 
 	.entry-module-name {
@@ -102,6 +83,31 @@
 	export default {
 		components: {
 			Editor
+		},
+
+		methods: {
+			focusEditor ( event ) {
+				event.preventDefault();
+				this.refs.editor.focus();
+			}
+		},
+
+		events: {
+			tab ( node, callback ) {
+				function handleKeydown ( event ) {
+					if ( event.keyCode === 9 ) {
+						callback.call( this, event );
+					}
+				}
+
+				node.addEventListener( 'keydown', handleKeydown );
+
+				return {
+					teardown: function () {
+						node.removeEventListener( 'keydown', handleKeydown );
+					}
+				};
+			}
 		}
 	};
 </script>

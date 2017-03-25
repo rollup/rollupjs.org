@@ -110,7 +110,6 @@
 			const { saved, selectedExample } = recoverState();
 
 			return {
-				codemirrorReady: false,
 				code: '',
 				rollupReady: false,
 
@@ -129,12 +128,6 @@
 		},
 
 		oncreate () {
-			curl([ '/codemirror.js' ])
-				.then( CodeMirror => {
-					window.CodeMirror = CodeMirror;
-					this.set({ codemirrorReady: true });
-				});
-
 			const url = versionMatch ?
 				'https://unpkg.com/rollup@' + versionMatch[1] + '/dist/rollup.browser.js' :
 				'https://unpkg.com/rollup/dist/rollup.browser.js';
@@ -230,6 +223,7 @@
 						})
 						.catch( error => {
 							this.set({ error });
+							if ( error.frame ) console.log( error.frame );
 							setTimeout( () => {
 								throw error;
 							});

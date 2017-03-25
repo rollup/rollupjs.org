@@ -37,7 +37,6 @@ module.exports = () => {
 		m._compile( code, `${root}/shared/App.html` );
 
 		const css = fs.readFileSync( `${root}/server/templates/main.css`, 'utf-8' )
-			.replace( '__codemirror__', fs.readFileSync( `${root}/node_modules/codemirror/lib/codemirror.css`, 'utf-8' ) )
 			.replace( '__components__', m.exports.renderCss().css );
 
 		const result = dev ? css : new CleanCSS().minify( css ).styles;

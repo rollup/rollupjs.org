@@ -9,15 +9,11 @@
 	<button on:click='clear()'>Start over</button>
 </header>
 
-{{#if codemirrorReady}}
-	{{#each modules as module, i}}
-		<Module bind:name='module.name' bind:code='module.code' index='{{i}}' main='{{i===0}}' on:remove='removeModule(i)'/>
-	{{/each}}
+{{#each modules as module, i}}
+	<Module bind:name='module.name' bind:code='module.code' index='{{i}}' main='{{i===0}}' on:remove='removeModule(i)'/>
+{{/each}}
 
-	<button class='new-module' on:click='createModule()'><span class='icon icon-plus'></span> add module</button>
-{{else}}
-	<p>loading...</p>
-{{/if}}
+<button class='new-module' on:click='createModule()'><span class='icon icon-plus'></span> add module</button>
 
 <style>
 	strong {

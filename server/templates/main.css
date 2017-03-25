@@ -120,19 +120,4 @@ strong {
 	color: #555;
 }
 
-__codemirror__
-
-.CodeMirror {
-	border-radius: 3px;
-	font-family: 'Inconsolata', monospace;
-}
-
-/*.CodeMirror {
-	height: auto;
-}*/
-
-.CodeMirror-scroll {
-	/*height: auto;*/
-}
-
 __components__

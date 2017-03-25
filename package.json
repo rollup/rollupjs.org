@@ -33,10 +33,9 @@
     "deploy": "surge dist rollupjs.org",
     "predeploy": "npm run update_overview && npm run build",
     "update_overview": "node scripts/update_overview",
-    "bundle": "npm run bundle:main && npm run bundle:sw && npm run bundle:codemirror",
+    "bundle": "npm run bundle:main && npm run bundle:sw",
     "bundle:main": "rollup -c rollup/rollup.config.js",
     "bundle:sw": "rollup -c rollup/rollup.config.sw.js",
-    "bundle:codemirror": "rollup -c rollup/rollup.config.codemirror.js",
     "rollup:dev": "export DEV=true && rollup -c rollup/rollup.config.js -w",
     "dev": "npm run rollup:dev & ( export DEV=true && node scripts/prep && node server )",
     "prep": "node scripts/prep && npm run bundle"

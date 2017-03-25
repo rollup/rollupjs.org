@@ -15,11 +15,9 @@ const manifest = [].concat(
 	// js
 	'/bundle.js',
 	'/curl.js',
-	'/codemirror.js',
 
 	// css
 	'/main.css',
-	'/codemirror.css',
 
 	// content
 	'/guide.json',
