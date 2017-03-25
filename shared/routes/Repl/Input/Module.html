@@ -3,7 +3,7 @@
 		{{#if main}}
 			<span class='entry-module-name'>main.js <span class='entry-module-label'>(entry module)</span></span>
 		{{else}}
-			<input class='module-name' bind:value='name' on:tab='focusEditor(event)' placeholder='foo.js'>
+			<input class='module-name' bind:value='name' on:focus='selectName(this)' on:tab='focusEditor(event)' placeholder='foo.js'>
 
 			<button class='remove' on:click='fire("remove")'>
 				<span class='label'>remove</span>
@@ -89,6 +89,10 @@
 			focusEditor ( event ) {
 				event.preventDefault();
 				this.refs.editor.focus();
+			},
+
+			selectName ( input ) {
+				input.setSelectionRange( 0, input.value.length - 3 );
 			}
 		},
 
