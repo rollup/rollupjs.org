@@ -231,6 +231,13 @@
 					onToken: addToken
 				});
 
+				if ( c < newCode.length ) {
+					tokens.push({
+						start: c,
+						end: newCode.length
+					});
+				}
+
 				let newHtml = '';
 				const lines = [];
 				let currentLine = '';
@@ -327,11 +334,12 @@
 				const lines = code.split( '\n' );
 				const loc = locate( code, char );
 
-				const lineElement = this.refs.mirror.children[ loc.line ];
+				const lineElements = this.refs.mirror.children;
+				const lineElement = lineElements[ loc.line ];
 
 				const line = ( lines[ loc.line ] + ' ' );
 
-				this.refs.measure.innerHTML = `${line.slice( 0, loc.column )}<span/>${line.slice( loc.column )}`;
+				this.refs.measure.innerHTML = `${line.slice( 0, loc.column )}<span>${line.slice( loc.column )}</span>`;
 
 				const spans = this.refs.measure.children;
 				const span = spans[0];
