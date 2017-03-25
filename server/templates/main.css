@@ -127,12 +127,12 @@ __codemirror__
 	font-family: 'Inconsolata', monospace;
 }
 
-.CodeMirror {
+/*.CodeMirror {
 	height: auto;
-}
+}*/
 
 .CodeMirror-scroll {
-	height: auto;
+	/*height: auto;*/
 }
 
 __components__

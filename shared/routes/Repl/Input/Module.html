@@ -12,7 +12,15 @@
 		{{/if}}
 	</header>
 
-	<textarea ref:textarea value='{{code}}'/>
+	<div class='mirror-container'>
+		<div ref:mirrorInner class='mirror-container-inner'>
+			<div class='gutters'></div>
+			<div class='selection'></div>
+
+			<textarea ref:textarea bind:value='code' on:blur='blur()' spellcheck='{{false}}'/>
+			<pre class='mirror' ref:mirror spellcheck='false'/>
+		</div>
+	</div>
 </article>
 
 <style>
@@ -80,37 +88,137 @@
 		font-size: 0.8em;
 	}
 
+	.mirror-container {
+		position: relative;
+		max-height: 300px;
+		overflow-x: hidden;
+		overflow-y: auto;
+	}
+
+	.mirror-container-inner {
+		padding: 0 0 0 2.5em;
+	}
+
+	.gutters {
+		position: absolute;
+		left: 0;
+		top: 0;
+		width: 2.2em;
+		height: 100%;
+		background-color: #f9f9f9;
+		border-right: 1px solid #eee;
+	}
+
+	.mirror {
+		padding: 5px;
+		font-size: 16px;
+		line-height: 1.4;
+		white-space: pre-wrap;
+		pointer-events: none;
+		color: #333;
+		overflow-x: visible;
+		margin: 0;
+	}
+
+	.line::before {
+		position: absolute;
+		content: attr(data-linenum);
+		width: 2em;
+		text-align: right;
+		left: -3em;
+		color: #999;
+	}
+
 	textarea {
-		width: 100%;
-		height: 100px;
+		position: absolute;
+		width: calc(100% - 2.5em);
+		height: 100%;
+		font-family: 'Inconsolata', monospace;
+		font-size: 16px;
+		border: none;
+		resize: none;
+		padding: 5px;
+		line-height: 1.4;
+		outline: none;
+		color: rgba(200,0,0,0.4);
+		opacity: 0.2;
 	}
 </style>
 
 <script>
+	import { locate } from 'locate-character';
+
+	if ( typeof window !== 'undefined' ) {
+		window.editors = [];
+	}
+
 	export default {
 		oncreate () {
 			let updating = false;
 
-			const editor = CodeMirror.fromTextArea( this.refs.textarea, {
-				lineNumbers: true,
-				lineWrapping: true
+			this.refs.textarea.value = this.get( 'code' );
+
+			this.refs.textarea.addEventListener( 'scroll', () => {
+				this.refs.mirrorInner.scrollTop = this.refs.textarea.scrollTop;
 			});
 
-			editor.on( 'change', instance => {
-				if ( !updating ) {
-					updating = true;
-					this.set({ code: instance.getValue() });
-					updating = false;
-				}
-			});
+			// const editor = CodeMirror.fromTextArea( this.refs.textarea, {
+			// 	lineNumbers: true,
+			// 	lineWrapping: true
+			// });
 
-			this.observe( 'code', code => {
-				if ( !updating && code != null ) {
-					updating = true;
-					editor.setValue( code );
-					updating = false;
+			// editor.on( 'change', instance => {
+			// 	if ( !updating ) {
+			// 		updating = true;
+			// 		this.set({ code: instance.getValue() });
+			// 		updating = false;
+			// 	}
+			// });
+
+			// window.editors.push( editor );
+
+			// this.observe( 'code', code => {
+			// 	if ( !updating && code != null ) {
+			// 		updating = true;
+			// 		editor.setValue( code );
+			// 		updating = false;
+			// 	}
+			// });
+
+			this.mirror();
+
+			document.addEventListener( 'selectionchange', event => {
+				if ( !this.refs.textarea ) {
+					console.log( 'wtf', this.refs );
 				}
+				const { selectionStart, selectionEnd } = this.refs.textarea;
+				if ( selectionStart === selectionEnd ) return;
+
+				console.log( this.getCoords( selectionStart ) );
+
+				console.log({ selectionStart, selectionEnd });
 			});
+		},
+
+		methods: {
+			mirror () {
+				console.group( 'mirroring' );
+				this.refs.mirror.innerHTML = this.refs.textarea.value.split( '\n' )
+					.map( ( line, i ) => {
+						return `<div class='line' data-linenum='${i + 1}'>${line || '&nbsp;'}</div>`;
+					})
+					.join( '' );
+				console.groupEnd();
+			},
+
+			getCoords ( char ) {
+				const loc = locate( this.get( 'code' ), char );
+				console.log( `loc`, loc )
+			},
+
+			blur () {
+				console.log( 'wtf blur' );
+			}
 		}
 	};
 </script>

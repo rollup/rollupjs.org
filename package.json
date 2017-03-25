@@ -5,6 +5,7 @@
   "devDependencies": {
     "clean-css": "^4.0.10",
     "compression": "^1.6.2",
+    "console-group": "^0.3.3",
     "eslint": "^3.18.0",
     "eslint-plugin-html": "^2.0.1",
     "eslint-plugin-import": "^2.2.0",
@@ -39,6 +40,8 @@
     "prep": "node scripts/prep && npm run bundle"
   },
   "dependencies": {
-    "codemirror": "^5.25.0"
+    "codemirror": "^5.25.0",
+    "locate-character": "^2.0.0",
+    "roadtrip": "^0.4.1"
   }
 }
