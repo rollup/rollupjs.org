@@ -3,6 +3,7 @@
   "author": "Rich Harris",
   "version": "0.1.0",
   "devDependencies": {
+    "clean-css": "^4.0.10",
     "compression": "^1.6.2",
     "eslint": "^3.18.0",
     "eslint-plugin-html": "^2.0.1",

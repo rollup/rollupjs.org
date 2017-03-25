@@ -96,6 +96,7 @@
 	import debounce from './utils/debounce.js';
 	import { dirname, resolve } from './utils/path';
 	import * as store from '../../store.js';
+	import roadtrip from 'roadtrip';
 
 	const versionMatch = typeof window !== 'undefined' ? /version=([^&]+)/.exec( window.location.search ) : null;
 
@@ -269,7 +270,7 @@
 				const queryString = Object.keys( params ).map( key => `${key}=${params[key]}` ).join( '&' );
 				const url = `/repl?${queryString}`;
 
-				history.replaceState( {}, 'x', url );
+				roadtrip.goto( url, { replaceState: true });
 			}
 		}
 	};
