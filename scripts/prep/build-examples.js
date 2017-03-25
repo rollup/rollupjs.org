@@ -15,7 +15,7 @@ module.exports = () => {
 		example.modules = fs.readdirSync( `${root}/examples/${file}/modules` )
 			.filter( name => name[0] !== '.' )
 			.map( name => {
-				const code = fs.readFileSync( `${root}/examples/${file}/modules/${name}`, 'utf-8' );
+				const code = fs.readFileSync( `${root}/examples/${file}/modules/${name}`, 'utf-8' ).trim();
 				return { name, code };
 			})
 			.sort( ( a, b ) => {

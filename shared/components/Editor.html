@@ -4,8 +4,8 @@
 		<div class='selection'>
 			<div class='cursor {{showCursor ? "visible": ""}}' ref:cursor/>
 			<div class='selection-block' ref:selA style='height: 23px;'/>
-			<div class='selection-block' ref:selB style='width: 100%; left: 0;'/>
-			<div class='selection-block' ref:selC style='left: 0; height: 23px;'/>
+			<div class='selection-block' ref:selB style='width: calc(100% - 10px); left: 5px;'/>
+			<div class='selection-block' ref:selC style='left: 5px; height: 23px;'/>
 		</div>
 		<div ref:measure class='measure'></div>
 
@@ -339,7 +339,7 @@
 
 				const line = ( lines[ loc.line ] + ' ' );
 
-				this.refs.measure.innerHTML = `${line.slice( 0, loc.column )}<span>${line.slice( loc.column )}</span>`;
+				this.refs.measure.innerHTML = `${escape( line.slice( 0, loc.column ) )}<span>${escape( line.slice( loc.column ) )}</span>`;
 
 				const spans = this.refs.measure.children;
 				const span = spans[0];
@@ -390,18 +390,18 @@
 
 					this.refs.selB.style.display = this.refs.selC.style.display = 'none';
 				} else {
-					this.refs.selA.style.right = 0;
+					this.refs.selA.style.right = '5px';
 					this.refs.selA.style.width = 'auto';
 
 					this.refs.selC.style.top = endTop;
-					this.refs.selC.style.width = endLeft + 'px';
+					this.refs.selC.style.width = ( endLeft - 5 ) + 'px';
 
 					if ( endTop > startTop + 23 ) {
 						// three lines
 						Object.assign( this.refs.selB.style, {
 							display: 'block',
-							top: startTop + 23,
-							height: endTop - ( startTop + 23 )
+							top: startTop + 22,
+							height: endTop - ( startTop + 22 )
 						});
 					} else {
 						// two lines
