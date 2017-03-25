@@ -64,6 +64,12 @@ roadtrip
 					window.scrollTo( route.scrollX, route.scrollY );
 				}
 			});
+		},
+
+		update ( route ) {
+			if ( !route.hash ) return;
+			const section = main.querySelector( `#${route.hash}` );
+			if ( section ) section.scrollIntoView();
 		}
 	})
 	.add( '/repl', {
