@@ -1,4 +1,7 @@
-require( './build-components.js' );
-require( './build-css.js' );
-require( './build-examples.js' );
-require( './build-guide.js' );
+require( 'console-group' ).install();
+
+Promise.resolve()
+	.then( () => require( './build-components.js' )() )
+	.then( () => require( './build-css.js' )() )
+	.then( () => require( './build-examples.js' )() )
+	.then( () => require( './build-guide.js' )() );
