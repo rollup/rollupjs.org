@@ -15,7 +15,13 @@
 	<div class='mirror-container'>
 		<div ref:mirrorInner class='mirror-container-inner'>
 			<div class='gutters'></div>
-			<div class='selection'></div>
+			<div class='selection'>
+				<div class='cursor' ref:cursor/>
+				<div ref:selA style='height: 23px;'/>
+				<div ref:selB style='width: 100%; left: 0;'/>
+				<div ref:selC style='left: 0; height: 23px;'/>
+			</div>
+			<div ref:measure class='measure'></div>
 
 			<textarea ref:textarea bind:value='code' on:blur='blur()' spellcheck='{{false}}'/>
 			<pre class='mirror' ref:mirror spellcheck='false'/>
@@ -96,17 +102,48 @@
 	}
 
 	.mirror-container-inner {
-		padding: 0 0 0 2.5em;
+		padding: 0 0 0 32px;
 	}
 
 	.gutters {
 		position: absolute;
 		left: 0;
 		top: 0;
-		width: 2.2em;
+		width: 32px;
 		height: 100%;
 		background-color: #f9f9f9;
 		border-right: 1px solid #eee;
+	}
+
+	.selection {
+		top: -2px;
+	}
+
+	.selection > div, .measure {
+		position: absolute;
+	}
+
+	.selection > div {
+		background-color: rgb(200,200,220);
+	}
+
+	.cursor {
+		width: 1px;
+		height: 26px;
+		background-color: #333;
+		animation-name: blink;
+		animation-duration: 1.2s;
+		animation-iteration-count: infinite;
+	}
+
+	.measure {
+		white-space: pre-wrap;
+		pointer-events: none;
+		padding-left: 6px;
+		color: transparent;
+		font-family: 'Inconsolata', monospace;
+		line-height: 1.4;
+		font-size: 16px;
 	}
 
 	.mirror {
@@ -131,7 +168,7 @@
 
 	textarea {
 		position: absolute;
-		width: calc(100% - 2.5em);
+		width: calc(100% - 32px);
 		height: 100%;
 		font-family: 'Inconsolata', monospace;
 		font-size: 16px;
@@ -141,12 +178,20 @@
 		line-height: 1.4;
 		outline: none;
 		color: rgba(200,0,0,0.4);
-		opacity: 0.2;
+		opacity: 0;
+	}
+
+	@keyframes blink {
+		0% { opacity: 1; }
+		40% { opacity: 1; }
+		50% { opacity: 0; }
+		90% { opacity: 0; }
+		100% { opacity: 1; }
 	}
 </style>
 
 <script>
-	import { locate } from 'locate-character';
+	import { getLocator, locate } from 'locate-character';
 
 	if ( typeof window !== 'undefined' ) {
 		window.editors = [];
@@ -188,15 +233,19 @@
 			this.mirror();
 
 			document.addEventListener( 'selectionchange', event => {
-				if ( !this.refs.textarea ) {
-					console.log( 'wtf', this.refs );
+				if ( this.refs.textarea !== document.activeElement ) {
+					return;
 				}
+
 				const { selectionStart, selectionEnd } = this.refs.textarea;
-				if ( selectionStart === selectionEnd ) return;
 
-				console.log( this.getCoords( selectionStart ) );
-
-				console.log({ selectionStart, selectionEnd });
+				if ( selectionStart === selectionEnd ) {
+					this.showCursor( selectionStart );
+					this.hideSelection();
+				} else {
+					this.hideCursor();
+					this.showSelection( selectionStart, selectionEnd );
+				}
 			});
 		},
 
@@ -212,12 +261,123 @@
 			},
 
 			getCoords ( char ) {
-				const loc = locate( this.get( 'code' ), char );
-				console.log( `loc`, loc )
+				const code = this.get( 'code' );
+				const lines = code.split( '\n' );
+				const loc = locate( code, char );
+
+				const lineElement = this.refs.mirror.children[ loc.line ];
+
+				this.refs.measure.innerHTML = ( lines[ loc.line ] + ' ' )
+					.split( '' )
+					.map( char => `<span>${char}</span>` )
+					.join( '' );
+
+				const spans = this.refs.measure.children;
+				const span = spans[ loc.column ];
+
+				return {
+					top: ~~( lineElement.offsetTop + span.offsetTop ),
+					left: ~~( lineElement.offsetLeft + span.offsetLeft ) - 7
+				};
+			},
+
+			hideCursor () {
+				this.refs.cursor.style.display = 'none';
+			},
+
+			hideSelection () {
+				this.refs.selA.style.display = this.refs.selB.style.display = this.refs.selC.style.display = 'none';
+			},
+
+			showCursor ( char ) {
+				const { top, left } = this.getCoords( char );
+
+				Object.assign( this.refs.cursor.style, {
+					display: 'block',
+					top: ( top - 2 ) + 'px',
+					left: left + 'px'
+				});
+			},
+
+			showSelection ( start, end ) {
+				const code = this.get( 'code' );
+				const locate = getLocator( code );
+				const lines = code.split( '\n' );
+
+				const startLoc = locate( start );
+				const endLoc = locate( end );
+
+				const startLineElement = this.refs.mirror.children[ startLoc.line ];
+				const endLineElement = this.refs.mirror.children[ endLoc.line ];
+
+				this.refs.measure.style.top = startLineElement.offsetTop;
+				this.refs.measure.innerHTML = ( lines[ startLoc.line ] + ' ' )
+					.split( '' )
+					.map( char => `<span>${char}</span>` )
+					.join( '' );
+
+				let spans = this.refs.measure.children;
+				let char = spans[ startLoc.column ];
+
+				const startTop = startLineElement.offsetTop + char.offsetTop;
+				const startLeft = endLineElement.offsetLeft + char.offsetLeft;
+
+				if ( endLineElement !== startLineElement ) {
+					this.refs.measure.style.top = endLineElement.offsetTop;
+					this.refs.measure.innerHTML = ( lines[ endLoc.line ] + ' ' )
+						.split( '' )
+						.map( char => `<span>${char}</span>` )
+						.join( '' );
+
+					spans = this.refs.measure.children;
+				}
+
+				char = spans[ endLoc.column ];
+				if ( !char ) {
+					console.log( `endLoc`, endLoc )
+				}
+
+				const endTop = endLineElement.offsetTop + char.offsetTop;
+				const endLeft = endLineElement.offsetLeft + char.offsetLeft;
+
+				Object.assign( this.refs.selA.style, {
+					display: 'block',
+					top: startTop + 'px',
+					left: ( startLeft - 7 ) + 'px'
+				});
+
+				if ( startTop === endTop ) {
+					// same line
+					this.refs.selA.style.right = 'auto';
+					this.refs.selA.style.width = ( endLeft - startLeft ) + 'px';
+
+					this.refs.selB.style.display = this.refs.selC.style.display = 'none';
+				} else {
+					this.refs.selA.style.right = 0;
+					this.refs.selA.style.width = 'auto';
+
+					this.refs.selC.style.top = endTop;
+					this.refs.selC.style.width = endLeft + 'px';
+
+					if ( endTop > startTop + 23 ) {
+						// three lines
+						Object.assign( this.refs.selB.style, {
+							display: 'block',
+							top: startTop + 23,
+							height: endTop - ( startTop + 23 )
+						});
+					} else {
+						// two lines
+						this.refs.selB.style.display = 'none';
+					}
+
+					this.refs.selC.style.display = 'block';
+				}
 			},
 
 			blur () {
-				console.log( 'wtf blur' );
+				this.hideSelection();
+				this.hideCursor();
 			}
 		}
 	};
