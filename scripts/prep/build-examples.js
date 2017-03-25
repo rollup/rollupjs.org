@@ -13,12 +13,10 @@ module.exports = () => {
 	examples.forEach( file => {
 		const example = require( `${root}/examples/${file}/example.json` );
 		example.modules = fs.readdirSync( `${root}/examples/${file}/modules` )
-			.filter( mod => mod[0] !== '.' )
-			.map( mod => {
-				return {
-					name: mod,
-					code: fs.readFileSync( `${root}/examples/${file}/modules/${mod}`, 'utf-8' )
-				};
+			.filter( name => name[0] !== '.' )
+			.map( name => {
+				const code = fs.readFileSync( `${root}/examples/${file}/modules/${name}`, 'utf-8' );
+				return { name, code };
 			})
 			.sort( ( a, b ) => {
 				return a.name === 'main.js' ? -1 : b.name === 'main.js' ? 1 : ( a.name < b.name ? -1 : 1 );

@@ -17,13 +17,13 @@
 			<div class='gutters'></div>
 			<div class='selection'>
 				<div class='cursor' ref:cursor/>
-				<div ref:selA style='height: 23px;'/>
-				<div ref:selB style='width: 100%; left: 0;'/>
-				<div ref:selC style='left: 0; height: 23px;'/>
+				<div class='selection-block' ref:selA style='height: 23px;'/>
+				<div class='selection-block' ref:selB style='width: 100%; left: 0;'/>
+				<div class='selection-block' ref:selC style='left: 0; height: 23px;'/>
 			</div>
 			<div ref:measure class='measure'></div>
 
-			<textarea ref:textarea bind:value='code' on:blur='blur()' spellcheck='{{false}}'/>
+			<textarea ref:textarea bind:value='code' on:keydown='handleKeydown(event)' on:blur='blur()' spellcheck='{{false}}'/>
 			<pre class='mirror' ref:mirror spellcheck='false'/>
 		</div>
 	</div>
@@ -33,6 +33,7 @@
 	.module {
 		margin: 0 0 1em 0;
 		border: 1px solid #f4f4f4;
+		tab-size: 4;
 	}
 
 	header {
@@ -123,11 +124,12 @@
 		position: absolute;
 	}
 
-	.selection > div {
+	.selection-block {
 		background-color: rgb(200,200,220);
 	}
 
 	.cursor {
+		display: none;
 		width: 1px;
 		height: 26px;
 		background-color: #333;
@@ -198,6 +200,15 @@
 	}
 
 	export default {
+		data () {
+			return {
+				selectionRange: {
+					start: 0,
+					end: 0
+				}
+			};
+		},
+
 		oncreate () {
 			let updating = false;
 
@@ -238,13 +249,21 @@
 				}
 
 				const { selectionStart, selectionEnd } = this.refs.textarea;
+				this.set({
+					selectionRange: {
+						start: selectionStart,
+						end: selectionEnd
+					}
+				});
+			});
 
-				if ( selectionStart === selectionEnd ) {
-					this.showCursor( selectionStart );
+			this.observe( 'selectionRange', range => {
+				if ( range.start === range.end ) {
+					if ( this.refs.textarea === document.activeElement ) this.showCursor( range.start );
 					this.hideSelection();
 				} else {
 					this.hideCursor();
-					this.showSelection( selectionStart, selectionEnd );
+					this.showSelection( range );
 				}
 			});
 		},
@@ -299,7 +318,7 @@
 				});
 			},
 
-			showSelection ( start, end ) {
+			showSelection ({ start, end }) {
 				const code = this.get( 'code' );
 				const locate = getLocator( code );
 				const lines = code.split( '\n' );
@@ -378,6 +397,37 @@
 			blur () {
 				this.hideSelection();
 				this.hideCursor();
+			},
+
+			handleKeydown ( event ) {
+				const range = this.get( 'selectionRange' );
+
+				if ( event.keyCode === 191 && event.metaKey ) {
+					event.preventDefault();
+					this.toggleComments();
+				}
+
+				if ( event.keyCode === 9) {
+					event.preventDefault();
+
+					if ( range.end === range.start ) {
+						// insert tab at cursor
+						const code = this.get( 'code' );
+						this.set({
+							code: code.slice( 0, range.start ) + '\t' + code.slice( range.start )
+						});
+					} else {
+						this.indentLines( event.shiftKey );
+					}
+				}
+			},
+
+			toggleComments () {
+				console.log( 'TODO toggle comments' );
+			},
+
+			indentLines ( deindent ) {
+				console.log( `${deindent ? 'deindenting' : 'indenting'} code` );
 			}
 		}
 	};
