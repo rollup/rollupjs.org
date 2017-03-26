@@ -6,7 +6,7 @@
 		{{/each}}
 	</select>
 
-	<button on:click='clear()'>Start over</button>
+	<button class='start-over' on:click='clear()'>Start over</button>
 </header>
 
 <div ref:modules class='modules'>
@@ -32,7 +32,7 @@
 	}
 
 	@media (min-width: 400px) {
-		button {
+		.start-over {
 			float: right;
 		}
 	}
