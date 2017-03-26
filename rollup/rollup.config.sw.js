@@ -21,7 +21,9 @@ const manifest = [].concat(
 
 	// content
 	'/guide.json',
-	glob.sync( 'examples/**/*.json', { cwd: 'public' }).map( x => `/${x}` )
+	glob.sync( 'examples/**/*.json', { cwd: 'public' }).map( x => `/${x}` ),
+	glob.sync( 'fontello/**/*.*', { cwd: 'public' }).map( x => `/${x}` ),
+	glob.sync( 'images/**/*.*', { cwd: 'public' }).map( x => `/${x}` )
 );
 
 export default {

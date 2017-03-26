@@ -28,8 +28,12 @@ self.addEventListener( 'activate', event => {
 
 
 self.addEventListener( 'fetch', event => {
+	const req = event.request.url.replace( self.location.origin, '' ).startsWith( '/repl' ) ?
+		'/repl' :
+		event.request;
+
 	event.respondWith(
-		caches.match( event.request )
+		caches.match( req )
 			.then( response => {
 				if ( response ) return response;
 
