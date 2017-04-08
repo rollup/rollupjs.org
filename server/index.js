@@ -29,6 +29,14 @@ function loadComponent ( file ) {
 	return require( resolved );
 }
 
+app.get( '/guide/', ( req, res ) => {
+	res.redirect( 301, '/' );
+});
+
+app.get( '/guide', ( req, res ) => {
+	res.redirect( 301, '/' );
+});
+
 app.get( '/', ( req, res ) => {
 	const Nav = loadComponent( 'components/Nav' );
 	const Guide = loadComponent( 'routes/Guide' );
