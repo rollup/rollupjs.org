@@ -48,20 +48,20 @@ $ rollup main.js --format umd --name "myBundle" --output bundle.js
 例如，在使用 CommonJS 时，*必须导入(import)完整的工具(tool)或库(library)对象*。
 
 ```js
-// import the entire utils object with CommonJS
+// 使用 CommonJS 导入(import)完整的 utils 对象
 var utils = require( 'utils' );
 var query = 'Rollup';
-// use the ajax method of the utils object
+// 使用 utils 对象的 ajax 方法
 utils.ajax( 'https://api.example.com?search=' + query ).then( handleResponse );
 ```
 
 但是在使用 ES6 模块时，无需导入整个 `utils` 对象，我们可以只导入(import)我们所需的 `ajax` 函数：
 
 ```js
-// import the ajax function with an ES6 import statement
+// 使用 ES6 import 语句导入(import) ajax 函数
 import { ajax } from 'utils';
 var query = 'Rollup';
-// call the ajax function
+// 调用 ajax 函数
 ajax( 'https://api.example.com?search=' + query ).then( handleResponse );
 ```
 
