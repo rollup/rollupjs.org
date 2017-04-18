@@ -70,3 +70,7 @@ Some libraries expose ES6 modules that you can import as-is — `the-answer` is 
 The [rollup-plugin-commonjs](https://github.com/rollup/rollup-plugin-commonjs) plugin does exactly that.
 
 Note that `rollup-plugin-commonjs` should go *before* other plugins that transform your modules — this is to prevent other plugins from making changes that break the CommonJS detection.
+
+***
+
+> 原文：https://rollupjs.org/#using-rollup-with-npm

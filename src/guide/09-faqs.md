@@ -13,3 +13,7 @@ ES2015 modules are an official standard that will be arriving soon to browsers a
 ### Who made the Rollup logo? It's lovely.
 
 I know! It was made by [Julian Lloyd.](https://twitter.com/jlmakes)
+
+***
+
+> 原文：https://rollupjs.org/#faqs

@@ -38,3 +38,7 @@ You can, if you like, specify a different config file from the default `rollup.c
 rollup --config rollup.config.dev.js
 rollup --config rollup.config.prod.js
 ```
+
+***
+
+> 原文：https://rollupjs.org/#using-config-files

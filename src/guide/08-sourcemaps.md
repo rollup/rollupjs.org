@@ -12,3 +12,7 @@ export default {
   sourceMap: true
 };
 ```
+
+***
+
+> 原文：https://rollupjs.org/#sourcemaps

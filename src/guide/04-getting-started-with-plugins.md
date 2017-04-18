@@ -58,3 +58,7 @@ module.exports = main;
 ```
 
 (Notice that only the data we actually need gets imported – `name` and `devDependencies` and other parts of `package.json` are ignored. That's [tree-shaking](#what-is-tree-shaking-) in action!)
+
+***
+
+> 原文：https://rollupjs.org/#getting-started-with-plugins

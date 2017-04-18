@@ -29,3 +29,7 @@ gulp.task('build', function () {
     })
 });
 ```
+
+***
+
+> 原文：https://rollupjs.org/#using-rollup-with-gulp

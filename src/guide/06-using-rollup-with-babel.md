@@ -81,3 +81,7 @@ var main = (function () {
 
 module.exports = main;
 ```
+
+***
+
+> 原文：https://rollupjs.org/#using-rollup-with-babel

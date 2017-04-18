@@ -81,3 +81,7 @@ node
 ```
 
 Congratulations! You've created your first bundle with Rollup.
+
+***
+
+> 原文：https://rollupjs.org/#creating-your-first-bundle
