@@ -4,11 +4,11 @@
 
 到目前为止，我们已经从一个入口点和通过相对路径导入的模块创建了一个简单的捆绑包。当您需要构建更为复杂的捆绑包时，您通常需要更多的灵活性 - 例如导入使用npm来安装的模块、使用Babel编译代码、使用JSON文件等等。
 
-针对以上原因，我们使用了 *插件*，它可以在打包过程的关键点改变Rollup的行为。在[the Rollup wiki](https://github.com/rollup/rollup/wiki/Plugins)上保留了可用插件的列表。
+针对以上原因，我们使用了 *插件*，它可以在打包过程的关键点改变Rollup的行为。在[the Rollup wiki](https://github.com/rollup/rollup/wiki/Plugins)上维护了可用插件的列表。
 
 ### 使用插件
 
-对于本教程，我们将使用[rollup-plugin-json](https://github.com/rollup/rollup-plugin-json)，它允许Rollup从JSON文件导入数据来作为例子。
+在本教程中，我们将使用[rollup-plugin-json](https://github.com/rollup/rollup-plugin-json)作为例子，它允许Rollup从JSON文件导入数据。
 
 首先安装rollup-plugin-json作为开发依赖：
 
