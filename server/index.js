@@ -37,31 +37,6 @@ app.get( '/guide', ( req, res ) => {
 	res.redirect( 301, '/' );
 });
 
-app.get( '/', ( req, res ) => {
-	const Nav = loadComponent( 'components/Nav' );
-	const Guide = loadComponent( 'routes/Guide' );
-
-	const sections = require( `${root}/public/guide.json` );
-
-	servePage( res, {
-		title: 'rollup.js',
-		nav: Nav.render({ route: 'guide' }),
-		route: Guide.render({
-			sections
-		})
-	}).catch( err => {
-		console.log( err.stack );
-	});
-});
-
-app.use( ( req, res, next ) => {
-	if ( req.url.slice( -1 ) === '/' && req.url.length > 1 ) {
-		res.redirect( 301, req.url.slice( 0, -1 ) );
-	} else {
-		next();
-	}
-});
-
 app.get( '/repl', ( req, res ) => {
 	const Nav = loadComponent( 'components/Nav' );
 	const Repl = loadComponent( 'routes/Repl/index' );
@@ -73,6 +48,42 @@ app.get( '/repl', ( req, res ) => {
 	}).catch( err => {
 		console.log( err.stack );
 	});
+});
+
+app.get( '/:lang', ( req, res ) => {
+	serveGuide( req, res, req.params.lang );
+});
+
+app.get( '/', ( req, res ) => {
+	serveGuide( req, res, 'en' );
+});
+
+function serveGuide ( req, res, lang ) {
+	const Nav = loadComponent( 'components/Nav' );
+	const Guide = loadComponent( 'routes/Guide' );
+
+	const sections = require( `${root}/public/guide/${lang}.json` );
+	const summary = require( `${root}/public/guide-summary/${lang}.json` );
+
+	servePage( res, {
+		title: 'rollup.js',
+		lang,
+		nav: Nav.render({ route: 'guide' }),
+		route: Guide.render({
+			sections,
+			summary
+		})
+	}).catch( err => {
+		console.log( err.stack );
+	});
+}
+
+app.use( ( req, res, next ) => {
+	if ( req.url.slice( -1 ) === '/' && req.url.length > 1 ) {
+		res.redirect( 301, req.url.slice( 0, -1 ) );
+	} else {
+		next();
+	}
 });
 
 app.listen( 3001, () => {
