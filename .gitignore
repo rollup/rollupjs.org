@@ -4,7 +4,8 @@ node_modules
 dist
 public/js
 public/css
-public/guide.json
+public/guide
+public/guide-summary
 public/examples
 public/service-worker*
 server/routes

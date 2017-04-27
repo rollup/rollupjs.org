@@ -8,7 +8,10 @@ const header = document.querySelector( 'header' );
 const main = document.querySelector( 'main' );
 
 const nav = new Nav({
-	target: ( header.innerHTML = '', header )
+	target: ( header.innerHTML = '', header ),
+	data: {
+		lang: 'en'
+	}
 });
 
 let view;
@@ -32,7 +35,7 @@ const guide = {
 	enter ( route ) {
 		const lang = route.params.lang || 'en';
 
-		nav.set({ route: 'guide' });
+		nav.set({ route: 'guide', lang });
 		document.title = 'rollup.js • guide';
 		document.documentElement.lang = lang;
 
@@ -53,7 +56,8 @@ const guide = {
 				target: main,
 				data: {
 					sections,
-					summary
+					summary,
+					lang
 				}
 			});
 
