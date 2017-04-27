@@ -58,7 +58,7 @@ roadtrip
 					// scroll to section
 					if ( window.location.hash.length > 1 ) {
 						const h = main.querySelector( window.location.hash );
-						if ( h ) window.scrollTo( 0, h.getBoundingClientRect().top );
+						if ( h ) window.scrollTo( 0, window.scrollY + h.getBoundingClientRect().top );
 					}
 				} else {
 					window.scrollTo( route.scrollX, route.scrollY );
