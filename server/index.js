@@ -43,6 +43,7 @@ app.get( '/repl', ( req, res ) => {
 
 	servePage( res, {
 		title: 'rollup.js',
+		lang: 'en',
 		nav: Nav.render({ route: 'repl' }),
 		route: Repl.render() // TODO is there any point? just render an empty box instead?
 	}).catch( err => {

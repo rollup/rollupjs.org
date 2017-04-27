@@ -34,6 +34,7 @@ const guide = {
 
 		nav.set({ route: 'guide' });
 		document.title = 'rollup.js • guide';
+		document.documentElement.lang = lang;
 
 		// preload blog and guide
 		return Promise.all([
