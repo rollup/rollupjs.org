@@ -6,4 +6,4 @@ This is the source code for the website!
 
 1. `npm install`
 2. `npm start`
-3. Open up http://0.0.0.0:4567
+3. Open up http://localhost:3001

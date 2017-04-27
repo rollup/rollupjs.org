@@ -2,7 +2,6 @@ import svelte from 'rollup-plugin-svelte';
 import nodeResolve from 'rollup-plugin-node-resolve';
 import commonjs from 'rollup-plugin-commonjs';
 import json from 'rollup-plugin-json';
-import alias from 'rollup-plugin-alias';
 import uglify from 'rollup-plugin-uglify';
 import buble from 'rollup-plugin-buble';
 
