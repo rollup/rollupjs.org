@@ -28,6 +28,6 @@ https.get( 'https://raw.githubusercontent.com/rollup/rollup/master/README.md', r
 			})
 			.join( '```' );
 
-		fs.writeFileSync( 'src/guide/00-introduction.md', body );
+		fs.writeFileSync( 'guide/en/00-introduction.md', body );
 	});
 });

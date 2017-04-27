@@ -6,11 +6,11 @@ title: Introduction
 
 ### Overview
 
-Rollup is a module bundler for JavaScript which compiles small pieces of code into something larger and more complex, such as a library or application. It uses the new standardized format for code modules included in the ES6 revision of JavaScript, instead of previous idiosyncratic solutions such as CommonJS and AMD.
+Rollup is a module bundler for JavaScript which compiles small pieces of code into something larger and more complex, such as a library or application. It uses the new standardized format for code modules included in the ES6 revision of JavaScript, instead of previous idiosyncratic solutions such as CommonJS and AMD. ES6 modules let you freely and seamlessly combine the most useful individual functions from your favorite libraries. This will eventually be possible natively, but Rollup lets you do it today.
 
 ### Quick Start Guide
 
-Install with `npm install --global rollup`. Rollup can be used either through a [command line interface](https://github.com/rollup/rollup/wiki/Command-Line-Interface) with an optional configuration file, or else through its [JavaScript API](https://github.com/rollup/rollup/wiki/JavaScript-API). Run `rollup --help` to see the available options and parameters. The [starter project template](https://github.com/rollup/rollup-starter-project) demonstrates common configuration options, and more detailed instructions are available throughout this user guide.
+Install with `npm install --global rollup`. Rollup can be used either through a [command line interface](https://github.com/rollup/rollup/wiki/Command-Line-Interface) with an optional configuration file, or else through its [JavaScript API](https://github.com/rollup/rollup/wiki/JavaScript-API). Run `rollup --help` to see the available options and parameters. The [starter project template](https://github.com/rollup/rollup-starter-project) demonstrates common configuration options, and more detailed instructions are available throughout the [user guide](http://rollupjs.org/).
 
 #### Commands
 
@@ -68,8 +68,6 @@ ajax( 'https://api.example.com?search=' + query ).then( handleResponse );
 ```
 
 Because Rollup includes the bare minimum, it results in lighter, faster, and less complicated libraries and applications. Since this approach is based on explicit `import` and `export` statements, it is vastly more effective than simply running an automated minifier to detect unused variables in the compiled output code.
-
-ES6 modules let you freely and seamlessly combine the most useful individual functions from your favorite libraries, without weighing down your project with all the other unused code. This will eventually be possible natively, but Rollup lets you do it today.
 
 ### Compatibility
 
