@@ -1,5 +1,5 @@
 <ul class='guide-toc'>
-	{{#each contents as section}}
+	{{#each summary as section}}
 		<li>
 			<a class='section {{section.slug === active ? "active": ""}}' href='/#{{section.slug}}'>{{section.metadata.title}}</a>
 			<!--{{#each section.subsections as subsection}}
@@ -52,12 +52,12 @@
 </style>
 
 <script>
-	import contents from './guide-summary.json';
+	import * as store from '../store.js';
 
 	export default {
 		data () {
 			return {
-				contents
+				summary: []
 			};
 		},
 

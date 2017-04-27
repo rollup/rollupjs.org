@@ -13,7 +13,9 @@
 	</ul>
 
 	<div class='secondary'>
-		<GuideContents active='{{active}}'/>
+		{{#if summary}}
+			<GuideContents :active :summary/>
+		{{/if}}
 	</div>
 </nav>
 
@@ -218,7 +220,8 @@
 			return {
 				open: false,
 				route: '',
-				active: null
+				active: null,
+				summary: null
 			};
 		},
 
