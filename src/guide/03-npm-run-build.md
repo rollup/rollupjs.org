@@ -73,7 +73,7 @@ npm install --save-dev rollup-watch
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "rollup -c",
-	"dev": "rollup -c -w"
+    "dev": "rollup -c -w"
   },
   ...
 }
