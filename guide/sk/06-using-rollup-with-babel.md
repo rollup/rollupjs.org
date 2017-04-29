@@ -64,7 +64,7 @@ Spustením Rollup sa vytvorí balíček... aj keď nevyužívame žiadne ES6 fun
 import answer from 'the-answer';
 
 export default () => {
-  console.log(`the answer is ${answer}`);
+  console.log(`odpoveďou je ${answer}`);
 }
 ```
 
@@ -76,7 +76,7 @@ Spustite Rollup pomocou `npm run build` a pozrite sa na balíček:
 var index = 42;
 
 var main = (function () {
-  console.log('the answer is ' + index);
+  console.log('odpoveďou je ' + index);
 });
 
 module.exports = main;
