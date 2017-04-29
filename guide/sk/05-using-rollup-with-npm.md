@@ -1,5 +1,5 @@
 ---
-title: Používanie Rollup spolu s balíčkami z npm
+title: Používanie Rollupu spolu s balíčkami z npm
 ---
 
 V určitom okamihu je pravdepodobné, že váš projekt bude závislý na balíčkoch z repozitára npm vo vašom priečinku `node_modules`. Na rozdiel od iných zväzovačov ako sú Webpack alebo Browserify, Rollup nevie samo od seba pracovať so závislosťami — musíme to nastaviť.
