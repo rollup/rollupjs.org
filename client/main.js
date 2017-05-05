@@ -8,7 +8,10 @@ const header = document.querySelector( 'header' );
 const main = document.querySelector( 'main' );
 
 const nav = new Nav({
-	target: ( header.innerHTML = '', header )
+	target: ( header.innerHTML = '', header ),
+	data: {
+		lang: 'en'
+	}
 });
 
 let view;
@@ -28,50 +31,60 @@ redirect( '/repl/', route => {
 	return query ? `/repl?${query}` : '/repl';
 });
 
-roadtrip
-	.add( '/', {
-		enter ( route ) {
-			nav.set({ route: 'guide' });
+const guide = {
+	enter ( route ) {
+		const lang = route.params.lang || 'en';
 
-			document.title = 'rollup.js • guide';
+		nav.set({ route: 'guide', lang });
+		document.title = 'rollup.js • guide';
+		document.documentElement.lang = lang;
 
-			// preload blog and guide
-			return store.getJSON( `/guide.json` ).then( sections => {
-				if ( view ) {
-					view.destroy();
-				} else {
-					main.innerHTML = '';
-				}
+		// preload blog and guide
+		return Promise.all([
+			store.getJSON( `/guide/${lang}.json` ),
+			store.getJSON( `/guide-summary/${lang}.json` )
+		]).then( ([ sections, summary ]) => {
+			if ( view ) {
+				view.destroy();
+			} else {
+				main.innerHTML = '';
+			}
 
-				view = new Guide({
-					target: main,
-					data: {
-						sections
-					}
-				});
+			nav.set({ summary });
 
-				view.on( 'scroll', id => {
-					nav.set({ active: id });
-				});
-
-				if ( route.scrollY === 0 ) {
-					// scroll to section
-					if ( window.location.hash.length > 1 ) {
-						const h = main.querySelector( window.location.hash );
-						if ( h ) window.scrollTo( 0, h.getBoundingClientRect().top );
-					}
-				} else {
-					window.scrollTo( route.scrollX, route.scrollY );
+			view = new Guide({
+				target: main,
+				data: {
+					sections,
+					summary,
+					lang
 				}
 			});
-		},
 
-		update ( route ) {
-			if ( !route.hash ) return;
-			const section = main.querySelector( `#${route.hash}` );
-			if ( section ) section.scrollIntoView();
-		}
-	})
+			view.on( 'scroll', id => {
+				nav.set({ active: id });
+			});
+
+			if ( route.scrollY === 0 ) {
+				// scroll to section
+				if ( window.location.hash.length > 1 ) {
+					const h = main.querySelector( window.location.hash );
+					if ( h ) window.scrollTo( 0, window.scrollY + h.getBoundingClientRect().top );
+				}
+			} else {
+				window.scrollTo( route.scrollX, route.scrollY );
+			}
+		});
+	},
+
+	update ( route ) {
+		if ( !route.hash ) return;
+		const section = main.querySelector( `#${route.hash}` );
+		if ( section ) section.scrollIntoView();
+	}
+};
+
+roadtrip
 	.add( '/repl', {
 		enter () {
 			nav.set({ route: 'repl' });
@@ -89,11 +102,22 @@ roadtrip
 			});
 
 			window.scrollTo( 0, 0 );
+
+			// load default EN guide summary, but ensure a different
+			// language hasn't already been selected. TODO this would
+			// be easier if the REPL was internationalized as well
+			if ( !nav.get( 'summary' ) ) {
+				store.getJSON( `/guide-summary/en.json` ).then( summary => {
+					if ( !nav.get( 'summary' ) ) nav.set({ summary });
+				});
+			}
 		},
 
 		update () {
 			// noop
 		}
-	});
+	})
+	.add( '/:lang', guide )
+	.add( '/', guide );
 
 roadtrip.start();

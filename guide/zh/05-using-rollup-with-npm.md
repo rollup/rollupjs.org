@@ -71,6 +71,66 @@ The [rollup-plugin-commonjs](https://github.com/rollup/rollup-plugin-commonjs) p
 
 Note that `rollup-plugin-commonjs` should go *before* other plugins that transform your modules — this is to prevent other plugins from making changes that break the CommonJS detection.
 
-***
 
-> 原文：https://rollupjs.org/#using-rollup-with-npm
+## Peer dependencies
+
+Let's say that you're building a library that has a peer
+dependency, such as React or Lodash. If you set up externals
+as described above, your rollup will bundle *all* imports:
+
+```js
+import answer from 'the-answer';
+import _ from 'lodash';
+```
+
+You can finely tune which imports are bundled and which
+are treated as external. For this example, we'll treat
+`lodash` as external, but not `the-answer`.
+
+Here is the config file:
+
+```js
+// rollup.config.js
+import resolve from 'rollup-plugin-node-resolve';
+
+export default {
+  entry: 'src/main.js',
+  format: 'cjs',
+  plugins: [resolve({
+    // pass custom options to the resolve plugin
+    customResolveOptions: {
+      moduleDirectory: 'node_modules'
+    }
+  })],
+  // indicate which modules should be treated as external
+  external: ['lodash'],
+  dest: 'bundle.js'
+};
+```
+
+Voila, `lodash` will now be treated as external, and
+not be bundled with your library.
+
+The `external` key accepts either an array of module names
+or a function which takes the module name and returns true
+if it should be treated as external. For example:
+
+```js
+export default {
+  // ...
+  external: id => /lodash/.test(id)
+}
+```
+
+You might use this form if you're using
+[babel-plugin-lodash](https://github.com/lodash/babel-plugin-lodash) 
+to cherry-pick lodash modules. In this case, Babel will
+convert your import statements to look like this:
+
+```js
+import _merge from 'lodash/merge';
+```
+
+The array form of `external` does not handle wildcards, so
+this import will only be treated as external in the functional
+form.

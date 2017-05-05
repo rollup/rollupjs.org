@@ -37,22 +37,48 @@ app.get( '/guide', ( req, res ) => {
 	res.redirect( 301, '/' );
 });
 
-app.get( '/', ( req, res ) => {
+app.get( '/repl', ( req, res ) => {
 	const Nav = loadComponent( 'components/Nav' );
-	const Guide = loadComponent( 'routes/Guide' );
-
-	const sections = require( `${root}/public/guide.json` );
+	const Repl = loadComponent( 'routes/Repl/index' );
 
 	servePage( res, {
 		title: 'rollup.js',
-		nav: Nav.render({ route: 'guide' }),
-		route: Guide.render({
-			sections
-		})
+		lang: 'en',
+		nav: Nav.render({ route: 'repl', lang: 'en' }),
+		route: Repl.render() // TODO is there any point? just render an empty box instead?
 	}).catch( err => {
 		console.log( err.stack );
 	});
 });
+
+app.get( '/:lang', ( req, res ) => {
+	serveGuide( req, res, req.params.lang );
+});
+
+app.get( '/', ( req, res ) => {
+	serveGuide( req, res, 'en' );
+});
+
+function serveGuide ( req, res, lang ) {
+	const Nav = loadComponent( 'components/Nav' );
+	const Guide = loadComponent( 'routes/Guide' );
+
+	const sections = require( `${root}/public/guide/${lang}.json` );
+	const summary = require( `${root}/public/guide-summary/${lang}.json` );
+
+	servePage( res, {
+		title: 'rollup.js',
+		lang,
+		nav: Nav.render({ route: 'guide', lang }),
+		route: Guide.render({
+			sections,
+			summary,
+			lang
+		})
+	}).catch( err => {
+		console.log( err.stack );
+	});
+}
 
 app.use( ( req, res, next ) => {
 	if ( req.url.slice( -1 ) === '/' && req.url.length > 1 ) {
@@ -60,19 +86,6 @@ app.use( ( req, res, next ) => {
 	} else {
 		next();
 	}
-});
-
-app.get( '/repl', ( req, res ) => {
-	const Nav = loadComponent( 'components/Nav' );
-	const Repl = loadComponent( 'routes/Repl/index' );
-
-	servePage( res, {
-		title: 'rollup.js',
-		nav: Nav.render({ route: 'repl' }),
-		route: Repl.render() // TODO is there any point? just render an empty box instead?
-	}).catch( err => {
-		console.log( err.stack );
-	});
 });
 
 app.listen( 3001, () => {

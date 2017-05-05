@@ -1,10 +1,7 @@
 <ul class='guide-toc'>
-	{{#each contents as section}}
+	{{#each summary as section}}
 		<li>
-			<a class='section {{section.slug === active ? "active": ""}}' href='/#{{section.slug}}'>{{section.metadata.title}}</a>
-			<!--{{#each section.subsections as subsection}}
-				<a class='subsection {{subsection.slug === active ? "active": ""}}' href='/#{{subsection.slug}}'>{{subsection.title}}</a>
-			{{/each}}-->
+			<a class='section {{section.slug === active ? "active": ""}}' href='{{base}}#{{section.slug}}'>{{section.metadata.title}}</a>
 		</li>
 	{{/each}}
 </ul>
@@ -52,12 +49,18 @@
 </style>
 
 <script>
-	import contents from './guide-summary.json';
+	import * as store from '../store.js';
 
 	export default {
+		computed: {
+			base ( lang ) {
+				return lang === 'en' ? '/' : `/${lang}`;
+			}
+		},
+
 		data () {
 			return {
-				contents
+				summary: []
 			};
 		},
 

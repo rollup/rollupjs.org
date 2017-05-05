@@ -73,14 +73,10 @@ npm install --save-dev rollup-watch
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "rollup -c",
-	"dev": "rollup -c -w"
+    "dev": "rollup -c -w"
   },
   ...
 }
 ```
 
 The command `rollup -c -w` (short for `rollup --config --watch`) runs Rollup in watch mode.
-
-***
-
-> 原文：https://rollupjs.org/#npm-run-build
