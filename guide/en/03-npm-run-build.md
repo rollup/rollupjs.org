@@ -2,17 +2,17 @@
 title: npm run build
 ---
 
-Lots of JavaScript projects follow a simple convention: typing `npm run build` executes whatever build system the project uses. This is helpful because it means that someone who wants to help contribute to your project can dive right into the source code without knowing anything about the plumbing that ties it together (be that Rollup, or Webpack, or Gulp, or something more esoteric). They don't even need to install it globally like we did in the first section.
+许多 JavaScript 项目都遵循一个简单的约定：输入 `npm run build` 执行任何项目使用的构建系统。这点非常有用是因为它意味着有人想帮着贡献你的项目，他可以直接投身进源码中，而不需要知晓任何与之绑定的基础设施(像Rollup, 或 Webpack, 或 Gulp, 或一些更为难懂的)。他们甚至不需要全局安装它，正如我们在第一部份所做的一样。
 
-Setting up your own `npm run build` script is nice and straightforward.
+设置你自己的 `npm run build` 脚本是非常好并且是直截了当的。
 
-### Creating a package.json file
+### 创建立一个 package.json 文件
 
-A package.json file contains important information about your project, including its name, version, license and dependencies. (In fact, you can't publish a package to npm without a package.json — but you should still have one if you're building an application rather than a library.)
+一个 package.json 包含关于你项目的重要信息，包括它的名称、版本、许可证和依赖。(实际上，你不可以发布一个不包括 package.json 的程序包 - 但你仍然应该有一个这样的文件如果你构建的是一个应用而非一个库)。
 
-The easiest way to create one is by running `npm init` inside the project folder and following the prompts.
+最容易的方式去创建一个项目是在项文件夹里去执行 `npm init` 及跟着提示去做。
 
-Open the package.json and find (or create) the `scripts` section, and add a `build` entry:
+打开 package.json 并找到(创建) `scripts` 部份, 添加 `build` 键值:
 
 ```js
 {
@@ -25,20 +25,20 @@ Open the package.json and find (or create) the `scripts` section, and add a `bui
 }
 ```
 
-(This assumes you've got a `rollup.config.js` file in your project folder.)
+(这里假设你已经有一个 `rollup.config.js` 文件在项目文件夹里了)。
 
 
-### Installing Rollup locally
+### 本地安装Rollup
 
-Up till now we've been using a global installation of Rollup. It's much better to use a *local* installation, because then anyone cloning your project and running `npm install` will get a compatible version.
+直到现在，我们已经使用了全局安装的 Rollup. 但使用 *本地* 安装的会更好，因为这样任何人克隆你的项目和运行 `npm install` 将会得到一个兼容的版本。
 
-Run the following command...
+执行以下的命令...
 
 ```bash
 npm install --save-dev rollup # or `npm i -D rollup`
 ```
 
-...and notice that a `devDependencies` section has been added to your package.json:
+...你会留意到 `devDependencies` 部份被添加到你项目的 package.json 文件中:
 
 ```js
 {
@@ -50,18 +50,18 @@ npm install --save-dev rollup # or `npm i -D rollup`
 }
 ```
 
-All of your `npm run` scripts will look for locally installed versions of commands like `rollup` if they exist.
+你所有的 `npm run` 脚本都将会寻找本地安装的命令，如 `rollup` 若它们存在的话。
 
-Try running the script:
+尝试运行脚本：
 
 ```bash
 npm run build
 ```
 
 
-### Rebuilding when files change with `npm run dev`
+### 当文件更新，用`npm run dev` 重新构建
 
-By installing [rollup-watch](https://github.com/rollup/rollup-watch), you can create a script that automatically rebuilds your bundle whenever its source files change:
+通过安装 [rollup-watch](https://github.com/rollup/rollup-watch), 你可以创建一个脚本，当它的源文件改变的时候，它会自动重新构建：
 
 ```bash
 npm install --save-dev rollup-watch
@@ -79,7 +79,7 @@ npm install --save-dev rollup-watch
 }
 ```
 
-The command `rollup -c -w` (short for `rollup --config --watch`) runs Rollup in watch mode.
+命令 `rollup -c -w` (是 `rollup --config --watch` 的简写) 让 Rollup 在监视模式下运行。
 
 ***
 
