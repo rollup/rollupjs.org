@@ -10,7 +10,7 @@ Rollup 是一个 JavaScript 模块打包器，可以将小块代码编译成大�
 
 ### 快速入门指南
 
-使用 `npm install --global rollup` 进行安装。Rollup 可以通过[命令行接口(command line interface)](https://github.com/rollup/rollup/wiki/Command-Line-Interface)配合可选配置文件(optional configuration file)来调用，或者可以通过 [JavaScript API](https://github.com/rollup/rollup/wiki/JavaScript-API)来调用。运行 `rollup --help` 可以查看可用的选项和参数。[启动项目模板](https://github.com/rollup/rollup-starter-project)演示了常用的配置选项，并且本用户指南也提供了更详尽的说明。
+使用 `npm install --global rollup` 进行安装。Rollup 可以通过[命令行接口(command line interface)](https://github.com/rollup/rollup/wiki/Command-Line-Interface)配合可选配置文件(optional configuration file)来调用，或者可以通过 [JavaScript API](https://github.com/rollup/rollup/wiki/JavaScript-API)来调用。运行 `rollup --help` 可以查看可用的选项和参数。[启动项目模板](https://github.com/rollup/rollup-starter-project)演示了常用的配置选项，并且[用户指南](http://rollupjs.org/)也提供了更详尽的说明。
 
 #### 命令
 
