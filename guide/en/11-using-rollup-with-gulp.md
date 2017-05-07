@@ -1,10 +1,10 @@
 ---
-title: 使用 Rollup 和 Gulp
+title: Using RollupJS with Gulp
 ---
 
-Rollup 返回 promise 对象，gulp 能够识别，因此整合起来非常容易。
+Rollup returns promises which are understood by gulp so integration is easy.
 
-语法跟配置文件很想似，但属性会被拆开成两个运行步骤。构建文件束，转译成目标的输出文件。
+The syntax is very similar to the configuration file, but the properties are split across two different operations. Constructing the bundle, and transpiling to a target output.
 
 ```js
 var gulp = require('gulp'),
@@ -29,7 +29,3 @@ gulp.task('build', function () {
     })
 });
 ```
-
-***
-
-> 原文：https://rollupjs.org/#using-rollup-with-gulp

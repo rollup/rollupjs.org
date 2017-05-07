@@ -1,19 +1,18 @@
 ---
-title: 使用 Rollup 和 npm 程序包
+title: Using Rollup with npm packages
 ---
 
-某些时候，很可能你的项目会依赖于 npm 安装到 `node_modules` 文件夹中的程序包。跟其它打包工具如 Webpack 和 Browserify 不同，Rollup 不知道如何去开箱即用地处理这些依赖 - 我们需要添加一些配置。
+At some point, it's very likely that your project will depend on packages installed from npm into your `node_modules` folder. Unlike other bundlers like Webpack and Browserify, Rollup doesn't know 'out of the box' how to handle these dependencies - we need to add some configuration.
 
-让我们添加一个简单的依赖，叫 [the-answer](https://www.npmjs.com/package/the-answer), 它输出对生活、宇宙及其它一切的答案：
+Let's add a simple dependency called [the-answer](https://www.npmjs.com/package/the-answer), which exports the answer to the question of life, the universe and everything:
 
 ```bash
 npm install --save the-answer # or `npm i -S the-answer`
 ```
 
-注意我们这次使用 `--save`，因为这样它会被保存到 package.json 的 `dependencies` 部份。
+Notice that we used `--save` this time, so that it's stored in the `dependencies` section of package.json.
 
-如果我们更新 `src/main.js` 文件...
-
+If we update our `src/main.js` file...
 
 ```js
 // src/main.js
@@ -24,31 +23,30 @@ export default function () {
 }
 ```
 
-...运行 Rollup...
+...and run Rollup...
 
 ```bash
 npm run build
 ```
 
-...我们会看到下面的警告：
+...we'll see a warning like this:
 
 ```
 ⚠️ 'the-answer' is imported by src/main.js, but could not be resolved – treating it as an external dependency
-⚠️ 'the-answer' 被 src/main.js 引用，但不知道如何去解析 - 把它看作是外部的以来
 ```
 
-生成的 `bundle.js` 在 Node.js 中仍然能运行，因为 `import` 声音被编译为 CommonJS 的 `require` 语句，但 `the-answer` *并没有* 被打包到文件束中。为此，我们需要一个插件。
+The resulting `bundle.js` will still work in Node.js, because the `import` declaration gets turned into a CommonJS `require` statement, but `the-answer` does *not* get included in the bundle. For that, we need a plugin.
 
 
 ### rollup-plugin-node-resolve
 
-[rollup-plugin-node-resolve](https://github.com/rollup/rollup-plugin-node-resolve) 插件指导 Rollup 如果去寻找外部的模块。请安装...
+The [rollup-plugin-node-resolve](https://github.com/rollup/rollup-plugin-node-resolve) plugin teaches Rollup how to find external modules. Install it...
 
 ```bash
 npm install --save-dev rollup-plugin-node-resolve
 ```
 
-...将它添加到你的配置文件中:
+...and add it to your config file:
 
 ```js
 // rollup.config.js
@@ -62,28 +60,34 @@ export default {
 };
 ```
 
-这次，当你运行 `npm run build`, 再没有警告输出 - 文件束包含了引用的模块。
+This time, when you `npm run build`, no warning is emitted — the bundle contains the imported module.
 
 
 ### rollup-plugin-commonjs
 
-一些库输出 ES6 模块，你可以照原来的样子引用 - `the-answer` 正是这样的一个模块。但当下，大部份 npm 的程序包都被输出为 CommonJS 模块。直到它改变，在 Rollup 处理它们之前，我们都需要将 CommonJS 转成 ES2015。
+Some libraries expose ES6 modules that you can import as-is — `the-answer` is one such module. But at the moment, the majority of packages on npm are exposed as CommonJS modules instead. Until that changes, we need to convert CommonJS to ES2015 before Rollup can process them.
 
-[rollup-plugin-commonjs](https://github.com/rollup/rollup-plugin-commonjs) 插件就正好来处理这件事。
+The [rollup-plugin-commonjs](https://github.com/rollup/rollup-plugin-commonjs) plugin does exactly that.
 
-注意 `rollup-plugin-commonjs` 应该在其它插件变换你的模块之前使用 - 这是为了避免其它插件做了一些改变，而这改变会破坏了 CommonJS 的检测。
+Note that `rollup-plugin-commonjs` should go *before* other plugins that transform your modules — this is to prevent other plugins from making changes that break the CommonJS detection.
 
 
 ## Peer dependencies
 
-比方说，你正在开发一个有 peer dependency 的库，例如 React 或者 Lodash。如果你像上面描述的那样设置 externals，你的 rollup 会打包 *所有的* 引用：
+Let's say that you're building a library that has a peer
+dependency, such as React or Lodash. If you set up externals
+as described above, your rollup will bundle *all* imports:
 
 ```js
 import answer from 'the-answer';
 import _ from 'lodash';
 ```
 
-你可以很好地调整哪些需要被打包，哪些应该看作外部引用 (external)。在这个例子里，我们把 `lodash` 看作外部引用(external)，而不是 `ths-answer`。这里是配置文件：
+You can finely tune which imports are bundled and which
+are treated as external. For this example, we'll treat
+`lodash` as external, but not `the-answer`.
+
+Here is the config file:
 
 ```js
 // rollup.config.js
@@ -93,20 +97,23 @@ export default {
   entry: 'src/main.js',
   format: 'cjs',
   plugins: [resolve({
-    // 给 resolve 插件传入自定配置
+    // pass custom options to the resolve plugin
     customResolveOptions: {
       moduleDirectory: 'node_modules'
     }
   })],
-  // 指明哪个模块被看作外部引用(external)
+  // indicate which modules should be treated as external
   external: ['lodash'],
   dest: 'bundle.js'
 };
 ```
 
-看, `lodash` 现在被看成外部引用(external)，而没有被打包进你的库中。
+Voila, `lodash` will now be treated as external, and
+not be bundled with your library.
 
-`external` 参数接受一个模块名称的数组，或者一个函数，这个函数接收模块名，如果它被看作外部引用(external)，会返回 true。例如：
+The `external` key accepts either an array of module names
+or a function which takes the module name and returns true
+if it should be treated as external. For example:
 
 ```js
 export default {
@@ -115,14 +122,15 @@ export default {
 }
 ```
 
-你可能会使用这个形式的插件 [babel-plugin-lodash](https://github.com/lodash/babel-plugin-lodash) 去择优挑选 lodash 模块。这个请况下， Babel 会将你的引用语句转化成如下代码：
+You might use this form if you're using
+[babel-plugin-lodash](https://github.com/lodash/babel-plugin-lodash) 
+to cherry-pick lodash modules. In this case, Babel will
+convert your import statements to look like this:
 
 ```js
 import _merge from 'lodash/merge';
 ```
 
-如果 `external` 是数组形式，它不会处理通配符(*)，所以这种引用只有在函数形式的时候，才会被看作外部引用(external)。
-
-***
-
-> 原文：https://rollupjs.org/#using-rollup-with-npm
+The array form of `external` does not handle wildcards, so
+this import will only be treated as external in the functional
+form.

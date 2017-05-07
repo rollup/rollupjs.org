@@ -1,31 +1,31 @@
 ---
-title: Creating your first bundle
+title: 创建你的第一个文件束(bundle)
 ---
 
-*Before we begin, you'll need to have [Node.js](https://nodejs.org) installed so that you can use [npm](https://npmjs.com). You'll also need to know how to access the [command line](https://www.codecademy.com/learn/learn-the-command-line) on your machine.*
+*在我们开始前，你将需要安装 [Node.js](https://nodejs.org) 那样你才可以使用 [npm](https://npmjs.com)。你也将会需要知道如何在你的机器上使用 [command line](https://www.codecademy.com/learn/learn-the-command-line)。*
 
-The easiest way to use Rollup is via the Command Line Interface (or CLI). For now, we'll install it globally (later on we'll learn how to install it locally to your project so that your build process is portable, but don't worry about that yet). Type this into the command line:
+最容易的办法去使用 Rollup 是通过命令行界面 (or CLI). 现在，我们将全局安装它(稍后我们将会学习如何在你的本地项目安装，因而令你的构建流程是可移植的，但现在可以暂时不要担忧这点)。 在命令行中输入:
 
 ```bash
-npm install rollup --global # or `npm i rollup -g` for short
+npm install rollup --global # 或简写 `npm i rollup -g`
 ```
 
-You can now run the `rollup` command. Try it!
+你现在可以运行 `rollup` 命令。来试试!
 
 ```bash
 rollup
 ```
 
-Because no arguments were passed, Rollup prints usage instructions. This is the same as running `rollup --help`, or `rollup -h`.
+因为没有参数被传入，Rollup 输出使用指引。这跟运行 `rollup --help`, or `rollup -h` 如出一辙。
 
-Let's create a simple project:
+让我们新建一个简单的项目:
 
 ```bash
 mkdir -p my-rollup-project/src
 cd my-rollup-project
 ```
 
-First, we need an *entry point*. Paste this into a new file called `src/main.js`:
+首先，我们需要一个 *入口文件(entry point)*. 粘贴下面这段代码到一个新的文件里，名为 `src/main.js`:
 
 ```js
 // src/main.js
@@ -35,20 +35,20 @@ export default function () {
 }
 ```
 
-Then, let's create the `foo.js` module that our entry point imports:
+然后，让我们创建 `foo.js` 文件模块，我们的入口文件会引入:
 
 ```js
 // src/foo.js
 export default 'hello world!';
 ```
 
-Now we're ready to create a bundle:
+现在，我们已经准备好要创建一个文件束了：
 
 ```bash
 rollup src/main.js --format cjs
 ```
 
-The `--format` option specifies what kind of bundle we're creating — in this case, CommonJS (which will run in Node.js). Because we didn't specify an output file, it will be printed straight to `stdout`:
+`--format` 参数指定我们正在创建的文件束类型 — 在这个事例中，CommonJS (能在 Node.js 中运行).因为我们没有指定输出文件，它的内容将会被直接输出到 `stdout`：
 
 ```js
 'use strict';
@@ -62,16 +62,16 @@ var main = function () {
 module.exports = main;
 ```
 
-You can save the bundle as a file like so:
+你可以像这样将文件束另存为文件：
 
 ```bash
 rollup src/main.js --format cjs --output bundle.js
 # or `rollup main.js -f cjs -o bundle.js`
 ```
 
-(You could also do `rollup src/main.js > bundle.js`, but as we'll see later, this is less flexible if you're generating sourcemaps.)
+(你也可以用 `rollup src/main.js > bundle.js`, 但后面我们将会看到，如果你会生成 sourcemaps，这种办法将不太灵活。)
 
-Try running the code:
+尝试跑下面代码:
 
 ```bash
 node
@@ -80,4 +80,8 @@ node
 'hello world!'
 ```
 
-Congratulations! You've created your first bundle with Rollup.
+恭喜你！你已经使用 Rollup创建了你的第一个文件束。
+
+***
+
+> 原文：https://rollupjs.org/#creating-your-first-bundle

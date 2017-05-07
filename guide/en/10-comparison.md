@@ -1,9 +1,5 @@
 ---
-title: 与其它工具的比较
+title: Comparison with other tools
 ---
 
-即将揭晓...
-
-***
-
-> 原文：https://rollupjs.org/#comparison
+coming soon...
