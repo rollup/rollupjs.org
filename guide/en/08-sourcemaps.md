@@ -2,7 +2,7 @@
 title: Sourcemaps
 ---
 
-Sourcemaps can be enabled by adding the `--sourcemap` flag using the CLI, or by adding `sourceMap: true` to your configuration file.
+Sourcemaps 可以通过在命令行界面中添加  `--sourcemap` 参数被启用，或者在你的配置文件中添加 `sourceMap: true`。
 
 ```js
 export default {
@@ -12,3 +12,7 @@ export default {
   sourceMap: true
 };
 ```
+
+***
+
+> 原文：https://rollupjs.org/#sourcemaps
