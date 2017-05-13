@@ -1,86 +1,87 @@
 ---
-title: Introduction
+title: 介绍
 ---
 
 
 
-### Overview
+### 概述
 
-Rollup is a module bundler for JavaScript which compiles small pieces of code into something larger and more complex, such as a library or application. It uses the new standardized format for code modules included in the ES6 revision of JavaScript, instead of previous idiosyncratic solutions such as CommonJS and AMD. ES6 modules let you freely and seamlessly combine the most useful individual functions from your favorite libraries. This will eventually be possible natively, but Rollup lets you do it today.
+Rollup 是一个 JavaScript 模块打包器，可以将小块代码编译成大块复杂的代码，例如 library 或应用程序。Rollup 对代码模块使用新的标准化格式，这些标准都包含在 JavaScript 的 ES6 版本中，而不是以前的特殊解决方案，如 CommonJS 和 AMD。ES6 模块可以使你自由、无缝地使用你最喜爱的 library 中那些最有用独立函数，而你的项目不必携带其他未使用的代码。ES6 模块最终还是要由浏览器原生实现，但当前 Rollup 可以使你提前体验。
 
-### Quick Start Guide
+### 快速入门指南
 
-Install with `npm install --global rollup`. Rollup can be used either through a [command line interface](https://github.com/rollup/rollup/wiki/Command-Line-Interface) with an optional configuration file, or else through its [JavaScript API](https://github.com/rollup/rollup/wiki/JavaScript-API). Run `rollup --help` to see the available options and parameters. The [starter project template](https://github.com/rollup/rollup-starter-project) demonstrates common configuration options, and more detailed instructions are available throughout the [user guide](http://rollupjs.org/).
+使用 `npm install --global rollup` 进行安装。Rollup 可以通过[命令行接口(command line interface)](https://github.com/rollup/rollup/wiki/Command-Line-Interface)配合可选配置文件(optional configuration file)来调用，或者可以通过 [JavaScript API](https://github.com/rollup/rollup/wiki/JavaScript-API)来调用。运行 `rollup --help` 可以查看可用的选项和参数。[启动项目模板](https://github.com/rollup/rollup-starter-project)演示了常用的配置选项，并且[用户指南](http://rollupjs.org/)也提供了更详尽的说明。
 
-#### Commands
+#### 命令
 
-These commands assume the entry point to your application is named main.js, and that you'd like all imports compiled into a single file named bundle.js.
+这些命令假设应用程序入口起点的名称为 main.js，并且你想要所有 import 的依赖(all imports)都编译到一个名为 bundle.js 的单个文件中。
 
-For browsers:
+对于浏览器：
 
 ```bash
 # compile to a <script> containing a self-executing function
 $ rollup main.js --format iife --output bundle.js
 ```
 
-For Node.js:
+对于 Node.js:
 
 ```bash
 # compile to a CommonJS module
 $ rollup main.js --format cjs --output bundle.js
 ```
 
-For both browsers and Node.js:
+对于浏览器和 Node.js:
 
 ```bash
 # UMD format requires a bundle name
 $ rollup main.js --format umd --name "myBundle" --output bundle.js
 ```
 
-### Why
+### 为什么
 
-Developing software is usually easier if you break your project into smaller separate pieces, since that often removes unexpected interactions and dramatically reduces the complexity of the problems you'll need to solve, and simply writing smaller projects in the first place [isn't necessarily the answer](https://medium.com/@Rich_Harris/small-modules-it-s-not-quite-that-simple-3ca532d65de4). Unfortunately, JavaScript has not historically included this capability as a core feature in the language.
-
-This finally changed with the ES6 revision of JavaScript, which includes a syntax for importing and exporting functions and data so they can be shared between separate scripts. The specification is now fixed, but it is not yet implemented in browsers or Node.js. Rollup allows you to write your code using the new module system, and will then compile it back down to existing supported formats such as CommonJS modules, AMD modules, and IIFE-style scripts. This means that you get to *write future-proof code*, and you also get the tremendous benefits of...
+如果你将项目拆分成小的单独文件中，这样开发软件通常会很简单，因为这通常会消除无法预知的相互影响(remove unexpected interaction)，以及显著降低了所要解决的问题的复杂度(complexity of the problem)，并且可以在项目最初时，就简洁地编写小的项目（[不一定是标准答案](https://medium.com/@Rich_Harris/small-modules-it-s-not-quite-that-simple-3ca532d65de4)）。不幸的是，JavaScript 以往并没有将此功能作为语言的核心功能。
 
 ### Tree Shaking
 
-In addition to enabling the use of ES6 modules, Rollup also statically analyzes the code you are importing, and will exclude anything that isn't actually used. This allows you to build on top of existing tools and modules without adding extra dependencies or bloating the size of your project.
+除了使用 ES6 模块之外，Rollup 还静态分析代码中的 import，并将排除任何未实际使用的代码。这允许您架构于现有工具和模块之上，而不会增加额外的依赖或使项目的大小膨胀。
 
-For example, with CommonJS, the *entire tool or library must be imported*.
+例如，在使用 CommonJS 时，*必须导入(import)完整的工具(tool)或库(library)对象*。
 
 ```js
-// import the entire utils object with CommonJS
+// 使用 CommonJS 导入(import)完整的 utils 对象
 var utils = require( 'utils' );
 var query = 'Rollup';
-// use the ajax method of the utils object
+// 使用 utils 对象的 ajax 方法
 utils.ajax( 'https://api.example.com?search=' + query ).then( handleResponse );
 ```
 
-But with ES6 modules, instead of importing the whole `utils` object, we can just import the one `ajax` function we need:
+但是在使用 ES6 模块时，无需导入整个 `utils` 对象，我们可以只导入(import)我们所需的 `ajax` 函数：
 
 ```js
-// import the ajax function with an ES6 import statement
+// 使用 ES6 import 语句导入(import) ajax 函数
 import { ajax } from 'utils';
 var query = 'Rollup';
-// call the ajax function
+// 调用 ajax 函数
 ajax( 'https://api.example.com?search=' + query ).then( handleResponse );
 ```
 
-Because Rollup includes the bare minimum, it results in lighter, faster, and less complicated libraries and applications. Since this approach is based on explicit `import` and `export` statements, it is vastly more effective than simply running an automated minifier to detect unused variables in the compiled output code.
+因为 Rollup 只引入最基本最精简代码，所以可以生成轻量、快速，以及低复杂度的 library 和应用程序。因为这种基于显式的 `import` 和 `export` 语句的方式，它远比「在编译后的输出代码中，简单地运行自动 minifier 检测未使用的变量」更有效。
 
-### Compatibility
+### 兼容性
 
-#### Importing CommonJS
+#### 导入 CommonJS
 
-Rollup can import existing CommonJS modules [through a plugin](https://github.com/rollup/rollup-plugin-commonjs).
+Rollup 可以[通过插件](https://github.com/rollup/rollup-plugin-commonjs)导入已存在的 CommonJS 模块。
 
-#### Publishing ES6 Modules
+#### 发布 ES6 模块
 
-To make sure your ES6 modules are immediately usable by tools that work with CommonJS such as Node.js and webpack, you can use Rollup to compile to UMD or CommonJS format, and then point to that compiled version with the `main` property in your `package.json` file. If your `package.json` file also has a `module` field, ES6-aware tools like Rollup and [webpack 2](https://webpack.js.org/) will [import the ES6 module version](https://github.com/rollup/rollup/wiki/pkg.module) directly.
+为了确保你的 ES6 模块可以直接与「运行在 CommonJS（例如 Node.js 和 webpack）中的工具(tool)」使用，你可以使用 Rollup 编译为 UMD 或 CommonJS 格式，然后在 `package.json` 文件的 `main` 属性中指向当前编译的版本。如果你的 `package.json` 也具有 `module` 字段，像 Rollup 和 [webpack 2](https://webpack.js.org/) 这样的 ES6 感知工具(ES6-aware tools)将会直接[导入 ES6 模块版本](https://github.com/rollup/rollup/wiki/pkg.module)。
 
-### Links
+### 参考链接
 
 - step-by-step [tutorial video series](https://code.lengstorf.com/learn-rollup-js/), with accompanying written walkthrough
 - miscellaneous issues in the [wiki](https://github.com/rollup/rollup/wiki)
 
+***
+
+> 原文：https://rollupjs.org/#introduction

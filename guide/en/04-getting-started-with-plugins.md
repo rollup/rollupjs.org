@@ -1,24 +1,24 @@
 ---
-title: Getting started with plugins
+title: 插件的开始
 ---
 
-So far, we've created a simple bundle from an entry point and a module imported via a relative path. As you build more complex bundles, you'll often need more flexibility – importing modules installed with npm, compiling code with Babel, working with JSON files and so on.
+到目前为止，我们已经从一个入口点和通过相对路径导入的模块创建了一个简单的bundle。当您需要构建更为复杂的bundle时，您通常需要更多的灵活性 - 例如导入使用npm来安装的模块、使用Babel编译代码、使用JSON文件等等。
 
-For that, we use *plugins*, which change the behaviour of Rollup at key points in the bundling process. A list of available plugins is maintained on [the Rollup wiki](https://github.com/rollup/rollup/wiki/Plugins).
+针对以上原因，我们使用了 *插件*，它可以在打包过程的关键点改变Rollup的行为。在[the Rollup wiki](https://github.com/rollup/rollup/wiki/Plugins)上维护了可用插件的列表。
 
-### Using plugins
+### 使用插件
 
-For this tutorial, we'll use [rollup-plugin-json](https://github.com/rollup/rollup-plugin-json), which allows Rollup to import data from a JSON file.
+在本教程中，我们将使用[rollup-plugin-json](https://github.com/rollup/rollup-plugin-json)作为例子，它允许Rollup从JSON文件导入数据。
 
-Install rollup-plugin-json as a development dependency:
+首先安装rollup-plugin-json作为开发依赖：
 
 ```bash
 npm install --save-dev rollup-plugin-json
 ```
 
-(We're using `--save-dev` rather than `--save` because our code doesn't actually depend on the plugin when it runs – only when we're building the bundle.)
+（我们使用`--save-dev`而不是`--save`，因为我们的代码实际上在运行时不依赖于插件， - 只有当我们构建打包时才会使用到。）
 
-Update your `src/main.js` file so that it imports from your package.json instead of `src/foo.js`:
+然后更新您的`src/main.js`文件，以便它从您的package.json导入而不是从`src/foo.js`导入：
 
 ```js
 // src/main.js
@@ -29,7 +29,7 @@ export default function () {
 }
 ```
 
-Edit your `rollup.config.js` file to include the JSON plugin:
+其次编辑您的`rollup.config.js`文件以包含JSON插件：
 
 ```js
 // rollup.config.js
@@ -43,7 +43,7 @@ export default {
 };
 ```
 
-Run Rollup with `npm run build`. The result should look like this:
+最后通过命令`npm run build`来运行Rollup。结果应该是这样子的：
 
 ```js
 'use strict';
@@ -57,4 +57,8 @@ var main = function () {
 module.exports = main;
 ```
 
-(Notice that only the data we actually need gets imported – `name` and `devDependencies` and other parts of `package.json` are ignored. That's [tree-shaking](#what-is-tree-shaking-) in action!)
+（请注意，只有我们实际需要的数据才会被导入 - `name`和`devDependencies`以及package.json的其他部分是被忽略的。哪是因为[tree-shaking](#what-is-tree-shaking-)在起作用！）
+
+***
+
+> 原文：https://rollupjs.org/#getting-started-with-plugins
