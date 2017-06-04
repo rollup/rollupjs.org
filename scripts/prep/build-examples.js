@@ -30,7 +30,7 @@ module.exports = () => {
 		});
 	});
 
-	fs.writeFileSync( `${root}/shared/routes/Repl/examples.js`, `
+	fs.writeFileSync( `${root}/universal/routes/Repl/examples.js`, `
 	// this file is auto-generated, don't edit it
 	export default ${JSON.stringify( summary )};
 	`.trim() );

@@ -1,6 +1,6 @@
-const fs = require( 'fs' );
+import fs from 'fs';
 
-const template = fs.readFileSync( `${__dirname}/templates/index.html`, 'utf-8' );
+const template = fs.readFileSync( `server/templates/index.html`, 'utf-8' );
 
 const templateChunks = [];
 const pattern = /__(\w+)__/g;
@@ -35,7 +35,7 @@ const preload = [
 	`</fonts/roboto-regular.woff2>; rel=preload; as=font; type='font/woff2'`
 ].join( ', ' );
 
-module.exports = function servePage ( res, data ) {
+export default function servePage ( res, data ) {
 	res.writeHead( 200, {
 		'Content-Type': 'text/html',
 		Link: preload
@@ -59,4 +59,4 @@ module.exports = function servePage ( res, data ) {
 	return promise.then( () => {
 		res.end();
 	});
-};
+}

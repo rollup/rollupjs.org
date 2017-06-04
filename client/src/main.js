@@ -1,8 +1,8 @@
 import roadtrip from 'roadtrip';
-import Guide from '../shared/routes/Guide.html';
-import Repl from '../shared/routes/Repl/index.html';
-import Nav from '../shared/components/Nav.html';
-import * as store from '../shared/store.js';
+import Guide from '../../universal/routes/Guide.html';
+import Repl from '../../universal/routes/Repl/index.html';
+import Nav from '../../universal/components/Nav.html';
+import * as store from '../../universal/store.js';
 
 const header = document.querySelector( 'header' );
 const main = document.querySelector( 'main' );

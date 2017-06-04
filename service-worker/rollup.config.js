@@ -20,15 +20,14 @@ const manifest = [].concat(
 	'/main.css',
 
 	// content
-	'/guide.json',
 	glob.sync( 'examples/**/*.json', { cwd: 'public' }).map( x => `/${x}` ),
 	glob.sync( 'fontello/**/*.*', { cwd: 'public' }).map( x => `/${x}` ),
 	glob.sync( 'images/**/*.*', { cwd: 'public' }).map( x => `/${x}` )
 );
 
 export default {
-	entry: 'client/service-worker.js',
-	dest: 'public/service-worker.js',
+	entry: 'service-worker/src/main.js',
+	dest: 'service-worker/dist/service-worker.js',
 	format: 'iife',
 	plugins: [
 		replace({
