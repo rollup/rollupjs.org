@@ -2,7 +2,9 @@
 <BundleOptions bind:options :imports :exports/>
 
 <div class='output'>
-	<Editor :code readonly/>
+	{{#if loadedCodemirror}}
+		<Editor :code readonly/>
+	{{/if}}
 </div>
 
 <style>

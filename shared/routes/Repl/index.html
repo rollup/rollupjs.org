@@ -2,13 +2,13 @@
 	<div class='left'>
 		<h2>ES6 modules go in...</h2>
 		<div class='input'>
-			<Input bind:selectedExample bind:modules :codemirrorReady/>
+			<Input bind:selectedExample bind:modules :loadedCodemirror/>
 		</div>
 	</div>
 	<div class='right'>
 		<h2>...bundle comes out</h2>
 		<div class='output'>
-			<Output bind:options :code :error :warnings :imports :exports :codemirrorReady/>
+			<Output bind:options :code :error :warnings :imports :exports :loadedCodemirror/>
 		</div>
 	</div>
 </div>
@@ -96,10 +96,20 @@
 	import recoverState from './utils/recoverState.js';
 	import debounce from './utils/debounce.js';
 	import { dirname, resolve } from './utils/path';
+	import * as load from './utils/load.js';
 	import * as store from '../../store.js';
 	import roadtrip from 'roadtrip';
 
 	const versionMatch = typeof window !== 'undefined' ? /version=([^&]+)/.exec( window.location.search ) : null;
+
+	function loadCodemirror () {
+		return Promise.all([
+			curl([ '/codemirror.js' ]),
+			load.css( '/codemirror.css' ),
+		]).then( ([ CodeMirror ]) => {
+			return ( window.CodeMirror = CodeMirror );
+		});
+	}
 
 	export default {
 		components: {
@@ -143,6 +153,10 @@
 					this.set({ modules: example.modules });
 					settingModulesViaExample = false;
 				});
+			});
+
+			loadCodemirror().then( () => {
+				this.set({ loadedCodemirror: true });
 			});
 
 			curl([ url ])

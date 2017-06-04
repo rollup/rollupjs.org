@@ -12,7 +12,9 @@
 		{{/if}}
 	</header>
 
-	<Editor ref:editor bind:code/>
+	{{#if loadedCodemirror}}
+		<Editor ref:editor bind:code/>
+	{{/if}}
 </article>
 
 <style>

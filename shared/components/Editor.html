@@ -1,577 +1,99 @@
-<div class='mirror-container'>
-	<div ref:mirrorInner class='mirror-container-inner'>
-		<div class='gutters'></div>
-		<div class='selection'>
-			<div class='cursor {{showCursor ? "visible": ""}}' ref:cursor/>
-			<div class='selection-block' ref:selA style='height: 23px;'/>
-			<div class='selection-block' ref:selB style='width: calc(100% - 10px); left: 5px;'/>
-			<div class='selection-block' ref:selC style='left: 5px; height: 23px;'/>
-		</div>
-		<div ref:measure class='measure'></div>
-
-		<textarea
-			ref:textarea
-			bind:value='code'
-			on:select='updateSelectionRange()'
-			on:click='updateSelectionRange()'
-			on:drag='updateSelectionRange()'
-			on:keydown='handleKeydown(event)'
-			on:keyup='updateSelectionRange()'
-			on:focus='focus()'
-			on:blur='blur()'
-			on:scroll='syncScroll()'
-			spellcheck='{{false}}'
-		/>
-		<pre class='mirror' ref:mirror spellcheck='false'/>
-	</div>
+<div class='codemirror-container'>
+	<textarea tabindex='2' ref:editor></textarea>
 </div>
 
 <style>
-	.mirror-container {
-		position: relative;
-		overflow-x: hidden;
-		overflow-y: hidden;
-		tab-size: 4;
+	.codemirror-container {
+		width: 100%;
+		border-top: 1px solid #ccc;
+		border-bottom: 1px solid #ccc;
 	}
 
-	.mirror-container-inner {
-		padding: 0 0 0 32px;
+	.CodeMirror {
+		border-radius: 3px;
+		font-family: Inconsolata, monospace;
+		font-size: 16px;
+		line-height: 1.2;
+		font-weight: 400;
+		color: #333;
 	}
 
-	.gutters {
-		position: absolute;
-		left: 0;
-		top: 0;
-		width: 32px;
-		height: 100%;
-		background-color: #f9f9f9;
+	.CodeMirror {
+		height: auto;
+	}
+
+	@media (min-width: 768px) {
+		.codemirror-container {
+			height: 100%;
+			border: none;
+		}
+
+		.CodeMirror {
+			height: 100%;
+		}
+	}
+
+	.CodeMirror-gutters {
 		border-right: 1px solid #eee;
 	}
 
-	.selection {
-		top: -2px;
-	}
-
-	.selection > div, .measure {
-		position: absolute;
-	}
-
-	.selection-block {
-		background-color: rgb(200,200,220);
-	}
-
-	.cursor {
-		display: none;
-		width: 1px;
-		height: 26px;
-		background-color: #333;
-	}
-
-	.cursor.visible {
-		display: block;
-		animation-name: blink;
-		animation-duration: 1.2s;
-		animation-iteration-count: infinite;
-	}
-
-	.measure {
-		white-space: pre-wrap;
-		pointer-events: none;
-		padding-left: 6px;
-		color: transparent;
-		font-family: 'Inconsolata', monospace;
-		line-height: 1.4;
-		font-size: 16px;
-	}
-
-	.mirror {
-		padding: 5px;
-		font-size: 16px;
-		line-height: 1.4;
-		white-space: pre-wrap;
-		pointer-events: none;
-		color: #333;
-		overflow-x: visible;
-		margin: 0;
-	}
-
-	.line::before {
-		position: absolute;
-		content: attr(data-linenum);
-		width: 2em;
-		text-align: right;
-		left: -3em;
-		color: #999;
-	}
-
 	textarea {
-		position: absolute;
-		width: calc(100% - 32px);
-		height: 100%;
-		font-family: 'Inconsolata', monospace;
-		font-size: 16px;
+		width: 100%;
+		/*height: 100%;*/
 		border: none;
-		resize: none;
-		padding: 5px;
-		line-height: 1.4;
-		outline: none;
-		color: rgba(200,0,0,0.4);
-		opacity: 0.01;
-	}
-
-	.comment { color: #a50; }
-	.keyword { color: #708; }
-	.name { color: #333; }
-	.string { color: #a11; }
-	.num { color: #164; }
-
-	@keyframes blink {
-		0% { opacity: 1; }
-		40% { opacity: 1; }
-		50% { opacity: 0; }
-		90% { opacity: 0; }
-		100% { opacity: 1; }
 	}
 </style>
 
 <script>
-	import { getLocator, locate } from 'locate-character';
-	import * as acorn from 'acorn/dist/acorn_loose.js';
-	import selectionchange from './selectionchange.js';
-
-	if ( typeof window !== 'undefined' ) {
-		window.editors = [];
-		selectionchange.start();
-	}
-
-	function detach ( node ) {
-		node.parentNode.removeChild( node );
-	}
-
-	const NBSP = String.fromCharCode( 160 );
-
-	const typeLookup = {
-		name: 'name',
-		comment: 'comment',
-		num: 'num',
-		string: 'string'
-	};
-
-	function getType ( tokType ) {
-		if ( tokType.keyword ) return 'keyword';
-		if ( tokType.label in typeLookup ) return typeLookup[ tokType.label ];
-	}
-
-	const escaped = {
-		'"': '&quot;',
-		"'": '&#39;',
-		'&': '&amp;',
-		'<': '&lt;',
-		'>': '&gt;'
-	};
-
-	function escape ( html ) {
-		return String( html ).replace( /["'&<>]/g, match => escaped[ match ] );
-	}
-
-	function isCommented ( line ) {
-		return /^\s*\/\//.test( line );
-	}
-
-	const isFirefox = typeof InstallTrigger === 'object';
-
 	export default {
-		data () {
-			return {
-				selectionRange: {
-					start: 0,
-					end: 0
-				}
-			};
-		},
-
 		oncreate () {
 			let updating = false;
 
-			this.refs.textarea.value = this.get( 'code' );
-
-			let oldHtml = '';
-			let oldLines = [];
-			let lineElements = [];
-
-			this.observe( 'code', ( newCode, oldCode ) => {
-				let c = 0;
-				const tokens = [];
-
-				function addToken ( token ) {
-					if ( token.end < token.start ) {
-						while ( c > token.start ) {
-							const lastToken = tokens.pop();
-							c = lastToken.start;
-						}
-
-						return;
-					}
-
-					if ( token.start < c ) {
-						throw new Error( 'gah' );
-					}
-
-					if ( c < token.start ) {
-						tokens.push({
-							start: c,
-							end: token.start
-						});
-					}
-
-					tokens.push( token );
-					c = token.end;
-				}
-
-				const ast = acorn.parse_dammit( newCode, {
-					sourceType: 'module',
-					ecmaVersion: 8,
-					onComment: ( block, value, start, end ) => {
-						addToken({
-							start,
-							end,
-							type: {
-								label: 'comment'
-							}
-						});
-					},
-					onToken: addToken
-				});
-
-				if ( c < newCode.length ) {
-					tokens.push({
-						start: c,
-						end: newCode.length
-					});
-				}
-
-				let newHtml = '';
-				const lines = [];
-				let currentLine = '';
-
-				tokens.forEach( token => {
-					const value = newCode.slice( token.start, token.end );
-					const chunks = value.split( '\n' );
-
-					for ( let i = 0; i < chunks.length; i += 1 ) {
-						const chunk = chunks[i];
-
-						if ( i > 0 ) {
-							lines.push( currentLine );
-							currentLine = '';
-						}
-
-						const type = token.type && getType( token.type );
-
-						if ( type ) {
-							currentLine += `<span class="${type}">${escape(chunk)}</span>`;
-						} else {
-							currentLine += escape( chunk );
-						}
-					}
-				});
-
-				lines.push( currentLine );
-
-				let i = 0;
-				let t = 0;
-				let currentToken = null;
-
-				for ( ; i < lines.length; i += 1 ) {
-					const oldLine = oldLines[i];
-					const newLine = lines[i];
-
-					const end = c + newLine.length + 1;
-
-					let lineHtml = '';
-
-					if ( oldLine === newLine ) continue;
-
-					if ( i < lineElements.length ) {
-						const div = lineElements[i];
-						div.innerHTML = newLine || NBSP;
-					} else {
-						const div = document.createElement( 'div' );
-						div.className = 'line';
-						div.setAttribute( 'data-linenum', i + 1 );
-						div.innerHTML = newLine || NBSP;
-						this.refs.mirror.appendChild( div );
-						lineElements.push( div );
-					}
-				}
-
-				for ( ; i < lineElements.length; i += 1 ) {
-					detach( lineElements[i] );
-				}
-
-				oldLines = lines;
-				lineElements.length = lines.length;
+			this.editor = window.CodeMirror.fromTextArea( this.refs.editor, {
+				lineNumbers: true,
+				lineWrapping: true,
+				indentWithTabs: true,
+				indentUnit: 2,
+				tabSize: 2,
+				value: this.get( 'code' ),
+				mode: 'javascript',
+				readOnly: this.get( 'readonly' )
 			});
 
-			document.addEventListener( 'selectionchange', event => {
-				if ( this.refs.textarea !== document.activeElement ) {
-					return;
-				}
-
-				this.updateSelectionRange();
+			// TODO this is a bug. oncreate should only be called once
+			// the component is actually in the DOM
+			setTimeout( () => {
+				this.editor.refresh();
 			});
 
-			this.observe( 'selectionRange', range => {
-				if ( range.start === range.end ) {
-					if ( this.refs.textarea === document.activeElement ) this.showCursor( range.start );
-					this.hideSelection();
-				} else {
-					this.hideCursor();
-					this.showSelection( range );
+			setTimeout( () => {
+				this.editor.refresh();
+			}, 100);
+
+			this.editor.on( 'change', instance => {
+				if ( !updating ) {
+					updating = true;
+					this.set({ code: instance.getValue() });
+					updating = false;
 				}
+			});
+
+			this.observe( 'code', code => {
+				if ( !updating && code != null ) {
+					updating = true;
+					this.editor.setValue( code );
+					updating = false;
+				}
+			});
+
+			this.on( 'destroy', () => {
+				this.editor.toTextArea();
 			});
 		},
 
 		methods: {
-			focus () {
-				this.refs.textarea.focus();
-				setTimeout( () => {
-					// to reset the CSS animation
-					this.set({ showCursor: true });
-				});
-			},
-
-			getCoords ( char ) {
-				const code = this.get( 'code' );
-				const lines = code.split( '\n' );
-				const loc = locate( code, char );
-
-				const lineElements = this.refs.mirror.children;
-				const lineElement = lineElements[ loc.line ];
-
-				const line = ( lines[ loc.line ] + ' ' );
-
-				this.refs.measure.innerHTML = `${escape( line.slice( 0, loc.column ) )}<span>${escape( line.slice( loc.column ) )}</span>`;
-
-				const spans = this.refs.measure.children;
-				const span = spans[0];
-
-				return {
-					top: ~~( lineElement.offsetTop + span.offsetTop ),
-					left: ~~( lineElement.offsetLeft + span.offsetLeft ) - 7
-				};
-			},
-
-			hideCursor () {
-				this.set({ showCursor: false });
-			},
-
-			hideSelection () {
-				this.refs.selA.style.display = this.refs.selB.style.display = this.refs.selC.style.display = 'none';
-			},
-
-			showCursor ( char ) {
-				const { top, left } = this.getCoords( char );
-
-				Object.assign( this.refs.cursor.style, {
-					top: ( top - 2 ) + 'px',
-					left: left + 'px'
-				});
-
-				this.set({ showCursor: false });
-				setTimeout( () => {
-					// to reset the CSS animation
-					this.set({ showCursor: true });
-				});
-			},
-
-			showSelection ({ start, end }) {
-				const { top: startTop, left: startLeft } = this.getCoords( start );
-				const { top: endTop, left: endLeft } = this.getCoords( end );
-
-				Object.assign( this.refs.selA.style, {
-					display: 'block',
-					top: startTop + 'px',
-					left: startLeft + 'px'
-				});
-
-				if ( startTop === endTop ) {
-					// same line
-					this.refs.selA.style.right = 'auto';
-					this.refs.selA.style.width = ( endLeft - startLeft ) + 'px';
-
-					this.refs.selB.style.display = this.refs.selC.style.display = 'none';
-				} else {
-					this.refs.selA.style.right = '5px';
-					this.refs.selA.style.width = 'auto';
-
-					this.refs.selC.style.top = endTop;
-					this.refs.selC.style.width = ( endLeft - 5 ) + 'px';
-
-					if ( endTop > startTop + 23 ) {
-						// three lines
-						Object.assign( this.refs.selB.style, {
-							display: 'block',
-							top: startTop + 22,
-							height: endTop - ( startTop + 22 )
-						});
-					} else {
-						// two lines
-						this.refs.selB.style.display = 'none';
-					}
-
-					this.refs.selC.style.display = 'block';
-				}
-			},
-
-			updateSelectionRange () {
-				const { selectionStart, selectionEnd } = this.refs.textarea;
-				this.set({
-					selectionRange: {
-						start: selectionStart,
-						end: selectionEnd
-					}
-				});
-			},
-
-			blur () {
-				this.hideSelection();
-				this.hideCursor();
-			},
-
-			handleKeydown ( event ) {
-				const range = this.get( 'selectionRange' );
-
-				if ( event.keyCode === 191 && event.metaKey ) {
-					event.preventDefault();
-					this.toggleComments();
-				}
-
-				if ( event.keyCode === 9 ) {
-					event.preventDefault();
-					this.indentLines( event.shiftKey );
-				}
-
-				if ( event.keyCode === 13 || event.keyCode === 8 ) {
-					// for some reason, this doesn't trigger a selectionchange event
-					setTimeout( () => {
-						this.updateSelectionRange();
-					});
-				}
-			},
-
-			toggleComments () {
-				const code = this.get( 'code' );
-				const range = this.get( 'selectionRange' );
-
-				const startLoc = locate( code, range.start );
-				const endLoc = locate( code, range.end );
-
-				const lines = code.split( '\n' );
-				const slice = lines.slice( startLoc.line, endLoc.line + 1 );
-
-				const uncomment = slice.every( isCommented );
-
-				let { start, end } = range;
-
-				for ( let i = startLoc.line; i <= endLoc.line; i += 1 ) {
-					let line = lines[i];
-
-					if ( uncomment ) {
-						if ( isCommented( line ) ) {
-							line = line.replace( /^(\s*)(\/\/\s?)/, ( match, leadingWhitespace, commentStart ) => {
-								end -= commentStart.length;
-								if ( i === startLoc.line ) start -= commentStart.length;
-								return leadingWhitespace;
-							});
-						}
-					} else {
-						line = '// ' + line;
-						end += 3;
-						if ( i === startLoc.line ) start += 3;
-					}
-
-					lines[i] = line;
-				}
-
-				const newCode = lines.join( '\n' );
-
-				if ( newCode !== code ) { // we do this test to avoid moving cursor backwards when outdenting has no effect
-					this.set({
-						code: lines.join( '\n' )
-					});
-
-					this.refs.textarea.setSelectionRange( start, end );
-				}
-			},
-
-			indentLines ( outdent ) {
-				const code = this.get( 'code' );
-				const range = this.get( 'selectionRange' );
-
-				const startLoc = locate( code, range.start );
-				const endLoc = locate( code, range.end );
-
-				const sameLine = startLoc.line === endLoc.line;
-
-				if ( sameLine && !outdent ) {
-					// insert tab at cursor
-					this.set({
-						code: code.slice( 0, range.start ) + '\t' + code.slice( range.end )
-					});
-					this.refs.textarea.setSelectionRange( range.start + 1, range.start + 1 );
-				}
-
-				else {
-					const lines = code.split( '\n' );
-					for ( let i = startLoc.line; i <= endLoc.line; i += 1 ) {
-						const line = lines[i];
-						lines[i] = outdent ? line.replace( /^(\t|  )/, '' ) : `\t${line}`;
-					}
-
-					const newCode = lines.join( '\n' );
-
-					if ( newCode !== code ) { // we do this test to avoid moving cursor backwards when outdenting has no effect
-						this.set({
-							code: lines.join( '\n' )
-						});
-
-						const m = outdent ? -1 : 1;
-						const d = ( endLoc.line - startLoc.line ) + 1;
-
-						this.refs.textarea.setSelectionRange( range.start + m, range.end + m * d );
-					}
-				}
-			},
-
-			syncScroll () {
-				this.refs.mirrorInner.scrollTop = this.refs.textarea.scrollTop;
-			}
-		},
-
-		events: {
-			drag ( node, callback ) {
-				function handleMousedown () {
-					function handleMousemove ( event ) {
-						callback.call( this, event );
-					}
-
-					function handleMouseup ( event ) {
-						node.removeEventListener( 'mousemove', handleMousemove );
-						node.removeEventListener( 'mouseup', handleMouseup );
-					}
-
-					node.addEventListener( 'mousemove', handleMousemove );
-					node.addEventListener( 'mouseup', handleMouseup );
-				}
-
-				node.addEventListener( 'mousedown', handleMousedown );
-
-				return {
-					teardown () {
-						node.removeEventListener( 'mousedown', handleMousedown );
-					}
-				};
+			resize () {
+				this.editor.refresh();
 			}
 		}
 	};
