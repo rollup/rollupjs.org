@@ -27,12 +27,12 @@
     "svelte": "^1.22.2"
   },
   "scripts": {
-    "start": "npm run build && node server/dist/bundle.js",
+    "start": "node server/dist/bundle.js",
     "lint": "node node_modules/eslint/bin/eslint src --ext .js --ext .html",
     "update_overview": "node scripts/update_overview",
     "rollup": "rollup -c",
     "rollup:dev": "export DEV=true && rollup -c -w",
-    "dev": "node scripts/prep && npm run rollup:dev & node server/dist/bundle.js",
+    "dev": "node scripts/prep && npm run rollup:dev & npm start",
     "build": "node scripts/prep && npm run rollup",
     "stage": "now",
     "deploy": "now && now alias",
@@ -56,7 +56,8 @@
       "public",
       "server",
       "service-worker",
-      "client"
+      "client",
+      "rollup.config.js"
     ]
   }
 }
