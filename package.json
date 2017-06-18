@@ -33,7 +33,8 @@
     "rollup": "rollup -c",
     "rollup:dev": "export DEV=true && rollup -c -w",
     "dev": "node scripts/prep && npm run rollup:dev & npm start",
-    "build": "node scripts/prep && npm run rollup",
+    "build": "node scripts/prep && npm run clean && npm run rollup",
+    "clean": "rm -rf client/dist && rm -rf server/dist && rm -rf service-worker/dist && mkdir -p client/dist && mkdir -p server/dist && mkdir -p service-worker/dist",
     "stage": "now",
     "deploy": "now && now alias",
     "deploy:ci": "now --token $NOW_TOKEN && now alias --token $NOW_TOKEN"
