@@ -4,17 +4,17 @@ title: Big list of options
 
 **• entry** (required)
 
-    `String` The bundle's entry point (e.g. your `main.js` or `app.js` or `index.js`)
+`String` The bundle's entry point (e.g. your `main.js` or `app.js` or `index.js`)
 
 **• format** (required)
 
-    `String` The format of the generated bundle. One of the following:
+`String` The format of the generated bundle. One of the following:
 
-    * `amd` – Asynchronous Module Definition, used with module loaders like RequireJS
-    * `cjs` – CommonJS, suitable for Node and Browserify/Webpack
-    * `es` – Keep the bundle as an ES module file
-    * `iife` – A self-executing function, suitable for inclusion as a `<script>` tag. (If you want to create a bundle for your application, you probably want to use this, because it leads to smaller file sizes.)
-    * `umd` – Universal Module Definition, works as `amd`, `cjs` and `iife` all in one
+* `amd` – Asynchronous Module Definition, used with module loaders like RequireJS
+* `cjs` – CommonJS, suitable for Node and Browserify/Webpack
+* `es` – Keep the bundle as an ES module file
+* `iife` – A self-executing function, suitable for inclusion as a `<script>` tag. (If you want to create a bundle for your application, you probably want to use this, because it leads to smaller file sizes.)
+* `umd` – Universal Module Definition, works as `amd`, `cjs` and `iife` all in one
 
 **• cache**
 
@@ -32,24 +32,16 @@ Either...
 1. a resolved ID (like an absolute path to a file)
 
 ```js
-// app.js
-import moment from 'moment';
-
-setInterval( function () {
-  var timeStr = moment().format( 'h:mm:ss a' );
-  console.log( 'the time is ' + timeStr );
-}, 1000 );
-
 // rollup.config.js
-import * as path from 'path';
+import path from 'path';
 
-rollup.rollup({
-  entry: 'app.js',
+export default {
+  ...,
   external: [
-    'moment',
-    path.resolve( './src/special-file.js' ) 
+    'some-externally-required-library',
+    path.resolve( './src/some-local-file-that-should-not-be-bundled.js' ) 
   ]
-}).then(...)
+};
 ```
 
 **• paths**
@@ -121,14 +113,14 @@ onwarn ({ loc, frame, message }) {
 
 ```js
 // rollup.config.js
-import nodeResolve from 'rollup-plugin-node-resolve';
+import resolve from 'rollup-plugin-node-resolve';
 import commonjs from 'rollup-plugin-commonjs';
 
 export default {
   entry: 'main.js',
   plugins: [
-    nodeResolve({ jsnext: true, main: true }),
-    commonjs({ include: 'node_modules/**' })
+    resolve(),
+    commonjs()
   ]
 };
 ```
@@ -189,7 +181,7 @@ var yourLib = require( 'your-lib' )['default'];
 ```js
 // rollup.config.js
 export default {
-  entry: 'main.js',
+  ...,
   format: 'amd',
   amd: {
     id: 'my-bundle'
@@ -204,7 +196,7 @@ export default {
 ```js
 // rollup.config.js
 export default {
-  entry: 'main.js',
+  ...,
   format: 'amd',
   amd: {
     define: 'def'
@@ -221,6 +213,7 @@ export default {
 ```js
 // rollup.config.js
 export default {
+  ...,
   format: 'iife',
   moduleName: 'MyBundle'
 };
