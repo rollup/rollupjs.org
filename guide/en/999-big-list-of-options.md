@@ -2,6 +2,8 @@
 title: Big list of options
 ---
 
+# CORE FUNCTIONALITY
+
 **• entry** (required)
 
 `String` The bundle's entry point (e.g. your `main.js` or `app.js` or `index.js`)
@@ -16,9 +18,39 @@ title: Big list of options
 * `iife` – A self-executing function, suitable for inclusion as a `<script>` tag. (If you want to create a bundle for your application, you probably want to use this, because it leads to smaller file sizes.)
 * `umd` – Universal Module Definition, works as `amd`, `cjs` and `iife` all in one
 
-**• cache**
+**• plugins**
 
-`Object` A previously-generated bundle. Use it to speed up subsequent builds
+`Array` of plugin objects (or a single plugin object) – see [[Plugins]] for more information.
+
+```js
+// rollup.config.js
+import resolve from 'rollup-plugin-node-resolve';
+import commonjs from 'rollup-plugin-commonjs';
+
+export default {
+  entry: 'main.js',
+  plugins: [
+    resolve(),
+    commonjs()
+  ]
+};
+```
+
+**• sourceMap**
+
+If `true`, a separate sourcemap file will be created. If `inline`, the sourcemap will be appended to the resulting `dest` file as a data URI.
+
+**• sourceMapFile**
+
+`String` The location of the generated bundle. If this is an absolute path, all the `sources` paths in the sourcemap will be relative to it. The `map.file` property is the basename of `sourceMapFile`, as the location of the sourcemap is assumed to be adjacent to the bundle.
+
+`sourceMapFile` is unnecessary if `dest` is specified.
+
+
+
+
+
+# ADVANCED FUNCTIONALITY
 
 **• external**
 
@@ -39,7 +71,7 @@ export default {
   ...,
   external: [
     'some-externally-required-library',
-    path.resolve( './src/some-local-file-that-should-not-be-bundled.js' ) 
+    path.resolve( './src/some-local-file-that-should-not-be-bundled.js' )
   ]
 };
 ```
@@ -74,7 +106,36 @@ define(['https://d3js.org/d3.v4.min'], function (d3) {
 });
 ```
 
-**• onwarn**
+**• banner/footer** (configuration file only)
+
+`String` A string to prepend/append to the bundle. (Note: `banner` and `footer` options will not break sourcemaps)
+
+```js
+// rollup.config.js
+export default {
+  ...,
+  banner: '/* my-library version ' + version + ' */',
+  footer: '/* follow me on Twitter! @rich_harris */'
+};
+```
+
+**• intro/outro** (configuration file only)
+
+`String` Similar to `banner` and `footer`, except that the code goes *inside* any format-specific wrapper
+
+```js
+export default {
+  ...,
+  intro: 'var ENVIRONMENT = "production";'
+};
+```
+
+**• cache**
+
+`Object` A previously-generated bundle. Use it to speed up subsequent builds
+
+
+**• onwarn** (configuration file only)
 
 `Function` that will intercept warning messages. If not supplied, warnings will be deduplicated and printed to the console.
 
@@ -107,23 +168,10 @@ onwarn ({ loc, frame, message }) {
 }
 ```
 
-**• plugins**
 
-`Array` of plugin objects (or a single plugin object) – see [[Plugins]] for more information.
 
-```js
-// rollup.config.js
-import resolve from 'rollup-plugin-node-resolve';
-import commonjs from 'rollup-plugin-commonjs';
+# DANGER ZONE
 
-export default {
-  entry: 'main.js',
-  plugins: [
-    resolve(),
-    commonjs()
-  ]
-};
-```
 
 **• treeshake**
 
@@ -144,6 +192,10 @@ Same as `options.context`, but per-module – can either be an object of `id: co
 **• legacy**
 
 Adds support for very old environments like IE8, at the cost of some extra code.
+
+
+
+
 
 **• exports**
 
@@ -172,7 +224,7 @@ var yourMethod = require( 'your-lib' ).yourMethod;
 var yourLib = require( 'your-lib' )['default'];
 ```
 
-**• amd**
+**• amd** (configuration file only?)
 
 `Object` Can contain the following properties:
 
@@ -266,40 +318,6 @@ export default {
 **• interop**
 
 `Boolean` whether or not to add an 'interop block'. By default (`interop: true`), for safety's sake, Rollup will assign any external dependencies' `default` exports to a separate variable if it's necessary to distinguish between default and named exports. This generally only applies if your external dependencies were transpiled (for example with Babel) – if you're sure you don't need it, you can save a few bytes with `interop: false`.
-
-**• banner/footer**
-
-`String` A string to prepend/append to the bundle. (Note: `banner` and `footer` options will not break sourcemaps)
-
-```js
-// rollup.config.js
-export default {
-  ...,
-  banner: '/* my-library version ' + version + ' */',
-  footer: '/* follow me on Twitter! @rich_harris */'
-};
-```
-
-**• intro/outro**
-
-`String` Similar to `banner` and `footer`, except that the code goes *inside* any format-specific wrapper
-
-```js
-export default {
-  ...,
-  intro: 'var ENVIRONMENT = "production";'
-};
-```
-
-**• sourceMap**
-
-If `true`, a separate sourcemap file will be created. If `inline`, the sourcemap will be appended to the resulting `dest` file as a data URI.
-
-**• sourceMapFile**
-
-`String` The location of the generated bundle. If this is an absolute path, all the `sources` paths in the sourcemap will be relative to it. The `map.file` property is the basename of `sourceMapFile`, as the location of the sourcemap is assumed to be adjacent to the bundle.
-
-`sourceMapFile` is unnecessary if `dest` is specified.
 
 **• useStrict**
 
