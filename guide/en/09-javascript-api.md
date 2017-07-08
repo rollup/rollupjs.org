@@ -16,7 +16,7 @@ Rollup exports an object which contains a single `.rollup()` method.
 
 ### Input
 
-<a name="rollup_rollup">#</a> **rollup.rollup(*inputOptions*)**
+**rollup.rollup(*inputOptions*)**
 
 The `rollup.rollup()` method specifies the inputs passed to Rollup for compilation. It takes a single argument, which is an object containing one or more of the following properties, and it returns a Promise which resolves to the bundle object.
 
@@ -24,8 +24,7 @@ The `rollup.rollup()` method specifies the inputs passed to Rollup for compilati
 
 The following properties can be added to your input options object to change the default behavior of the `rollup.rollup()` method:
 
------
-<a name="rollup_rollup_entry">**entry**</a> *string* (required)
+**• entry** *string* (required)
 
 The module's entry point file from which to start compilation and resolution of dependencies. This is likely identical to the `module` field in your package.json file.
 
@@ -35,9 +34,7 @@ let inputOptions = {
 };
 ```
 
------
-
-<a name="rollup_rollup_plugins">**plugins**</a> *array*
+**• plugins** *array*
 
 An array of Rollup plugins that should be used to transform the bundle code. The plugins are functions when imported, but the functions *must to be called* in order for the plugin to work.
 
@@ -53,12 +50,11 @@ let inputOptions = {
 };
 ```
 
------
-<a name="rollup_rollup_cache">**cache**</a> *object*
+**• cache** *object*
 
 An optional variable representing the last bundle compiled by the current Node process. This is mostly useful for speeding up incremental rebuilds, such as when you're watching the files and rebuilding automatically on changes.
------
-<a name="rollup_rollup_onwarn">**onwarn**</a>  *function*
+
+**• onwarn**  *function*
 
 A function which will intercept warning messages. If not supplied, warnings will just be deduplicated and printed to the console.
 
@@ -100,9 +96,8 @@ let inputOptions = {
 };
 ```
 
------
 
-<a name="rollup_rollup_paths">**paths**</a> *object* or *function*
+**• paths** *object* or *function*
 
 Specifies paths of **external files** for use in the bundle. At the end of the build, the bundler will rewrite references to these modules so they use the external locations. For now this is only useful for AMD and UMD output formats and loading dependencies from a CDN, but eventually it will also be used for loading of remote ES6 modules.
 
@@ -129,21 +124,18 @@ let inputOptions = {
 };
 ```
 
------
 
-<a name="rollup_rollup_acorn">**acorn**</a> *object*
+**• acorn** *object*
 
 Any parameters that should be passed through to [Acorn](https://github.com/ternjs/acorn).
 
------
 
-<a name="rollup_rollup_context">**context**</a> *object*
+**• context** *object*
 
 In ES6 modules, the `this` object is always `undefined`. In rare cases you might need to change this to something else, like `window`. Use of this option is discouraged.
 
------
 
-<a name="rollup_rollup_modulecontext">**moduleContext**</a> *object* or *function*
+**• moduleContext** *object* or *function*
 
 When the `moduleContext` property contains an *object*, it should consist of key-value pairs where the key is the module ID and the value is the context object to use for that module.
 
@@ -151,9 +143,8 @@ When the `moduleContext` property contains a *function*, it will be called for e
 
 Use of this option is discouraged.
 
------
 
-<a name="rollup_rollup_legacy">**legacy**</a> *boolean*
+**• legacy** *boolean*
 
 Adds support for very old environments like IE8 by stripping out more modern code that might not work reliably, at the cost of deviating slightly from the precise specifications required of ES6 module environments.
 
@@ -161,10 +152,10 @@ Adds support for very old environments like IE8 by stripping out more modern cod
 
 The Promise returned by the `rollup.rollup()` method resolves to an object representing the compiled bundle.
 
-<a name="bundle_generate">#</a> **bundle.generate(*config*)**
+**• bundle.generate(*config*)**
 
 Compiles the project. Returns an object which contains properties for the compiled `code` (as a string) and the `map` (a sourcemap object). The optional configuration object argument is identical to the configuration object you might use in a configuration file for the command line, but any input options will be ignored because the inputs have already been supplied.
 
-<a name="bundle_write">#</a> **bundle.write(*config*)**
+**• bundle.write(*config*)**
 
 Compiles the project *and* writes the file to disk, returning a Promise which compiles when the write operation has completed. This requires a configuration object argument which specifies an output filename under the `dest` property.
