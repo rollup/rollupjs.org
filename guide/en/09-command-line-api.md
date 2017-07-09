@@ -1,20 +1,20 @@
 ---
-title: Command Line API
+title: Command Line Interface
 ---
 
 Rollup should typically be used from the command line. You can provide an optional Rollup configuration file to simplify command line usage and enable advanced Rollup functionality.
 
-## Configuration Files
+### Configuration Files
 
 Rollup configuration files are optional, but they are powerful and convenient and thus **recommended**.
 
-A Rollup configuration file is a JavaScript file in ES6 module format which exports a default object describing the desired behavior. Typically, your config file is called `rollup.config.js` and sits in the root directory of your project.
+A config file is an ES6 module that exports a default object with the desired options. Typically, it is called `rollup.config.js` and sits in the root directory of your project.
 
 ```javascript
+// rollup.config.js
 let configuration = {
-  // add various configuration options
-  // as object properties
-}
+  // configuration options go here...
+};
 export default configuration;
 ```
 
@@ -29,18 +29,14 @@ You *must* use a configuration file in order to do any of the following:
 To use Rollup with a configuration file, pass the `--config` or `-c` flags.
 
 ```bash
-# use Rollup with a configuration file
+# use Rollup with a rollup.config.js file
 $ rollup --config
-```
 
-You can specify a filename for the configuration file. If you do not, it is assumed to be `rollup.config.js`.
-
-```bash
-# use Rollup with a configuration file with a customized filename
+# alternatively, specify a custom config file location
 $ rollup --config my.config.js
 ```
 
-## Core Functionality
+### Core Functionality
 
 **• --input / -i** *string* (required)
 
@@ -75,6 +71,7 @@ $ rollup --input app.js --output app-bundled.js
 When specified in a configuration file, this option is known as `dest` instead of `output`:
 
 ```javascript
+// rollup.config.js
 let configuration = {
   dest: './app-bundled.js'
 };
@@ -96,8 +93,9 @@ $ rollup --input app.js --format iife
 ```
 
 ```javascript
+// rollup.config.js
 let configuration = {
-  entry: './app.js'
+  entry: './app.js',
   format: 'iife'
 };
 ```
@@ -109,7 +107,7 @@ An array of Rollup plugins that should be used to transform the bundle code. The
 For example, to enable import of CommonJS modules such as those from the Node.js ecosystem, add the following to your Rollup configuration file:
 
 ```javascript
-// first import the plugins you want to use
+// rollup.config.js
 import resolve from 'rollup-plugin-node-resolve';
 import commonjs from 'rollup-plugin-commonjs';
 
@@ -132,8 +130,9 @@ $ rollup --input app.js --format umd --name mymodule
 ```
 
 ```javascript
+// rollup.config.js
 let configuration = {
-  entry: './app.js'
+  entry: './app.js',
   format: 'umd',
   name: 'mymodule'
 };
@@ -156,6 +155,7 @@ $ rollup --input app.js --format iife --sourcemap inline
 When specified in a configuration file, this this property name should be camelCased.
 
 ```javascript
+// rollup.config.js
 let configuration = {
   sourceMap: 'inline'
 };
