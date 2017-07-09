@@ -2,11 +2,15 @@
 title: Big list of options
 ---
 
-# CORE FUNCTIONALITY
+## Core functionality
 
 **• entry** (required)
 
 `String` The bundle's entry point (e.g. your `main.js` or `app.js` or `index.js`)
+
+**• dest**
+
+`String` The file to write to.
 
 **• format** (required)
 
@@ -20,7 +24,7 @@ title: Big list of options
 
 **• plugins**
 
-`Array` of plugin objects (or a single plugin object) – see [[Plugins]] for more information.
+`Array` of plugin objects (or a single plugin object) – see [Getting started with plugins](#getting-started-with-plugins) for more information.
 
 ```js
 // rollup.config.js
@@ -48,9 +52,7 @@ If `true`, a separate sourcemap file will be created. If `inline`, the sourcemap
 
 
 
-
-
-# ADVANCED FUNCTIONALITY
+# Advanced functionality
 
 **• external**
 
@@ -168,9 +170,56 @@ onwarn ({ loc, frame, message }) {
 }
 ```
 
+**• moduleName**
+
+`String` The name to use for the module for `umd`/`iife` bundles (**required** for bundles with exports):
+
+```js
+// rollup.config.js
+export default {
+  ...,
+  format: 'iife',
+  moduleName: 'MyBundle'
+};
+
+// -> var MyBundle = (function () {...
+```
+
+**• globals**
+
+`Object` of `id: name` pairs, used for `umd`/`iife` bundles. For example, in a case like this...
+
+```js
+import $ from 'jquery';
+```
+
+...we want to tell Rollup that the `jquery` module ID equates to the global `jQuery` variable:
+
+```js
+// rollup.config.js
+export default {
+  ...,
+  format: 'iife',
+  moduleName: 'MyBundle',
+  globals: {
+    jquery: 'jQuery'
+  }
+};
+
+/*
+var MyBundle = (function ($) {
+  // code goes here
+}(window.jQuery));
+*/.
+```
+
+Alternatively, supply a function that will turn an external module ID into a global.
 
 
-# DANGER ZONE
+
+# Danger zone
+
+You probably don't need to use these options unless you know what you're doing!
 
 
 **• treeshake**
@@ -192,9 +241,6 @@ Same as `options.context`, but per-module – can either be an object of `id: co
 **• legacy**
 
 Adds support for very old environments like IE8, at the cost of some extra code.
-
-
-
 
 
 **• exports**
@@ -258,51 +304,6 @@ export default {
 // -> def(['dependency'],...
 ```
 
-**• moduleName**
-
-`String` The name to use for the module for `umd`/`iife` bundles (**required** for bundles with exports):
-
-```js
-// rollup.config.js
-export default {
-  ...,
-  format: 'iife',
-  moduleName: 'MyBundle'
-};
-
-// -> var MyBundle = (function () {...
-```
-
-**• globals**
-
-`Object` of `id: name` pairs, used for `umd`/`iife` bundles. For example, in a case like this...
-
-```js
-import $ from 'jquery';
-```
-
-...we want to tell Rollup that the `jquery` module ID equates to the global `jQuery` variable:
-
-```js
-// rollup.config.js
-export default {
-  ...,
-  format: 'iife',
-  moduleName: 'MyBundle',
-  globals: {
-    jquery: 'jQuery'
-  }
-};
-
-/*
-var MyBundle = (function ($) {
-  // code goes here
-}(window.jQuery));
-*/.
-```
-
-Alternatively, supply a function that will turn an external module ID into a global.
-
 **• indent**
 
 `String` the indent string to use, for formats that require code to be indented (`amd`, `iife`, `umd`). Can also be `false` (no indent), or `true` (the default – auto-indent)
@@ -322,7 +323,3 @@ export default {
 **• useStrict**
 
 `true` or `false` (defaults to `true`) – whether to include the 'use strict' pragma at the top of generated non-ES6 bundles. Strictly-speaking (geddit?), ES6 modules are *always* in strict mode, so you shouldn't disable this without good reason.
-
-**• dest**
-
-The file to write to.
