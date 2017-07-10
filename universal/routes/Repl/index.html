@@ -228,8 +228,9 @@
 							});
 
 							const options = this.get( 'options' );
-							const generated = bundle.generate( options );
-
+							return bundle.generate( options );
+						})
+						.then( generated => {
 							this.set({
 								code: generated.code,
 								error: null,
