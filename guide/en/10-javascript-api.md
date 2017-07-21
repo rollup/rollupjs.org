@@ -158,4 +158,4 @@ Compiles the project. Returns an object which contains properties for the compil
 
 **• bundle.write(*config*)**
 
-Compiles the project *and* writes the file to disk, returning a Promise which compiles when the write operation has completed. This requires a configuration object argument which specifies an output filename under the `dest` property.
+Compiles the project *and* writes the file to disk, returning a Promise which resolves when the write operation has completed. This requires a configuration object argument which specifies an output filename under the `dest` property.
