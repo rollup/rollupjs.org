@@ -79,4 +79,4 @@ npm install --save-dev rollup-watch
 }
 ```
 
-The command `rollup -c -w` (short for `rollup --config --watch`) runs Rollup in watch mode.
+The command `rollup -c -w` (short for `rollup --config --watch`) runs Rollup in watch mode. You could also define the `dev` command as this `npm run build -- -w` which just adds the watch flag to the build command.  
