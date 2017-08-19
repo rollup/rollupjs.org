@@ -20,4 +20,4 @@ Rollup is already used by many major JavaScript libraries, and can also be used 
 
 ### Who made the Rollup logo? It's lovely.
 
-I know! It was made by [Julian Lloyd.](https://twitter.com/jlmakes)
+[Julian Lloyd](https://twitter.com/jlmakes)!
