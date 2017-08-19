@@ -4,11 +4,11 @@ title: Big list of options
 
 ## Core functionality
 
-**• entry** (required)
+**• input** (required)
 
 `String` The bundle's entry point (e.g. your `main.js` or `app.js` or `index.js`)
 
-**• dest**
+**• output**
 
 `String` The file to write to.
 
@@ -40,17 +40,15 @@ export default {
 };
 ```
 
-**• sourceMap**
+**• sourcemap**
 
-If `true`, a separate sourcemap file will be created. If `inline`, the sourcemap will be appended to the resulting `dest` file as a data URI.
+If `true`, a separate sourcemap file will be created. If `inline`, the sourcemap will be appended to the resulting `output` file as a data URI.
 
-**• sourceMapFile**
+**• sourcemapFile**
 
-`String` The location of the generated bundle. If this is an absolute path, all the `sources` paths in the sourcemap will be relative to it. The `map.file` property is the basename of `sourceMapFile`, as the location of the sourcemap is assumed to be adjacent to the bundle.
+`String` The location of the generated bundle. If this is an absolute path, all the `sources` paths in the sourcemap will be relative to it. The `map.file` property is the basename of `sourcemapFile`, as the location of the sourcemap is assumed to be adjacent to the bundle.
 
-`sourceMapFile` is unnecessary if `dest` is specified.
-
-
+`sourcemapFile` is not required if `output` is specified, in which case an output filename will be inferred by adding ".map"  to the output filename for the bundle.
 
 # Advanced functionality
 
@@ -215,9 +213,7 @@ var MyBundle = (function ($) {
 
 Alternatively, supply a function that will turn an external module ID into a global.
 
-
-
-# Danger zone
+# Danger Zone
 
 You probably don't need to use these options unless you know what you're doing!
 
