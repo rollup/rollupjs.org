@@ -14,6 +14,10 @@ Tree-shaking, also known as "live code inclusion," is the process of only includ
 
 Rollup strives to implement the specification for ES modules, not necessarily the behaviors of Node.js, npm, `require()`, and CommonJS. Consequently, loading of CommonJS modules and using Node's module location resolution logic are both implemented as optional plugins, not included by default in the Rollup core. Just `npm install` the [ComomnJS](https://github.com/rollup/rollup-plugin-commonjs) and [node-resolve](https://github.com/rollup/rollup-plugin-node-resolve) plugins and then enable them using a `rollup.config.js` file and you should be all set.
 
+### Is Rollup meant for building libraries or applications?
+
+Rollup is already used by many major JavaScript libraries, and can also be used to build the vast majority of applications. However, Rollup doesn't yet support a few specific advanced features that can sometimes be useful when building applications, most notably code splitting and [dynamic imports at runtime](https://github.com/tc39/proposal-dynamic-import). If your project needs either of those, you may be better off with [Webpack](https://webpack.js.org/).
+
 ### Who made the Rollup logo? It's lovely.
 
 I know! It was made by [Julian Lloyd.](https://twitter.com/jlmakes)
