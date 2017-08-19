@@ -1,14 +1,14 @@
 ---
-title: Frequently asked questions
+title: Frequently Asked Questions
 ---
 
-### What is 'tree-shaking'?
+### Why are ES modules better than CommonJS modules?
 
-Tree-shaking a.k.a. 'live code inclusion' is the process of only including the code that is used.  It is similar to dead code elimination but can be more efficient. Read more about the origin of the name: [Tree-shaking vs Dead-Code Elimination](https://medium.com/@Rich_Harris/tree-shaking-versus-dead-code-elimination-d3765df85c80#.jnypozs9n)
+ES modules are an official standard and the clear path forward for JavaScript code structure, whereas CommonJS modules are an idiosyncratic legacy format that served as a stopgap solution before ES modules had been proposed. ES modules allow static analysis that enables optimizations like tree-shaking, and provide advanced features like circular references and live bindings.
 
-### Why are ES2015 modules better than AMD and CommonJS?
+### What is "tree-shaking?"
 
-ES2015 modules are an official standard that will be arriving soon to browsers and Node.js. They allow static analysis that enables optimizations like tree-shaking, and have advanced features like circular references and live bindings. 
+Tree-shaking, also known as "live code inclusion," is the process of only including code that is actually run by a given project. It is [similar to dead code elimination](https://medium.com/@Rich_Harris/tree-shaking-versus-dead-code-elimination-d3765df85c80#.jnypozs9n) but can be much more efficient.
 
 ### Who made the Rollup logo? It's lovely.
 
