@@ -153,3 +153,5 @@ let configuration = {
   sourcemap: 'inline'
 };
 ```
+
+For more advanced use cases, consult the [exhaustive list of command line options](https://rollupjs.org/#big-list-of-options).
