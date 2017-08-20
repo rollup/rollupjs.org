@@ -10,19 +10,55 @@ Rollup configuration files are optional, but they are powerful and convenient an
 
 A config file is an ES6 module that exports a default object with the desired options. Typically, it is called `rollup.config.js` and sits in the root directory of your project.
 
+Consult the [big list of options](#big-list-of-options) for details on each option you can include in your config file.
+
 ```javascript
 // rollup.config.js
-let configuration = {
-  // configuration options go here...
+export default {
+  // core input options
+  input,     // required
+  external,
+  plugins,
+
+  // advanced input options
+  onwarn,
+
+  // danger zone
+  acorn,
+  context,
+  moduleContext,
+  legacy
+
+  output: {  // required (can be an array, for multiple outputs)
+    // core output options
+    file,    // required
+    format,  // required
+    name,
+    globals,
+
+    // advanced output options
+    paths,
+    banner,
+    footer,
+    intro,
+    outro,
+    sourcemap,
+    sourcemapFile,
+    interop,
+
+    // danger zone
+    exports,
+    amd,
+    indent
+    strict
+  },
 };
-export default configuration;
 ```
 
 You *must* use a configuration file in order to do any of the following:
 
 - bundle one project into multiple output files
-- use Rollup plugins
-- *use the [rollup-plugin-node-resolve](https://github.com/rollup/rollup-plugin-node-resolve) and [rollup-plugin-commonjs](https://github.com/rollup/rollup-plugin-commonjs) plugins, which together let you load CommonJS modules from the Node.js ecosystem*
+- use Rollup plugins, such as [rollup-plugin-node-resolve](https://github.com/rollup/rollup-plugin-node-resolve) and [rollup-plugin-commonjs](https://github.com/rollup/rollup-plugin-commonjs) which let you load CommonJS modules from the Node.js ecosystem
 
 To use Rollup with a configuration file, pass the `--config` or `-c` flags.
 
@@ -34,130 +70,44 @@ $ rollup --config
 $ rollup --config my.config.js
 ```
 
-### Core Functionality
+### Command line flags
 
-**• --input / -i** *string* (required)
-
-The entry point file from which to start compilation and resolution of dependencies. This is likely identical to the `module` field in your package.json file.
-
-From the command line:
+Many options have command line equivalents. Any arguments passed here will override the config file, if you're using one. See the [big list of options](#big-list-of-options) for details.
 
 ```bash
-# bundle app.js and all dependencies
-$ rollup --input app.js
+-i, --input                 Input file (required)
+-o, --output.file           Output (if absent, prints to stdout)
+-f, --output.format [es]    Type of output (amd, cjs, es, iife, umd)
+-e, --external              Comma-separate list of module IDs to exclude
+-g, --globals               Comma-separate list of `module ID:Global` pairs
+                              Any module IDs defined here are added to external
+-n, --name                  Name for UMD export
+-m, --sourcemap             Generate sourcemap (`-m inline` for inline map)
+--amd.id                    ID for AMD module (default is anonymous)
+--amd.define                Function to use in place of `define`
+--no-strict                 Omit `"use strict";` in the generated bundle
+--no-conflict               Generate a noConflict method for UMD globals
+--intro                     Content to insert at top of bundle (inside wrapper)
+--outro                     Content to insert at end of bundle (inside wrapper)
+--banner                    Content to insert at top of bundle (outside wrapper)
+--footer                    Content to insert at end of bundle (outside wrapper)
+--interop                   Include interop block (true by default)
 ```
 
-```javascript
-// rollup.config.js
-let configuration = {
-  input: './app.js'
-};
-```
+In addition, the following arguments can be used:
 
-**• --output.file / -o** *string*
+#### `-h`/`--help`
 
-The output filename into which to save the bundle. If this is omitted, output will be sent to stdout.
+Print the help document.
 
-From the command line:
+#### `-v`/`--version`
 
-```bash
-# bundle app.js and all dependencies
-$ rollup --input app.js --output.file app-bundled.js
-```
+Print the installed version number.
 
-```javascript
-// rollup.config.js
-let configuration = {
-  output: {
-    file: './app-bundled.js'
-  }
-};
-```
+#### `-w`/`--watch`
 
-**• --output.format / -f** *string* (required)
+Rebuild the bundle when its source files change on disk.
 
-The target output format to bundle the input code into.
+#### `--silent`
 
-- `iife`: an *immediately-invoked function expression*, typically used from within a `<script>` tag.
-- `cjs`: a [CommonJS module](https://en.wikipedia.org/wiki/CommonJS) like those popularized by Node.js, webpack, and browserify.
-- `amd`: an [Asynchronous Module Definition](http://requirejs.org/docs/whyamd.html) as popularized by [RequireJS](http://requirejs.org/).
-- `umd`: a [Universal Module Definition](https://github.com/umdjs/umd) which is usable either from within a `<script>` tag, as a CommonJS module, or as an AMD module. Because it's so flexible, this is the *recommended option*, but it requires that you also specify a module name as described below.
-- `es`: bundles your multiple ES6 modules into a single ES6 module.
-
-```bash
-# bundle app.js into iife format
-$ rollup --input app.js --output.format iife
-```
-
-```javascript
-// rollup.config.js
-let configuration = {
-  input: './app.js',
-  output: {
-    format: 'iife'
-  }
-};
-```
-
-**• plugins** *array* (configuration files only)
-
-An array of Rollup plugins that should be used to transform the bundle code. The plugins are functions when imported, but the functions *must to be called* in order for the plugin to work.
-
-For example, to enable import of CommonJS modules such as those from the Node.js ecosystem, add the following to your Rollup configuration file:
-
-```javascript
-// rollup.config.js
-import resolve from 'rollup-plugin-node-resolve';
-import commonjs from 'rollup-plugin-commonjs';
-
-let configuration = {
-  plugins: [
-    resolve(),
-    commonjs()
-  ]
-};
-export default configuration;
-```
-
-**• --name / -n** *string*
-
-A module name is required when you are bundling to a UMD module. This string will be used as the global variable name of the module when it is loaded in a browser through a `<script>` tag.
-
-```bash
-# bundle app.js to UMD format
-$ rollup --input app.js --output.format umd --name mymodule
-```
-
-```javascript
-// rollup.config.js
-let configuration = {
-  input: './app.js',
-  output: {
-    format: 'umd',
-    name: 'mymodule'
-  }
-};
-```
-
-**• --sourcemap / -m ** *string*
-
-Generates a sourcemap which maps the output bundle back to the input source code, so that error messages and `console.log` calls will report the original line number.
-
-- `inline`: the sourcemap will be embedded in the existing output file as a data URI.
-- `true`: the sourcemap will be created in a separate file, by default named after whatever output filename is specified with `--output`/`dest`.
-
-If you don't pass a value for this option, it defaults to `true`.
-
-```bash
-# bundle app.js to iife format with inline sourcemap included
-$ rollup --input app.js --output.format iife --sourcemap inline
-```
-
-```javascript
-// rollup.config.js
-let configuration = {
-  sourcemap: 'inline'
-};
-```
-
-For more advanced use cases, consult the [exhaustive list of command line options](https://rollupjs.org/#big-list-of-options).
+Don't print warnings to the console.
