@@ -1,13 +1,11 @@
-import fs from 'fs';
 import svelte from 'rollup-plugin-svelte';
 import nodeResolve from 'rollup-plugin-node-resolve';
 import commonjs from 'rollup-plugin-commonjs';
 import json from 'rollup-plugin-json';
 import uglify from 'rollup-plugin-uglify';
 import buble from 'rollup-plugin-buble';
-import CleanCSS from 'clean-css';
 
-const dev = !!process.env.DEV;
+const dev = !!process.env.ROLLUP_WATCH;
 
 console.log( `creating ${dev ? 'development' : 'production'} client bundle` );
 
@@ -26,12 +24,7 @@ export default {
 		}),
 		svelte({
 			css: css => {
-				css = fs.readFileSync( `client/main.css`, 'utf-8' )
-					.replace( '__components__', css || '' );
-
-				const result = dev ? css : new CleanCSS().minify( css ).styles;
-
-				fs.writeFileSync( `client/dist/main.css`, result );
+				css.write(`client/dist/main.css`);
 			}
 		}),
 		buble(),
