@@ -2,6 +2,14 @@
 	{{#each summary as section}}
 		<li>
 			<a class='section {{section.slug === active ? "active": ""}}' href='{{base}}#{{section.slug}}'>{{section.metadata.title}}</a>
+
+			<ul class='subsections'>
+				{{#each section.subsections as subsection}}
+					<li>
+						<a class='subsection {{subsection.slug === active ? "active": ""}}' href='{{base}}#{{subsection.slug}}'>{{subsection.title}}</a>
+					</li>
+				{{/each}}
+			</ul>
 		</li>
 	{{/each}}
 </ul>
@@ -16,15 +24,15 @@
 		display: block;
 		list-style: none;
 		margin: 0 0 0.5em 0;
-		line-height: 1.5;
+		line-height: 1.2;
 	}
 
 	.section {
 		display: block;
-		font-weight: 300;
-		color: #666;
+		font-weight: 700;
+		color: #333;
 		font-size: 1rem;
-		margin: 0 0 0.15em 0;
+		margin: 0 0 0.5em 0;
 	}
 
 	/*.subsection {
@@ -36,8 +44,8 @@
 	}*/
 
 	.section.active, .subsection.active {
-		color: #333;
-		font-weight: 500;
+		color: rgba(239,51,53,1);
+		font-weight: 700;
 	}
 
 	li::before {
@@ -45,6 +53,23 @@
 		left: -1em;
 		content: '»';
 		color: #ccc;
+	}
+
+	.subsections {
+		padding: 0 0 0 0.5em;
+		margin: 0;
+	}
+
+	.subsections li {
+
+	}
+
+	.subsection {
+		color: #666;
+	}
+
+	.subsections li::before {
+		content: '';
 	}
 </style>
 

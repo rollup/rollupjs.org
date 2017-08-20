@@ -66,7 +66,7 @@ module.exports = () => {
 						const slug = match[1];
 						const title = match[2]
 							.replace( /<\/?code>/g, '' )
-							.replace( /\.(\w+).+/, '.$1' );
+							.replace( /\.(\w+).*/, '.$1' );
 
 						subsections.push({ slug, title });
 					}
