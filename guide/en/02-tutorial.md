@@ -47,10 +47,10 @@ export default 'hello world!';
 Now we're ready to create a bundle:
 
 ```bash
-rollup src/main.js --format cjs
+rollup src/main.js -f cjs
 ```
 
-The `--format` option specifies what kind of bundle we're creating — in this case, CommonJS (which will run in Node.js). Because we didn't specify an output file, it will be printed straight to `stdout`:
+The `-f` option (short for `--output.format`) specifies what kind of bundle we're creating — in this case, CommonJS (which will run in Node.js). Because we didn't specify an output file, it will be printed straight to `stdout`:
 
 ```js
 'use strict';
@@ -67,11 +67,10 @@ module.exports = main;
 You can save the bundle as a file like so:
 
 ```bash
-rollup src/main.js --format cjs --output bundle.js
-# or `rollup main.js -f cjs -o bundle.js`
+rollup src/main.js -o bundle.js -f cjs
 ```
 
-(You could also do `rollup src/main.js > bundle.js`, but as we'll see later, this is less flexible if you're generating sourcemaps.)
+(You could also do `rollup src/main.js -f cjs > bundle.js`, but as we'll see later, this is less flexible if you're generating sourcemaps.)
 
 Try running the code:
 
@@ -95,9 +94,11 @@ Create a file in the project root called `rollup.config.js`, and add the followi
 ```js
 // rollup.config.js
 export default {
-  entry: 'src/main.js',
-  format: 'cjs',
-  dest: 'bundle.js' // equivalent to --output
+  input: 'src/main.js',
+  output: {
+    file: 'bundle.js',
+    format: 'cjs'
+  }
 };
 ```
 
@@ -111,7 +112,7 @@ rollup -c
 You can override any of the options in the config file with the equivalent command line options:
 
 ```bash
-rollup -c -o bundle-2.js # --output is equivalent to dest
+rollup -c -o bundle-2.js # `-o` is short for `--output.file`
 ```
 
 (Note that Rollup itself processes the config file, which is why we're able to use `export default` syntax – the code isn't being transpiled with Babel or anything similar, so you can only use ES2015 features that are supported in the version of Node.js that you're running.)
@@ -157,10 +158,12 @@ Edit your `rollup.config.js` file to include the JSON plugin:
 import json from 'rollup-plugin-json';
 
 export default {
-  entry: 'src/main.js',
-  format: 'cjs',
-  plugins: [ json() ],
-  dest: 'bundle.js'
+  input: 'src/main.js',
+  output: {
+    file: 'bundle.js',
+    format: 'cjs'
+  },
+  plugins: [ json() ]
 };
 ```
 

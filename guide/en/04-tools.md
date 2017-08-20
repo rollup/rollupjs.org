@@ -1,5 +1,5 @@
 ---
-title: Integrating Rollup with Other Tools
+title: Integrating Rollup with other tools
 ---
 
 # npm packages
@@ -34,7 +34,9 @@ npm run build
 ...we'll see a warning like this:
 
 ```
-⚠️ 'the-answer' is imported by src/main.js, but could not be resolved – treating it as an external dependency
+(!) Unresolved dependencies
+https://github.com/rollup/rollup/wiki/Troubleshooting#treating-module-as-external-dependency
+the-answer (imported by main.js)
 ```
 
 The resulting `bundle.js` will still work in Node.js, because the `import` declaration gets turned into a CommonJS `require` statement, but `the-answer` does *not* get included in the bundle. For that, we need a plugin.
@@ -55,10 +57,12 @@ npm install --save-dev rollup-plugin-node-resolve
 import resolve from 'rollup-plugin-node-resolve';
 
 export default {
-  entry: 'src/main.js',
-  format: 'cjs',
-  plugins: [ resolve() ],
-  dest: 'bundle.js'
+  input: 'src/main.js',
+  output: {
+    file: 'bundle.js'
+    format: 'cjs'
+  },
+  plugins: [ resolve() ]
 };
 ```
 
@@ -76,18 +80,14 @@ Note that `rollup-plugin-commonjs` should go *before* other plugins that transfo
 
 ## Peer dependencies
 
-Let's say that you're building a library that has a peer
-dependency, such as React or Lodash. If you set up externals
-as described above, your rollup will bundle *all* imports:
+Let's say that you're building a library that has a peer dependency, such as React or Lodash. If you set up externals as described above, your rollup will bundle *all* imports:
 
 ```js
 import answer from 'the-answer';
 import _ from 'lodash';
 ```
 
-You can finely tune which imports are bundled and which
-are treated as external. For this example, we'll treat
-`lodash` as external, but not `the-answer`.
+You can finely tune which imports are bundled and which are treated as external. For this example, we'll treat `lodash` as external, but not `the-answer`.
 
 Here is the config file:
 
@@ -96,8 +96,11 @@ Here is the config file:
 import resolve from 'rollup-plugin-node-resolve';
 
 export default {
-  entry: 'src/main.js',
-  format: 'cjs',
+  input: 'src/main.js',
+  output: {
+    file: 'bundle.js',
+    format: 'cjs'
+  },
   plugins: [resolve({
     // pass custom options to the resolve plugin
     customResolveOptions: {
@@ -105,17 +108,13 @@ export default {
     }
   })],
   // indicate which modules should be treated as external
-  external: ['lodash'],
-  dest: 'bundle.js'
+  external: ['lodash']
 };
 ```
 
-Voila, `lodash` will now be treated as external, and
-not be bundled with your library.
+Voila, `lodash` will now be treated as external, and not be bundled with your library.
 
-The `external` key accepts either an array of module names
-or a function which takes the module name and returns true
-if it should be treated as external. For example:
+The `external` key accepts either an array of module names or a function which takes the module name and returns true if it should be treated as external. For example:
 
 ```js
 export default {
@@ -124,18 +123,14 @@ export default {
 }
 ```
 
-You might use this form if you're using
-[babel-plugin-lodash](https://github.com/lodash/babel-plugin-lodash)
-to cherry-pick lodash modules. In this case, Babel will
-convert your import statements to look like this:
+You might use this form if you're using [babel-plugin-lodash](https://github.com/lodash/babel-plugin-lodash) to cherry-pick lodash modules. In this case, Babel will convert your import statements to look like this:
 
 ```js
 import _merge from 'lodash/merge';
 ```
 
-The array form of `external` does not handle wildcards, so
-this import will only be treated as external in the functional
-form.
+The array form of `external` does not handle wildcards, so this import will only be treated as external in the functional form.
+
 
 # Babel
 
@@ -155,15 +150,17 @@ import resolve from 'rollup-plugin-node-resolve';
 import babel from 'rollup-plugin-babel';
 
 export default {
-  entry: 'src/main.js',
-  format: 'cjs',
+  input: 'src/main.js',
+  output: {
+    file: 'bundle.js',
+    format: 'cjs'
+  },
   plugins: [
     resolve(),
     babel({
       exclude: 'node_modules/**' // only transpile our source code
     })
-  ],
-  dest: 'bundle.js'
+  ]
 };
 ```
 
@@ -232,17 +229,17 @@ const rollupTypescript = require('rollup-plugin-typescript');
 
 gulp.task('build', async function () {
   const bundle = await rollup.rollup({
-    entry: './src/main.ts',
+    input: './src/main.ts',
     plugins: [
       rollupTypescript()
     ]
   });
 
   await bundle.write({
+    file: './dist/library.js',
     format: 'umd',
-    moduleName: 'library',
-    dest: './dist/library.js',
-    sourceMap: true
+    name: 'library',
+    sourcemap: true
   });
 });
 ```

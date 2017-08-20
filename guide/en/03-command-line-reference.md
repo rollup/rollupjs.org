@@ -54,7 +54,7 @@ let configuration = {
 };
 ```
 
-**• --output / -o** *string*
+**• --output.file / -o** *string*
 
 The output filename into which to save the bundle. If this is omitted, output will be sent to stdout.
 
@@ -62,17 +62,19 @@ From the command line:
 
 ```bash
 # bundle app.js and all dependencies
-$ rollup --input app.js --output app-bundled.js
+$ rollup --input app.js --output.file app-bundled.js
 ```
 
 ```javascript
 // rollup.config.js
 let configuration = {
-  output: './app-bundled.js'
+  output: {
+    file: './app-bundled.js'
+  }
 };
 ```
 
-**• --format / -f** *string* (required)
+**• --output.format / -f** *string* (required)
 
 The target output format to bundle the input code into.
 
@@ -84,14 +86,16 @@ The target output format to bundle the input code into.
 
 ```bash
 # bundle app.js into iife format
-$ rollup --input app.js --format iife
+$ rollup --input app.js --output.format iife
 ```
 
 ```javascript
 // rollup.config.js
 let configuration = {
-  entry: './app.js',
-  format: 'iife'
+  input: './app.js',
+  output: {
+    format: 'iife'
+  }
 };
 ```
 
@@ -121,15 +125,17 @@ A module name is required when you are bundling to a UMD module. This string wil
 
 ```bash
 # bundle app.js to UMD format
-$ rollup --input app.js --format umd --name mymodule
+$ rollup --input app.js --output.format umd --name mymodule
 ```
 
 ```javascript
 // rollup.config.js
 let configuration = {
-  entry: './app.js',
-  format: 'umd',
-  name: 'mymodule'
+  input: './app.js',
+  output: {
+    format: 'umd',
+    name: 'mymodule'
+  }
 };
 ```
 
@@ -138,13 +144,13 @@ let configuration = {
 Generates a sourcemap which maps the output bundle back to the input source code, so that error messages and `console.log` calls will report the original line number.
 
 - `inline`: the sourcemap will be embedded in the existing output file as a data URI.
-- `true`: the sourcemap will be created in a separate file, by default named after whatever output filename is specified with `--output`/`dest`. You can also specify an alternate filename for the sourcemap using the `--sourcemapfile` option.
+- `true`: the sourcemap will be created in a separate file, by default named after whatever output filename is specified with `--output`/`dest`.
 
 If you don't pass a value for this option, it defaults to `true`.
 
 ```bash
 # bundle app.js to iife format with inline sourcemap included
-$ rollup --input app.js --format iife --sourcemap inline
+$ rollup --input app.js --output.format iife --sourcemap inline
 ```
 
 ```javascript

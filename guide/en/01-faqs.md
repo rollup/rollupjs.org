@@ -1,5 +1,5 @@
 ---
-title: Frequently Asked Questions
+title: Frequently asked questions
 ---
 
 ### Why are ES modules better than CommonJS modules?

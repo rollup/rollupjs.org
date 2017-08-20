@@ -1,5 +1,5 @@
 ---
-title: ES Module Syntax
+title: ES module syntax
 ---
 
 The following is intended as a lightweight reference for the module behaviors defined in the [ES2015 specification](https://www.ecma-international.org/ecma-262/6.0/), since a proper understanding of the import and export statements are essential to successful use of Rollup.

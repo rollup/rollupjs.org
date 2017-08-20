@@ -4,13 +4,134 @@ title: JavaScript API
 
 Rollup provides a JavaScript API which is usable from Node.js. You will rarely need to use this, and should probably be using the command line API unless you are extending Rollup itself or using it for something esoteric, such as generating bundles programmatically.
 
-### Including
+### rollup.rollup
 
-Alas, Node doesn't yet natively support ES6 modules so you'll need to import Rollup as a CommonJS module using `require()`, even though that's off message for an ES6 module tool :(
+The `rollup.rollup` function returns a Promise that resolves to a `bundle` object with various properties and methods shown here:
 
 ```javascript
-let rollup = require('rollup');
+const rollup = require('rollup');
+
+const inputOptions = {...};
+const outputOptions = {...};
+
+async function build() {
+  // create a bundle
+  const bundle = await rollup.rollup(inputOptions);
+
+  console.log(bundle.imports); // an array of external dependencies
+  console.log(bundle.exports); // an array of names exported by the entry point
+  console.log(bundle.modules); // an array of module objects
+
+  // generate code and a sourcemap
+  const { code, map } = await bundle.generate(outputOptions);
+
+  // or write the bundle to disk
+  await bundle.write(outputOptions);
+}
+
+build();
 ```
+
+
+#### inputOptions
+
+The `inputOptions` object can contain the following properties (see the [big list of options](#big-list-of-options) for full details on these):
+
+```js
+const inputOptions = {
+  // core options
+  input, // the only required option
+  external,
+  plugins,
+
+  // advanced options
+  onwarn,
+  cache,
+
+  // danger zone
+  acorn,
+  context,
+  moduleContext,
+  legacy
+};
+```
+
+
+#### outputOptions
+
+The `outputOptions` object can contain the following properties (see the [big list of options](#big-list-of-options) for full details on these):
+
+```js
+const outputOptions = {
+  // core options
+  file, // required with bundle.write
+  format, // required
+  name,
+  globals,
+
+  // advanced options
+  paths,
+  banner,
+  footer,
+  intro,
+  outro,
+  sourcemap,
+  sourcemapFile,
+  interop,
+
+  // danger zone
+  exports,
+  amd,
+  indent
+  strict
+};
+```
+
+
+### rollup.watch
+
+Rollup also provides a `rollup.watch` function that rebuilds your bundle when it detects that the individual modules have changed on disk. It is used internally when you run Rollup from the command line with the `--watch` flag.
+
+```js
+const rollup = require('rollup');
+
+const watchOptions = {...};
+const watcher = rollup.watch(watchOptions);
+
+watcher.on('event', event => {
+  // event.code can be one of:
+  //   START        — the watcher is (re)starting
+  //   BUNDLE_START — building an individual bundle
+  //   BUNDLE_END   — finished building a bundle
+  //   END          — finished building all bundles
+  //   ERROR        — encountered an error while bundling
+  //   FATAL        — encountered an unrecoverable error
+});
+
+// stop watching
+watcher.close();
+```
+
+#### watchOptions
+
+The `watchOptions` argument is a config (or an array of configs) that you would export from a config file.
+
+```js
+const watchOptions = {
+  ...inputOptions,
+  output: [outputOptions],
+  watch: {
+    chokidar,
+    include,
+    exclude
+  }
+};
+```
+
+See above for details on `inputOptions` and `outputOptions`, or consult the [big list of options](#big-list-of-options) for info on `chokidar`, `include` and `exclude`
+
+
+
 
 Rollup exports an object which contains a single `.rollup()` method.
 
@@ -24,13 +145,13 @@ The `rollup.rollup()` method specifies the inputs passed to Rollup for compilati
 
 The following properties can be added to your input options object to change the default behavior of the `rollup.rollup()` method:
 
-**• entry** *string* (required)
+**• input** *string* (required)
 
 The module's entry point file from which to start compilation and resolution of dependencies. This is likely identical to the `module` field in your package.json file.
 
 ```javascript
 let inputOptions = {
-  entry: './app.js'
+  input: './app.js'
 };
 ```
 
@@ -97,34 +218,6 @@ let inputOptions = {
 ```
 
 
-**• paths** *object* or *function*
-
-Specifies paths of **external files** for use in the bundle. At the end of the build, the bundler will rewrite references to these modules so they use the external locations. For now this is only useful for AMD and UMD output formats and loading dependencies from a CDN, but eventually it will also be used for loading of remote ES6 modules.
-
-When the `paths` property contains an *object*, it should consist of key-value pairs where the key is the module ID and the value is the remote location.
-
-```javascript
-let inputOptions = {
-  paths: {
-    d3: 'https://d3js.org/d3.v4.min.js'
-  }
-};
-```
-
-When the `paths` property contains a *function*, it will be called for every module ID. If the function returns the original input ID, no remote loading is attempted; if it returns anything else, it will be treated as a *string* representing the remote location of the module.
-
-```javascript
-let inputOptions = {
-  paths: function(id) {
-    if (id === 'd3') {
-      return 'https://d3js.org/d3.v4.min.js';
-    }
-    return id;
-  }
-};
-```
-
-
 **• acorn** *object*
 
 Any parameters that should be passed through to [Acorn](https://github.com/ternjs/acorn).
@@ -148,14 +241,68 @@ Use of this option is discouraged.
 
 Adds support for very old environments like IE8 by stripping out more modern code that might not work reliably, at the cost of deviating slightly from the precise specifications required of ES6 module environments.
 
+
 ### Output
 
 The Promise returned by the `rollup.rollup()` method resolves to an object representing the compiled bundle.
 
-**• bundle.generate(*config*)**
+**• bundle.generate(*outputOptions*)**
 
 Compiles the project. Returns a Promise which resolves an object contains properties for the compiled `code` (as a string) and the `map` (a sourcemap object). The optional configuration object argument is identical to the configuration object you might use in a configuration file for the command line, but any input options will be ignored because the inputs have already been supplied.
 
-**• bundle.write(*config*)**
+**• bundle.write(*outputOptions*)**
 
 Compiles the project *and* writes the file to disk, returning a Promise which resolves when the write operation has completed. This requires a configuration object argument which specifies an output filename under the `dest` property.
+
+
+### Output options
+
+**• file** *string* (required with `bundle.write`)
+
+The file to create. Will also be used for sourcemaps, if applicable.
+
+**• format** *string* (required)
+
+The format of the bundle — one of:
+
+- `iife`: an *immediately-invoked function expression*, typically used from within a `<script>` tag.
+- `cjs`: a [CommonJS module](https://en.wikipedia.org/wiki/CommonJS) like those popularized by Node.js, webpack, and browserify.
+- `amd`: an [Asynchronous Module Definition](http://requirejs.org/docs/whyamd.html) as popularized by [RequireJS](http://requirejs.org/).
+- `umd`: a [Universal Module Definition](https://github.com/umdjs/umd) which is usable either from within a `<script>` tag, as a CommonJS module, or as an AMD module. Because it's so flexible, this is the *recommended option*, but it requires that you also specify a module name as described below.
+- `es`: bundles your multiple ES6 modules into a single ES6 module.
+
+**• name** *string* (required for `iife`/`umd` bundles with exports)
+
+The variable name, representing your bundle, by which other scripts on the same page can access it.
+
+**• globals** *object* or *function*
+
+For `iife`/`umd` bundles that have external dependencies, Rollup needs to know the global variable names corresponding to each dependency.
+
+
+**• paths** *object* or *function*
+
+Specifies paths of **external files** for use in the bundle. At the end of the build, the bundler will rewrite references to these modules so they use the external locations. For now this is only useful for AMD and UMD output formats and loading dependencies from a CDN, but eventually it will also be used for loading of remote ES6 modules.
+
+When the `paths` property contains an *object*, it should consist of key-value pairs where the key is the module ID and the value is the remote location.
+
+```javascript
+let outputOptions = {
+  paths: {
+    d3: 'https://d3js.org/d3.v4.min.js'
+  }
+};
+```
+
+When the `paths` property contains a *function*, it will be called for every module ID. If the function returns the original input ID, no remote loading is attempted; if it returns anything else, it will be treated as a *string* representing the remote location of the module.
+
+```javascript
+let outputOptions = {
+  paths: function(id) {
+    if (id === 'd3') {
+      return 'https://d3js.org/d3.v4.min.js';
+    }
+    return id;
+  }
+};
+```

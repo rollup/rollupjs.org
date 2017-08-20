@@ -21,22 +21,22 @@ These commands assume the entry point to your application is named main.js, and 
 For browsers:
 
 ```bash
-# compile to a <script> containing a self-executing function
-$ rollup main.js --format iife --output bundle.js
+# compile to a <script> containing a self-executing function ('iife')
+$ rollup main.js --o bundle.js --f iife
 ```
 
 For Node.js:
 
 ```bash
-# compile to a CommonJS module
-$ rollup main.js --format cjs --output bundle.js
+# compile to a CommonJS module ('cjs')
+$ rollup main.js --o bundle.js --f cjs
 ```
 
 For both browsers and Node.js:
 
 ```bash
 # UMD format requires a bundle name
-$ rollup main.js --format umd --name "myBundle" --output bundle.js
+$ rollup main.js --o bundle.js -f umd --name "myBundle"
 ```
 
 ### Why
@@ -70,6 +70,7 @@ ajax( 'https://api.example.com?search=' + query ).then( handleResponse );
 ```
 
 Because Rollup includes the bare minimum, it results in lighter, faster, and less complicated libraries and applications. Since this approach is based on explicit `import` and `export` statements, it is vastly more effective than simply running an automated minifier to detect unused variables in the compiled output code.
+
 
 ### Compatibility
 
