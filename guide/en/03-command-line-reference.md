@@ -18,8 +18,6 @@ let configuration = {
 export default configuration;
 ```
 
-> In some cases option names differ slightly between command line usage and configuration files.
-
 You *must* use a configuration file in order to do any of the following:
 
 - bundle one project into multiple output files
@@ -49,17 +47,16 @@ From the command line:
 $ rollup --input app.js
 ```
 
-When specified in a configuration file, this option is known as `entry` instead of `input`:
-
 ```javascript
+// rollup.config.js
 let configuration = {
-  entry: './app.js'
+  input: './app.js'
 };
 ```
 
-**• --output / -o** *string* (required)
+**• --output / -o** *string*
 
-The output filename into which to save the bundle.
+The output filename into which to save the bundle. If this is omitted, output will be sent to stdout.
 
 From the command line:
 
@@ -68,12 +65,10 @@ From the command line:
 $ rollup --input app.js --output app-bundled.js
 ```
 
-When specified in a configuration file, this option is known as `dest` instead of `output`:
-
 ```javascript
 // rollup.config.js
 let configuration = {
-  dest: './app-bundled.js'
+  output: './app-bundled.js'
 };
 ```
 
@@ -152,11 +147,11 @@ If you don't pass a value for this option, it defaults to `true`.
 $ rollup --input app.js --format iife --sourcemap inline
 ```
 
-When specified in a configuration file, this this property name should be camelCased.
-
 ```javascript
 // rollup.config.js
 let configuration = {
-  sourceMap: 'inline'
+  sourcemap: 'inline'
 };
 ```
+
+For more advanced use cases, consult the [exhaustive list of command line options](https://rollupjs.org/#big-list-of-options).

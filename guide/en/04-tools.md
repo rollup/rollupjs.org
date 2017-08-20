@@ -1,6 +1,8 @@
 ---
-title: Using Rollup with npm packages
+title: Integrating Rollup with Other Tools
 ---
+
+# npm packages
 
 At some point, it's very likely that your project will depend on packages installed from npm into your `node_modules` folder. Unlike other bundlers like Webpack and Browserify, Rollup doesn't know 'out of the box' how to handle these dependencies - we need to add some configuration.
 
@@ -123,7 +125,7 @@ export default {
 ```
 
 You might use this form if you're using
-[babel-plugin-lodash](https://github.com/lodash/babel-plugin-lodash) 
+[babel-plugin-lodash](https://github.com/lodash/babel-plugin-lodash)
 to cherry-pick lodash modules. In this case, Babel will
 convert your import statements to look like this:
 
@@ -134,3 +136,113 @@ import _merge from 'lodash/merge';
 The array form of `external` does not handle wildcards, so
 this import will only be treated as external in the functional
 form.
+
+# Babel
+
+Many developers use [Babel](https://babeljs.io/) in their projects, so that they can use futuristic JavaScript features that aren't yet supported by browsers and Node.js.
+
+The easiest way to use both Babel and Rollup is with [rollup-plugin-babel](https://github.com/rollup/rollup-plugin-babel). Install it:
+
+```bash
+npm i -D rollup-plugin-babel
+```
+
+Add it to `rollup.config.js`:
+
+```js
+// rollup.config.js
+import resolve from 'rollup-plugin-node-resolve';
+import babel from 'rollup-plugin-babel';
+
+export default {
+  entry: 'src/main.js',
+  format: 'cjs',
+  plugins: [
+    resolve(),
+    babel({
+      exclude: 'node_modules/**' // only transpile our source code
+    })
+  ],
+  dest: 'bundle.js'
+};
+```
+
+Before Babel will actually compile your code, it needs to be configured. Create a new file, `src/.babelrc`:
+
+```js
+{
+  "presets": [
+    ["latest", {
+      "es2015": {
+        "modules": false
+      }
+    }]
+  ],
+  "plugins": ["external-helpers"]
+}
+```
+
+There are a few unusual things about this setup. First, we're setting `"modules": false`, otherwise Babel will convert our modules to CommonJS before Rollup gets a chance to do its thing, causing it to fail.
+
+Secondly, we're using the `external-helpers` plugin, which allows Rollup to include any 'helpers' just once at the top of the bundle, rather than including them in every module that uses them (which is the default behaviour).
+
+Thirdly, we're putting our `.babelrc` file in `src`, rather than the project root. This allows us to have a different `.babelrc` for things like tests, if we need that later – it's generally a good idea to have separate configuration for separate tasks.
+
+Now, before we run rollup, we need to install the `latest` preset and the `external-helpers` plugin:
+
+```bash
+npm i -D babel-preset-latest babel-plugin-external-helpers
+```
+
+Running Rollup now will create a bundle... except we're not actually using any ES2015 features. Let's change that. Edit `src/main.js`:
+
+```js
+// src/main.js
+import answer from 'the-answer';
+
+export default () => {
+  console.log(`the answer is ${answer}`);
+}
+```
+
+Run Rollup with `npm run build`, and check the bundle:
+
+```js
+'use strict';
+
+var index = 42;
+
+var main = (function () {
+  console.log('the answer is ' + index);
+});
+
+module.exports = main;
+```
+
+# Gulp
+
+Rollup returns promises which are understood by gulp so integration is easy.
+
+The syntax is very similar to the configuration file, but the properties are split across two different operations. Constructing the bundle, and transpiling to a target output.
+
+```js
+const gulp = require('gulp');
+const rollup = require('rollup');
+const rollupTypescript = require('rollup-plugin-typescript');
+
+gulp.task('build', async function () {
+  const bundle = await rollup.rollup({
+    entry: './src/main.ts',
+    plugins: [
+      rollupTypescript()
+    ]
+  });
+
+  await bundle.write({
+    format: 'umd',
+    moduleName: 'library',
+    dest: './dist/library.js',
+    sourceMap: true
+  });
+});
+```
