@@ -8,7 +8,7 @@ ES modules are an official standard and the clear path forward for JavaScript co
 
 ### What is "tree-shaking?"
 
-Tree-shaking, also known as "live code inclusion," is the process of only including code that is actually run by a given project. It is [similar to dead code elimination](https://medium.com/@Rich_Harris/tree-shaking-versus-dead-code-elimination-d3765df85c80#.jnypozs9n) but can be much more efficient.
+Tree-shaking, also known as "live code inclusion," is the process of eliminating code that is not actually used in a given project. It is [similar to dead code elimination](https://medium.com/@Rich_Harris/tree-shaking-versus-dead-code-elimination-d3765df85c80#.jnypozs9n) but can be much more efficient.
 
 ### How do I use Rollup in Node.js with CommonJS modules?
 
