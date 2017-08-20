@@ -11,16 +11,16 @@
 
 	{{#if options.format === 'amd' || options.format === 'umd'}}
 		<section intro-outro='slide:fast'>
-			<h3>options.moduleId</h3>
-			<input bind:value='moduleId' placeholder='leave blank for anonymous module'>
+			<h3>options.amd.id</h3>
+			<input bind:value='amd.id' placeholder='leave blank for anonymous module'>
 		</section>
 	{{/if}}
 
 	{{#if options.format === 'iife' || options.format === 'umd'}}
 		{{#if exports.length}}
 			<section intro-outro='slide:fast'>
-				<h3>options.moduleName</h3>
-				<input bind:value='moduleName'>
+				<h3>options.name</h3>
+				<input bind:value='name'>
 			</section>
 		{{/if}}
 
@@ -111,8 +111,10 @@
 			],
 
 			format: 'amd',
-			moduleName: 'myBundle',
-			moduleId: '',
+			name: 'myBundle',
+			amd: {
+				id: ''
+			},
 
 			exports: [],
 			sortedImports: []
@@ -181,13 +183,13 @@
 				this.set({ options });
 			});
 
-			this.observe( 'moduleName', moduleName => {
-				options.moduleName = moduleName;
+			this.observe( 'name', name => {
+				options.name = options.moduleName = name;
 				this.set({ options });
 			});
 
-			this.observe( 'moduleId', moduleId => {
-				options.moduleId = moduleId;
+			this.observe( 'amd', amd => {
+				options.amd = amd;
 				this.set({ options });
 			});
 		},

@@ -186,7 +186,8 @@
 
 						/*global rollup */
 						rollup.rollup({
-							entry: 'main.js',
+							input: 'main.js',
+							entry: 'main.js', // for older versions
 							plugins: [{
 								resolveId ( importee, importer ) {
 									if ( !importer ) return importee;
