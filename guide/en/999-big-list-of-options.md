@@ -42,7 +42,7 @@ export default {
 
 #### plugins
 
-`Array` of plugin objects (or a single plugin object) – see [Getting started with plugins](#getting-started-with-plugins) for more information.
+`Array` of plugin objects (or a single plugin object) – see [Getting started with plugins](#getting-started-with-plugins) for more information. Remember to call the imported plugin function (i.e. `commonjs()`, not just `commonjs`).
 
 ```js
 // rollup.config.js
@@ -180,7 +180,7 @@ export default {
 
 #### cache
 
-`Object` A previously-generated bundle. Use it to speed up subsequent builds
+`Object` A previously-generated bundle. Use it to speed up subsequent builds — Rollup will only reanalyse the modules that have changed.
 
 
 #### onwarn
@@ -333,3 +333,44 @@ export default {
 #### strict
 
 `true` or `false` (defaults to `true`) – whether to include the 'use strict' pragma at the top of generated non-ES6 bundles. Strictly-speaking (geddit?), ES6 modules are *always* in strict mode, so you shouldn't disable this without good reason.
+
+
+### Watch options
+
+These options only take effect when running Rollup with the `--watch` flag, or using `rollup.watch`.
+
+#### watch.chokidar
+
+A `Boolean` indicating that [chokidar](https://github.com/paulmillr/chokidar) should be used instead of the built-in `fs.watch`, or an `Object` of options that are passed through to chokidar.
+
+You must install chokidar separately if you wish to use it.
+
+
+#### watch.include
+
+Limit the file-watching to certain files:
+
+```js
+// rollup.config.js
+export default {
+  ...,
+  watch: {
+    include: 'src/**'
+  }
+};
+```
+
+
+#### watch.exclude
+
+Prevent files from being watched:
+
+```js
+// rollup.config.js
+export default {
+  ...,
+  watch: {
+    exclude: 'node_modules/**'
+  }
+};
+```

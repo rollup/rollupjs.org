@@ -11,6 +11,7 @@ The `rollup.rollup` function returns a Promise that resolves to a `bundle` objec
 ```javascript
 const rollup = require('rollup');
 
+// see below for details on the options
 const inputOptions = {...};
 const outputOptions = {...};
 
@@ -128,52 +129,10 @@ const watchOptions = {
 };
 ```
 
-See above for details on `inputOptions` and `outputOptions`, or consult the [big list of options](#big-list-of-options) for info on `chokidar`, `include` and `exclude`
+See above for details on `inputOptions` and `outputOptions`, or consult the [big list of options](#big-list-of-options) for info on `chokidar`, `include` and `exclude`.
 
 
 
-
-Rollup exports an object which contains a single `.rollup()` method.
-
-### Input
-
-**rollup.rollup(*inputOptions*)**
-
-The `rollup.rollup()` method specifies the inputs passed to Rollup for compilation. It takes a single argument, which is an object containing one or more of the following properties, and it returns a Promise which resolves to the bundle object.
-
-### Input Options
-
-The following properties can be added to your input options object to change the default behavior of the `rollup.rollup()` method:
-
-**• input** *string* (required)
-
-The module's entry point file from which to start compilation and resolution of dependencies. This is likely identical to the `module` field in your package.json file.
-
-```javascript
-let inputOptions = {
-  input: './app.js'
-};
-```
-
-**• plugins** *array*
-
-An array of Rollup plugins that should be used to transform the bundle code. The plugins are functions when imported, but the functions *must to be called* in order for the plugin to work.
-
-```javascript
-import resolve from 'rollup-plugin-node-resolve';
-import commonjs from 'rollup-plugin-commonjs';
-
-let inputOptions = {
-  plugins: [
-    resolve(),
-    commonjs()
-  ]
-};
-```
-
-**• cache** *object*
-
-An optional variable representing the last bundle compiled by the current Node process. This is mostly useful for speeding up incremental rebuilds, such as when you're watching the files and rebuilding automatically on changes.
 
 **• onwarn**  *function*
 
