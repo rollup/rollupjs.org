@@ -2,7 +2,7 @@
 title: ES Module Syntax
 ---
 
-The following is intended as lightweight reference for the module behaviors defined in the [ES2015 specification](https://www.ecma-international.org/ecma-262/6.0/), since a proper understanding of the import and export and export statements are essential to successful use of Rollup.
+The following is intended as a lightweight reference for the module behaviors defined in the [ES2015 specification](https://www.ecma-international.org/ecma-262/6.0/), since a proper understanding of the import and export statements are essential to successful use of Rollup.
 
 # Importing
 
@@ -89,10 +89,10 @@ This practice is only recommended if your source module only has one export.
 
 It is bad practice to mix default and named exports in the same module, though it is allowed by the specification.
 
-# Binding Behavior
+# How Bindings Work
+
+ES modules export *live bindings*, not values, so values can be changed after they are initially imported, and changes made to a value by the importing module at runtime will also propagate back to the source module.
 
 Exported values which are primitives are completely immutable to the importing module.
 
 Exported values which are not primitives can be mutated by the importing module, but not reassigned.
-
-However, ES modules export *live bindings*, not values, so values can be changed after they are initially imported, and changes made to a value by the importing module at runtime will also propagate back to the source module.
