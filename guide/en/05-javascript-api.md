@@ -154,7 +154,7 @@ The Promise returned by the `rollup.rollup()` method resolves to an object repre
 
 **• bundle.generate(*config*)**
 
-Compiles the project. Returns an object which contains properties for the compiled `code` (as a string) and the `map` (a sourcemap object). The optional configuration object argument is identical to the configuration object you might use in a configuration file for the command line, but any input options will be ignored because the inputs have already been supplied.
+Compiles the project. Returns a Promise which resolves an object contains properties for the compiled `code` (as a string) and the `map` (a sourcemap object). The optional configuration object argument is identical to the configuration object you might use in a configuration file for the command line, but any input options will be ignored because the inputs have already been supplied.
 
 **• bundle.write(*config*)**
 
