@@ -43,7 +43,7 @@ Developing software is usually easier if you break your project into smaller sep
 
 This finally changed with the ES6 revision of JavaScript, which includes a syntax for importing and exporting functions and data so they can be shared between separate scripts. The specification is now fixed, but it is not yet implemented in browsers or Node.js. Rollup allows you to write your code using the new module system, and will then compile it back down to existing supported formats such as CommonJS modules, AMD modules, and IIFE-style scripts. This means that you get to *write future-proof code*, and you also get the tremendous benefits of...
 
-### Tree Shaking
+### Tree-shaking
 
 In addition to enabling the use of ES6 modules, Rollup also statically analyzes the code you are importing, and will exclude anything that isn't actually used. This allows you to build on top of existing tools and modules without adding extra dependencies or bloating the size of your project.
 
@@ -67,7 +67,7 @@ var query = 'Rollup';
 ajax( 'https://api.example.com?search=' + query ).then( handleResponse );
 ```
 
-Because Rollup includes the bare minimum, it results in lighter, faster, and less complicated libraries and applications. Since this approach is based on explicit `import` and `export` statements, it is vastly more effective than simply running an automated minifier to detect unused variables in the compiled output code.
+Because Rollup includes the bare minimum, it results in lighter, faster, and less complicated libraries and applications. Since this approach is based on explicit `import` and `export` statements, it is more effective than simply running an automated minifier to detect unused variables in the compiled output code.
 
 
 ### Compatibility

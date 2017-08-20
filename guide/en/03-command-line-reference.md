@@ -4,7 +4,7 @@ title: Command Line Interface
 
 Rollup should typically be used from the command line. You can provide an optional Rollup configuration file to simplify command line usage and enable advanced Rollup functionality.
 
-### Configuration Files
+### Configuration files
 
 Rollup configuration files are optional, but they are powerful and convenient and thus **recommended**.
 

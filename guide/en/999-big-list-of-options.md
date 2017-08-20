@@ -234,7 +234,7 @@ If `true`, a separate sourcemap file will be created. If `inline`, the sourcemap
 
 
 
-### Danger Zone
+### Danger zone
 
 You probably don't need to use these options unless you know what you're doing!
 

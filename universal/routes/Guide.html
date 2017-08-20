@@ -225,12 +225,17 @@
 
 	export default {
 		oncreate () {
-			const anchors = this.refs.container.querySelectorAll( 'section[id]' );
+			const anchors = Array.from(this.refs.container.querySelectorAll('section[id]'))
+				.concat(Array.from(this.refs.container.querySelectorAll('h3[id]')))
+				.sort((a, b) => {
+					return a.getBoundingClientRect().top - b.getBoundingClientRect().top;
+				});
+
 			let positions;
 
 			const onresize = () => {
 				const { top } = this.refs.container.getBoundingClientRect();
-				positions = [].map.call( anchors, anchor => {
+				positions = anchors.map(anchor => {
 					return anchor.getBoundingClientRect().top - top;
 				});
 			}
