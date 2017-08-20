@@ -4,86 +4,84 @@ title: ES module syntax
 
 The following is intended as a lightweight reference for the module behaviors defined in the [ES2015 specification](https://www.ecma-international.org/ecma-262/6.0/), since a proper understanding of the import and export statements are essential to successful use of Rollup.
 
-# Importing
+### Importing
 
-## Named Imports
+Imported values cannot be reassigned, though imported objects and arrays *can* be mutated (and the exporting module, and any other importers, will be affected by the mutation). In that way, they behave similarly to `const` declarations.
+
+
+#### Named Imports
 
 Import a specific item from a source module, with its original name.
 
-```
+```js
 import { something } from './module.js';
 ```
 
 Import a specific item from a source module, with a custom name assigned upon import.
 
-```
-import { something as name } from './module.js';
+```js
+import { something as somethingElse } from './module.js';
 ```
 
-## Namespace Imports
+#### Namespace Imports
 
 Import everything from the source module as an object which exposes all the source module's named exports as properties and methods. Default exports are excluded from this object.
 
-```
+```js
 import * as module from './module.js'
 ```
 
 The `something` example from above would then be attached to the imported object as a property, e.g. `module.something`.
 
-## Default Import
+#### Default Import
 
 Import the **default export** of the source module.
 
-```
+```js
 import something from './module.js';
 ```
 
-## Empty Import
+#### Empty Import
 
 Load the module code, but don't make any new objects available.
 
-```
+```js
 import './module.js';
 ```
 
 This is useful for polyfills, or when the primary purpose of the imported code is to muck about with prototypes.
 
-# Exporting
 
-Export a value that has been previously declared.
+### Exporting
 
-```
+#### Named exports
+
+Export a value that has been previously declared:
+
+```js
 var something = true;
-export something;
-```
-
-Export a value immediately upon declaration.
-
-```
-export var something = true;
-```
-
-This works with `var`, `let`, `const`, `class`, and `function`. Primitives are always immutable from the perspective of the importing module.
-
-## Named Export
-
-Export a value.
-
-```
 export { something };
 ```
 
-Rename on export.
+Rename on export:
 
+```js
+export { something as somethingElse };
 ```
-export { something as name };
+
+Export a value immediately upon declaration:
+
+```js
+// this works with `var`, `let`, `const`, `class`, and `function`
+export var something = true;
 ```
 
-## Default Export
 
-Export a single value as the source module's default export.
+#### Default Export
 
-```
+Export a single value as the source module's default export:
+
+```js
 export default something;
 ```
 
@@ -91,10 +89,27 @@ This practice is only recommended if your source module only has one export.
 
 It is bad practice to mix default and named exports in the same module, though it is allowed by the specification.
 
-# How Bindings Work
 
-ES modules export *live bindings*, not values, so values can be changed after they are initially imported, and changes made to a value by the importing module at runtime will also propagate back to the source module.
+### How Bindings Work
 
-Exported values which are primitives are completely immutable to the importing module.
+ES modules export *live bindings*, not values, so values can be changed after they are initially imported as per [this demo](https://rollupjs.org/repl?shareable=JTdCJTIybW9kdWxlcyUyMiUzQSU1QiU3QiUyMm5hbWUlMjIlM0ElMjJtYWluLmpzJTIyJTJDJTIyY29kZSUyMiUzQSUyMmltcG9ydCUyMCU3QiUyMGNvdW50JTJDJTIwaW5jcmVtZW50JTIwJTdEJTIwZnJvbSUyMCcuJTJGaW5jcmVtZW50ZXIuanMnJTNCJTVDbiU1Q25jb25zb2xlLmxvZyhjb3VudCklM0IlNUNuaW5jcmVtZW50KCklM0IlNUNuY29uc29sZS5sb2coY291bnQpJTNCJTIyJTdEJTJDJTdCJTIybmFtZSUyMiUzQSUyMmluY3JlbWVudGVyLmpzJTIyJTJDJTIyY29kZSUyMiUzQSUyMmV4cG9ydCUyMGxldCUyMGNvdW50JTIwJTNEJTIwMCUzQiU1Q24lNUNuZXhwb3J0JTIwZnVuY3Rpb24lMjBpbmNyZW1lbnQoKSUyMCU3QiU1Q24lNUN0Y291bnQlMjAlMkIlM0QlMjAxJTNCJTVDbiU3RCUyMiU3RCU1RCUyQyUyMm9wdGlvbnMlMjIlM0ElN0IlMjJmb3JtYXQlMjIlM0ElMjJjanMlMjIlMkMlMjJnbG9iYWxzJTIyJTNBJTdCJTdEJTJDJTIybW9kdWxlSWQlMjIlM0ElMjIlMjIlMkMlMjJuYW1lJTIyJTNBJTIybXlCdW5kbGUlMjIlN0QlMkMlMjJleGFtcGxlJTIyJTNBbnVsbCU3RA==):
 
-Exported values which are not primitives can be mutated by the importing module, but not reassigned.
+```js
+// incrementer.js
+export let count = 0;
+
+export function increment() {
+  count += 1;
+}
+```
+
+```js
+// main.js
+import { count, increment } from './incrementer.js';
+
+console.log(count); // 0
+increment();
+console.log(count); // 1
+
+count += 1; // Error — only incrementer.js can change this
+```

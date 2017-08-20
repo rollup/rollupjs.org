@@ -284,11 +284,11 @@ var yourMethod = require( 'your-lib' ).yourMethod;
 var yourLib = require( 'your-lib' )['default'];
 ```
 
-#### amd (configuration file only)y
+#### amd *`--amd.id` and `--amd.define`*
 
 `Object` Can contain the following properties:
 
-* **amd.id** `String` An ID to use for AMD/UMD bundles:
+**amd.id** `String` An ID to use for AMD/UMD bundles:
 
 ```js
 // rollup.config.js
@@ -303,7 +303,7 @@ export default {
 // -> define('my-bundle', ['dependency'], ...
 ```
 
-* **amd.define** `String` A function name to use instead of `define`:
+**amd.define** `String` A function name to use instead of `define`:
 
 ```js
 // rollup.config.js
