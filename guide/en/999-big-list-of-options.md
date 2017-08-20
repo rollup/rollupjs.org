@@ -24,7 +24,7 @@ title: Big list of options
 
 #### name *`-n`/`--name`*
 
-`String` The name to use for the module for `umd`/`iife` bundles (**required** for bundles with exports):
+`String` The variable name, representing your `iife`/`umd` bundle, by which other scripts on the same page can access it.
 
 ```js
 // rollup.config.js
@@ -93,7 +93,7 @@ rollup -i src/main.js ... -e foo,bar,baz
 import $ from 'jquery';
 ```
 
-...we want to tell Rollup that the `jquery` module ID equates to the global `jQuery` variable:
+...we want to tell Rollup that the `jquery` module ID equates to the global `$` variable:
 
 ```js
 // rollup.config.js
@@ -102,7 +102,7 @@ export default {
   format: 'iife',
   moduleName: 'MyBundle',
   globals: {
-    jquery: 'jQuery'
+    jquery: '$'
   }
 };
 
@@ -136,12 +136,14 @@ selectAll('p').style('color', 'purple');
 
 // rollup.config.js
 export default {
-  src: 'app.js',
-  dest: 'bundle.js',
-  format: 'amd',
+  input: 'app.js',
   external: ['d3'],
-  paths: {
-    d3: 'https://d3js.org/d3.v4.min'
+  output: {
+    file: 'bundle.js',
+    format: 'amd',
+    paths: {
+      d3: 'https://d3js.org/d3.v4.min'
+    }
   }
 };
 
@@ -254,7 +256,7 @@ Same as `options.context`, but per-module – can either be an object of `id: co
 
 #### legacy
 
-Adds support for very old environments like IE8, at the cost of some extra code.
+Adds support for very old environments like IE8 by stripping out more modern code that might not work reliably, at the cost of deviating slightly from the precise specifications required of ES6 module environments.
 
 
 #### exports
