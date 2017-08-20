@@ -65,7 +65,7 @@ The `outputOptions` object can contain the following properties (see the [big li
 ```js
 const outputOptions = {
   // core options
-  file, // required with bundle.write
+  file,   // required with bundle.write
   format, // required
   name,
   globals,

@@ -2,17 +2,15 @@
 title: Integrating Rollup with other tools
 ---
 
-# npm packages
+### npm packages
 
 At some point, it's very likely that your project will depend on packages installed from npm into your `node_modules` folder. Unlike other bundlers like Webpack and Browserify, Rollup doesn't know 'out of the box' how to handle these dependencies - we need to add some configuration.
 
 Let's add a simple dependency called [the-answer](https://www.npmjs.com/package/the-answer), which exports the answer to the question of life, the universe and everything:
 
 ```bash
-npm install --save the-answer # or `npm i -S the-answer`
+npm install the-answer # or `npm i the-answer`
 ```
-
-Notice that we used `--save` this time, so that it's stored in the `dependencies` section of package.json.
 
 If we update our `src/main.js` file...
 
@@ -42,7 +40,7 @@ the-answer (imported by main.js)
 The resulting `bundle.js` will still work in Node.js, because the `import` declaration gets turned into a CommonJS `require` statement, but `the-answer` does *not* get included in the bundle. For that, we need a plugin.
 
 
-### rollup-plugin-node-resolve
+#### rollup-plugin-node-resolve
 
 The [rollup-plugin-node-resolve](https://github.com/rollup/rollup-plugin-node-resolve) plugin teaches Rollup how to find external modules. Install it...
 
@@ -69,7 +67,7 @@ export default {
 This time, when you `npm run build`, no warning is emitted — the bundle contains the imported module.
 
 
-### rollup-plugin-commonjs
+#### rollup-plugin-commonjs
 
 Some libraries expose ES6 modules that you can import as-is — `the-answer` is one such module. But at the moment, the majority of packages on npm are exposed as CommonJS modules instead. Until that changes, we need to convert CommonJS to ES2015 before Rollup can process them.
 
@@ -78,7 +76,7 @@ The [rollup-plugin-commonjs](https://github.com/rollup/rollup-plugin-commonjs) p
 Note that `rollup-plugin-commonjs` should go *before* other plugins that transform your modules — this is to prevent other plugins from making changes that break the CommonJS detection.
 
 
-## Peer dependencies
+### Peer dependencies
 
 Let's say that you're building a library that has a peer dependency, such as React or Lodash. If you set up externals as described above, your rollup will bundle *all* imports:
 
@@ -132,7 +130,7 @@ import _merge from 'lodash/merge';
 The array form of `external` does not handle wildcards, so this import will only be treated as external in the functional form.
 
 
-# Babel
+### Babel
 
 Many developers use [Babel](https://babeljs.io/) in their projects, so that they can use futuristic JavaScript features that aren't yet supported by browsers and Node.js.
 
@@ -216,11 +214,11 @@ var main = (function () {
 module.exports = main;
 ```
 
-# Gulp
+### Gulp
 
 Rollup returns promises which are understood by gulp so integration is easy.
 
-The syntax is very similar to the configuration file, but the properties are split across two different operations. Constructing the bundle, and transpiling to a target output.
+The syntax is very similar to the configuration file, but the properties are split across two different operations, corresponding to the [JavaScript API](#JavaScript-API):
 
 ```js
 const gulp = require('gulp');
