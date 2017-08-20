@@ -2,7 +2,7 @@
 title: Tutorial
 ---
 
-# Creating your first bundle
+### Creating your first bundle
 
 *Before we begin, you'll need to have [Node.js](https://nodejs.org) installed so that you can use [npm](https://npmjs.com). You'll also need to know how to access the [command line](https://www.codecademy.com/learn/learn-the-command-line) on your machine.*
 
@@ -83,7 +83,7 @@ node
 
 Congratulations! You've created your first bundle with Rollup.
 
-# Using config files
+### Using config files
 
 So far, so good, but as we start adding more options it becomes a bit of a nuisance to type out the command.
 
@@ -124,7 +124,7 @@ rollup --config rollup.config.dev.js
 rollup --config rollup.config.prod.js
 ```
 
-### Using Plugins
+### Using plugins
 
 So far, we've created a simple bundle from an entry point and a module imported via a relative path. As you build more complex bundles, you'll often need more flexibility – importing modules installed with npm, compiling code with Babel, working with JSON files and so on.
 
