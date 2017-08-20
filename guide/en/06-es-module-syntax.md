@@ -67,6 +67,8 @@ This works with `var`, `let`, `const`, `class`, and `function`. Primitives are a
 
 ## Named Export
 
+Export a value.
+
 ```
 export { something };
 ```
