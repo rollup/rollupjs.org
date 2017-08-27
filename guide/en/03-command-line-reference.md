@@ -45,6 +45,8 @@ export default {
     sourcemap,
     sourcemapFile,
     interop,
+    extend,
+    noConflict,
 
     // danger zone
     exports,
@@ -86,6 +88,7 @@ Many options have command line equivalents. Any arguments passed here will overr
 --amd.id                    ID for AMD module (default is anonymous)
 --amd.define                Function to use in place of `define`
 --no-strict                 Omit `"use strict";` in the generated bundle
+--extend                    Extend existing globals
 --no-conflict               Generate a noConflict method for UMD globals
 --intro                     Content to insert at top of bundle (inside wrapper)
 --outro                     Content to insert at end of bundle (inside wrapper)
