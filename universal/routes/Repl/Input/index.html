@@ -1,0 +1,93 @@
+<header class='start-here clearfix'>
+	<select bind:value='selectedExample'>
+		<option disabled selected value='{{null}}'>Select an example...</option>
+		{{#each examples as example}}
+			<option value='{{example.id}}'>{{example.title}}</option>
+		{{/each}}
+	</select>
+
+	<button class='start-over' on:click='clear()'>Start over</button>
+</header>
+
+<div ref:modules class='modules'>
+	{{#each modules as module, i}}
+		<Module bind:name='module.name' bind:code='module.code' index='{{i}}' main='{{i===0}}' on:remove='removeModule(i)' :loadedCodemirror/>
+	{{/each}}
+</div>
+
+<button class='new-module' on:click='createModule()'><span class='icon icon-plus'></span> add module</button>
+
+<style>
+	strong {
+		line-height: 2;
+	}
+
+	.new-module {
+		display: block;
+		width: 100%;
+		color: #3D9970;
+		border: none;
+		padding: 1em;
+		margin-bottom: 0;
+	}
+
+	@media (min-width: 400px) {
+		.start-over {
+			float: right;
+		}
+	}
+</style>
+
+<script>
+	import Module from './Module.html';
+	import { dirname, resolve, extname } from '../utils/path';
+	import examples from '../examples.js';
+
+	let uid = 1;
+
+	export default {
+		data: () => ({
+			examples,
+			selectedExample: null,
+			modules: [],
+			codemirrorReady: false
+		}),
+
+		components: {
+			Module,
+		},
+
+		methods: {
+			removeModule ( index ) {
+				const modules = this.get( 'modules' );
+				modules.splice( index, 1 );
+
+				this.set({ modules });
+			},
+
+			createModule () {
+				const modules = this.get( 'modules' );
+				modules.push({
+					name: `module_${uid++}.js`,
+					code: ''
+				});
+
+				this.set({ modules });
+
+				const inputs = this.refs.modules.querySelectorAll( 'input' );
+				const input = inputs[ inputs.length - 1 ];
+
+				setTimeout( () => {
+					input.focus();
+				});
+			},
+
+			clear () {
+				this.set({
+					modules: [{ name: 'main.js', code: '' }],
+					selectedExample: null
+				});
+			}
+		}
+	};
+</script>
