@@ -37,7 +37,7 @@ npm run build
 ⚠️ 'the-answer' 被 src/main.js 引用，但不知道如何去解析 - 把它看作是外部的以来
 ```
 
-生成的 `bundle.js` 在 Node.js 中仍然能运行，因为 `import` 声音被编译为 CommonJS 的 `require` 语句，但 `the-answer` *并没有* 被打包到文件束中。为此，我们需要一个插件。
+生成的 `bundle.js` 在 Node.js 中仍然能运行，因为 `import` 声明被编译为 CommonJS 的 `require` 语句，但 `the-answer` *并没有* 被打包到文件束中。为此，我们需要一个插件。
 
 
 ### rollup-plugin-node-resolve

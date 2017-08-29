@@ -1,5 +1,5 @@
 ---
-title: Frequently asked questions
+title: 常见问题
 ---
 
 #### Why are ES modules better than CommonJS modules?
@@ -18,6 +18,6 @@ Rollup strives to implement the specification for ES modules, not necessarily th
 
 Rollup is already used by many major JavaScript libraries, and can also be used to build the vast majority of applications. However, Rollup doesn't yet support a few specific advanced features that can sometimes be useful when building applications, most notably code splitting and [dynamic imports at runtime](https://github.com/tc39/proposal-dynamic-import). If your project needs either of those, you may be better off with [Webpack](https://webpack.js.org/).
 
-#### Who made the Rollup logo? It's lovely.
+### 谁制作了 Rollup 的 Logo。太可爱了!
 
-[Julian Lloyd](https://twitter.com/jlmakes)!
+我就知道! 是[Julian Lloyd.](https://twitter.com/jlmakes)制作的。
