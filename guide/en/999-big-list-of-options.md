@@ -50,7 +50,7 @@ import resolve from 'rollup-plugin-node-resolve';
 import commonjs from 'rollup-plugin-commonjs';
 
 export default {
-  entry: 'main.js',
+  input: 'main.js',
   plugins: [
     resolve(),
     commonjs()
