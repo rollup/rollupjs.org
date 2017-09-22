@@ -232,7 +232,10 @@ If `true`, a separate sourcemap file will be created. If `inline`, the sourcemap
 
 `Boolean` whether or not to add an 'interop block'. By default (`interop: true`), for safety's sake, Rollup will assign any external dependencies' `default` exports to a separate variable if it's necessary to distinguish between default and named exports. This generally only applies if your external dependencies were transpiled (for example with Babel) – if you're sure you don't need it, you can save a few bytes with `interop: false`.
 
+#### extends
 
+`Boolean` whether or not to extend the global variable defined by the `moduleName` option.` in `umd` or `iife` formats. When `true` the global variable will be defined as ```(global.moduleName = global.moduleName || {})`. When false the global defined by `moduleName` will be overwritten like
+`(global.moduleName = {})`.
 
 ### Danger zone
 
