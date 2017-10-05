@@ -40,6 +40,18 @@ export default {
 // -> var MyBundle = (function () {...
 ```
 
+Namespaces are supported, so your name can contain dots. The resulting bundle will contain the setup necessary for the namespacing.
+
+```js
+$ rollup -n "a.b.c"
+
+/* ->
+this.a = this.a || {};
+this.a.b = this.a.b || {};
+this.a.b.c = ...
+*/
+```
+
 #### plugins
 
 `Array` of plugin objects (or a single plugin object) – see [Getting started with plugins](#getting-started-with-plugins) for more information. Remember to call the imported plugin function (i.e. `commonjs()`, not just `commonjs`).
