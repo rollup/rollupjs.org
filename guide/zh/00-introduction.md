@@ -10,38 +10,38 @@ Rollup 是一个 JavaScript 模块打包器，可以将小块代码编译成大�
 
 ### 快速入门指南
 
-使用 `npm install --global rollup` 进行安装。Rollup 可以通过[命令行接口(command line interface)](https://github.com/rollup/rollup/wiki/Command-Line-Interface)配合可选配置文件(optional configuration file)来调用，或者可以通过 [JavaScript API](https://github.com/rollup/rollup/wiki/JavaScript-API)来调用。运行 `rollup --help` 可以查看可用的选项和参数。[启动项目模板](https://github.com/rollup/rollup-starter-project)演示了常用的配置选项，并且[用户指南](http://rollupjs.org/)也提供了更详尽的说明。
+使用 `npm install --global rollup` 进行安装。Rollup 可以通过[命令行接口(command line interface)](https://github.com/rollup/rollup/wiki/Command-Line-Interface)配合可选配置文件(optional configuration file)来调用，或者可以通过 [JavaScript API](https://github.com/rollup/rollup/wiki/JavaScript-API)来调用。运行 `rollup --help` 可以查看可用的选项和参数。
 
-#### 命令
+> 查看 [rollup-starter-lib](https://github.com/rollup/rollup-starter-lib) 和 [rollup-starter-app](https://github.com/rollup/rollup-starter-app) 中那些使用 Rollup 的示例类库与应用项目。
 
 这些命令假设应用程序入口起点的名称为 main.js，并且你想要所有 import 的依赖(all imports)都编译到一个名为 bundle.js 的单个文件中。
 
 对于浏览器：
 
 ```bash
-# compile to a <script> containing a self-executing function
-$ rollup main.js --format iife --output bundle.js
+# compile to a <script> containing a self-executing function ('iife')
+$ rollup main.js --o bundle.js --f iife
 ```
 
 对于 Node.js:
 
 ```bash
-# compile to a CommonJS module
-$ rollup main.js --format cjs --output bundle.js
+# compile to a CommonJS module ('cjs')
+$ rollup main.js --o bundle.js --f cjs
 ```
 
 对于浏览器和 Node.js:
 
 ```bash
 # UMD format requires a bundle name
-$ rollup main.js --format umd --name "myBundle" --output bundle.js
+$ rollup main.js --o bundle.js -f umd --name "myBundle"
 ```
 
 ### 为什么
 
 如果你将项目拆分成小的单独文件中，这样开发软件通常会很简单，因为这通常会消除无法预知的相互影响(remove unexpected interaction)，以及显著降低了所要解决的问题的复杂度(complexity of the problem)，并且可以在项目最初时，就简洁地编写小的项目（[不一定是标准答案](https://medium.com/@Rich_Harris/small-modules-it-s-not-quite-that-simple-3ca532d65de4)）。不幸的是，JavaScript 以往并没有将此功能作为语言的核心功能。
 
-### Tree Shaking
+### Tree-shaking
 
 除了使用 ES6 模块之外，Rollup 还静态分析代码中的 import，并将排除任何未实际使用的代码。这允许您架构于现有工具和模块之上，而不会增加额外的依赖或使项目的大小膨胀。
 
@@ -66,6 +66,7 @@ ajax( 'https://api.example.com?search=' + query ).then( handleResponse );
 ```
 
 因为 Rollup 只引入最基本最精简代码，所以可以生成轻量、快速，以及低复杂度的 library 和应用程序。因为这种基于显式的 `import` 和 `export` 语句的方式，它远比「在编译后的输出代码中，简单地运行自动 minifier 检测未使用的变量」更有效。
+
 
 ### 兼容性
 
