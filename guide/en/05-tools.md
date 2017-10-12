@@ -181,7 +181,7 @@ Secondly, we're using the `external-helpers` plugin, which allows Rollup to incl
 
 Thirdly, we're putting our `.babelrc` file in `src`, rather than the project root. This allows us to have a different `.babelrc` for things like tests, if we need that later – it's generally a good idea to have separate configuration for separate tasks.
 
-Now, before we run rollup, we need to install the `latest` preset and the `external-helpers` plugin:
+Now, before we run rollup, we need to install the [`env`](https://babeljs.io/docs/plugins/preset-env/) preset and the `external-helpers` plugin:
 
 ```bash
 npm i -D babel-preset-env babel-plugin-external-helpers
