@@ -167,10 +167,8 @@ Before Babel will actually compile your code, it needs to be configured. Create 
 ```js
 {
   "presets": [
-    ["latest", {
-      "es2015": {
-        "modules": false
-      }
+    ["env", {
+      "modules": false
     }]
   ],
   "plugins": ["external-helpers"]
@@ -186,7 +184,7 @@ Thirdly, we're putting our `.babelrc` file in `src`, rather than the project roo
 Now, before we run rollup, we need to install the `latest` preset and the `external-helpers` plugin:
 
 ```bash
-npm i -D babel-preset-latest babel-plugin-external-helpers
+npm i -D babel-preset-env babel-plugin-external-helpers
 ```
 
 Running Rollup now will create a bundle... except we're not actually using any ES2015 features. Let's change that. Edit `src/main.js`:
