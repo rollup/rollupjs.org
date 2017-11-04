@@ -51,7 +51,7 @@ For example, with CommonJS, the *entire tool or library must be imported*.
 
 ```js
 // import the entire utils object with CommonJS
-var utils = require( 'utils' );
+var utils = require( './utils' );
 var query = 'Rollup';
 // use the ajax method of the utils object
 utils.ajax( 'https://api.example.com?search=' + query ).then( handleResponse );
@@ -61,7 +61,7 @@ But with ES6 modules, instead of importing the whole `utils` object, we can just
 
 ```js
 // import the ajax function with an ES6 import statement
-import { ajax } from 'utils';
+import { ajax } from './utils';
 var query = 'Rollup';
 // call the ajax function
 ajax( 'https://api.example.com?search=' + query ).then( handleResponse );
