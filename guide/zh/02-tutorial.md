@@ -2,7 +2,7 @@
 title: 教程
 ---
 
-### 创建第一个bundle
+### 创建第一个bundle(Creating your first bundle)
 
 *开始前, 需要安装 [Node.js](https://nodejs.org)， 这样才可以使用 [npm](https://npmjs.com) ；还需要了解如何使用 [command line](https://www.codecademy.com/learn/learn-the-command-line)。*
 
@@ -83,7 +83,7 @@ node
 
 恭喜，你已经用 Rollup 完成了第一个 bundle。
 
-### 使用配置文件
+### 使用配置文件(Using config files)
 
 上面的方式还不错，但是如果添加更多的选项，这种命令行的方式就显得麻烦了。
 
@@ -124,7 +124,7 @@ rollup --config rollup.config.dev.js
 rollup --config rollup.config.prod.js
 ```
 
-### 使用插件
+### 使用插件(Using plugins)
 
 目前为止，我们通过相对路径，将一个入口文件和一个模块创建成了一个简单的 bundle。随着构建更复杂的 bundle，通常需要更大的灵活性——引入 npm 安装的模块、通过 Babel 编译代码、和 JSON 文件打交道等。
 
