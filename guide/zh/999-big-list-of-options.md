@@ -2,7 +2,7 @@
 title: 大选项列表
 ---
 
-### 核心功能
+### 核心功能(Core functionality)
 
 #### 输入(input *`-i`/`--input`*)
 
@@ -123,7 +123,7 @@ rollup -i src/main.js ... -g jquery:$,underscore:_
 ```
 
 
-### 高功功能
+### 高功功能(Advanced functionality)
 
 #### 路径(paths)
 

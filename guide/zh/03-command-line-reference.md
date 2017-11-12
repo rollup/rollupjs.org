@@ -4,7 +4,7 @@ title: 命令行
 
 我们一般在命令行中使用Rollup。你也可以提供一份配置文件（可要可不要）来简化命令行操作，同时还能启用Rollup的高级特性
 
-### 配置文件
+### 配置文件(Configuration files)
 
 Rollup的配置文件是可选的，但是使用配置文件的作用很强大，而且很方便，因此我们推荐你使用
 
@@ -69,7 +69,7 @@ $ rollup --config
 $ rollup --config my.config.js
 ```
 
-### 命令行的参数
+### 命令行的参数(Command line flags)
 
 配置文件中的许多选项和命令行的参数是等价的。如果你使用这里的参数，那么将重写配置文件。想了解更多的话，仔细查阅这个[包办大量选项的清单](#big-list-of-options)
 
