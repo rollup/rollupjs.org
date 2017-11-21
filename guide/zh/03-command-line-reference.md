@@ -16,7 +16,7 @@ Rollup的配置文件是可选的，但是使用配置文件的作用很强大�
 // rollup.config.js
 export default {
   // 核心选项
-  input,     // 必须
+  input,     // 必需
   external,
   plugins,
 
@@ -29,10 +29,10 @@ export default {
   moduleContext,
   legacy
 
-  output: {  // 必须 (如果要输出多个，可以是一个数组)
+  output: {  // 必需 (如果要输出多个，可以是一个数组)
     // 核心选项
-    file,    // 必须
-    format,  // 必须
+    file,    // 必需
+    format,  // 必需
     name,
     globals,
 
@@ -74,7 +74,7 @@ $ rollup --config my.config.js
 配置文件中的许多选项和命令行的参数是等价的。如果你使用这里的参数，那么将重写配置文件。想了解更多的话，仔细查阅这个[包办大量选项的清单](#big-list-of-options)
 
 ```bash
--i, --input                 要打包的文件（必须）
+-i, --input                 要打包的文件（必需）
 -o, --output.file           输出的文件 (如果没有这个参数，则直接输出到控制台)
 -f, --output.format [es]    输出的文件类型 (amd, cjs, es, iife, umd)
 -e, --external              将模块ID的逗号分隔列表排除
