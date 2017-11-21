@@ -6,9 +6,9 @@ title: 介绍
 
 ### 概述(Overview)
 
-Rollup 是一个 JavaScript 模块打包器，可以将小块代码编译成大块复杂的代码，例如 library 或应用程序。Rollup 对代码模块使用新的标准化格式，这些标准都包含在 JavaScript 的 ES6 版本中，而不是以前的特殊解决方案，如 CommonJS 和 AMD。ES6 模块可以使你自由、无缝地使用你最喜爱的 library 中那些最有用独立函数，而你的项目不必携带其他未使用的代码。ES6 模块最终还是要由浏览器原生实现，但当前 Rollup 可以使你提前体验。
+Rollup 是一个 JavaScript 模块打包工具，可以将小块代码编译成大块复杂的代码，例如库或应用。Rollup 对代码模块使用新的标准化格式，这些标准都包含在 JavaScript 的 ES6 版本中，而不是以前的特殊解决方案，如 CommonJS 和 AMD。ES6 模块可以使你自由、无缝地使用你喜爱的库中最有用的独立函数，而你的项目不必携带其他未使用的代码。ES6 模块最终可能会在浏览器中得到原生的支持，而现在 Rollup 就可以让你使用。
 
-### 快速入门指南(Quick start)
+### 快速入门(Quick start)
 
 使用 `npm install --global rollup` 进行安装。Rollup 可以通过[命令行接口(command line interface)](https://github.com/rollup/rollup/wiki/Command-Line-Interface)配合可选配置文件(optional configuration file)来调用，或者可以通过 [JavaScript API](https://github.com/rollup/rollup/wiki/JavaScript-API)来调用。运行 `rollup --help` 可以查看可用的选项和参数。
 
@@ -45,20 +45,20 @@ $ rollup main.js --o bundle.js -f umd --name "myBundle"
 
 除了使用 ES6 模块之外，Rollup 还静态分析代码中的 import，并将排除任何未实际使用的代码。这允许您架构于现有工具和模块之上，而不会增加额外的依赖或使项目的大小膨胀。
 
-例如，在使用 CommonJS 时，*必须导入(import)完整的工具(tool)或库(library)对象*。
+例如，在使用 CommonJS 时，*必须引入(import)完整的工具(tool)或库(library)对象*。
 
 ```js
-// 使用 CommonJS 导入(import)完整的 utils 对象
+// 使用 CommonJS 引入(import)完整的 utils 对象
 var utils = require( 'utils' );
 var query = 'Rollup';
 // 使用 utils 对象的 ajax 方法
 utils.ajax( 'https://api.example.com?search=' + query ).then( handleResponse );
 ```
 
-但是在使用 ES6 模块时，无需导入整个 `utils` 对象，我们可以只导入(import)我们所需的 `ajax` 函数：
+但是在使用 ES6 模块时，无需引入整个 `utils` 对象，我们可以只引入(import)我们所需的 `ajax` 函数：
 
 ```js
-// 使用 ES6 import 语句导入(import) ajax 函数
+// 使用 ES6 import 语句引入(import) ajax 函数
 import { ajax } from 'utils';
 var query = 'Rollup';
 // 调用 ajax 函数
@@ -70,13 +70,13 @@ ajax( 'https://api.example.com?search=' + query ).then( handleResponse );
 
 ### 兼容性(Compatibility)
 
-#### 导入 CommonJS(Importing CommonJS)
+#### 引入 CommonJS(Importing CommonJS)
 
-Rollup 可以[通过插件](https://github.com/rollup/rollup-plugin-commonjs)导入已存在的 CommonJS 模块。
+Rollup 可以[通过插件](https://github.com/rollup/rollup-plugin-commonjs)引入已存在的 CommonJS 模块。
 
 #### 发布 ES6 模块(Publishing ES6 Modules)
 
-为了确保你的 ES6 模块可以直接与「运行在 CommonJS（例如 Node.js 和 webpack）中的工具(tool)」使用，你可以使用 Rollup 编译为 UMD 或 CommonJS 格式，然后在 `package.json` 文件的 `main` 属性中指向当前编译的版本。如果你的 `package.json` 也具有 `module` 字段，像 Rollup 和 [webpack 2](https://webpack.js.org/) 这样的 ES6 感知工具(ES6-aware tools)将会直接[导入 ES6 模块版本](https://github.com/rollup/rollup/wiki/pkg.module)。
+为了确保你的 ES6 模块可以直接与「运行在 CommonJS（例如 Node.js 和 webpack）中的工具(tool)」使用，你可以使用 Rollup 编译为 UMD 或 CommonJS 格式，然后在 `package.json` 文件的 `main` 属性中指向当前编译的版本。如果你的 `package.json` 也具有 `module` 字段，像 Rollup 和 [webpack 2](https://webpack.js.org/) 这样的 ES6 感知工具(ES6-aware tools)将会直接[引入 ES6 模块版本](https://github.com/rollup/rollup/wiki/pkg.module)。
 
 ### 参考链接(Links)
 

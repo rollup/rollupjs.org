@@ -68,7 +68,7 @@ export default {
 
 #### rollup-plugin-commonjs
 
-一些库导出成你可以正常导入的ES6模块 -`the-answer` 就是一个这样的模块。 但是目前，npm中的大多数包都是以CommonJS模块的形式出现的。 在它们更改之前，我们需要将CommonJS模块转换为 ES2015 供 Rollup 处理。
+一些库导出成你可以正常引入的ES6模块 -`the-answer` 就是一个这样的模块。 但是目前，npm中的大多数包都是以CommonJS模块的形式出现的。 在它们更改之前，我们需要将CommonJS模块转换为 ES2015 供 Rollup 处理。
 
 这个 [rollup-plugin-commonjs](https://github.com/rollup/rollup-plugin-commonjs) 插件就是用来将 CommonJS 转换成 ES2015 模块的。
 
@@ -83,7 +83,7 @@ import answer from 'the-answer';
 import _ from 'lodash';
 ```
 
-你可以微调哪些导入是想要打包的，哪些是外部的引用（externals）。 对于这个例子，我们认为`lodash`是外部的引用（externals），而不是`the-answer`。
+你可以微调哪些引入是想要打包的，哪些是外部的引用（externals）。 对于这个例子，我们认为`lodash`是外部的引用（externals），而不是`the-answer`。
 
 这是配置文件:
 
@@ -119,7 +119,7 @@ export default {
 }
 ```
 
-如果你使用 [babel-plugin-lodash]（https://github.com/lodash/babel-plugin-lodash）来最优选择lodash模块，在这种情况下，Babel将转换你的导入语句，如下所示
+你可以使用 [babel-plugin-lodash]（https://github.com/lodash/babel-plugin-lodash）来筛出 lodash 子模块。有了这个插件，Babel 将转换 import 语句，如下
 
 ```js
 import _merge from 'lodash/merge';
@@ -159,7 +159,7 @@ export default {
 };
 ```
 
-在Babel实际编译代码之前，需要进行配置。 创建一个新文件`src/.babelrc`：
+在 Babel 实际编译代码之前，需要进行配置。 创建一个新文件`src/.babelrc`：
 
 ```js
 {
@@ -174,9 +174,9 @@ export default {
 }
 ```
 
-这个设置有一些不寻常的地方。首先，我们设置`"modules": false`，否则 Babel 会在 Rollup 有机会做处理之前，将我们的模块转成 CommonJS，导致 Rollup 的一些处理失败。
+这儿有几个需要注意的地方。首先，我们设置`"modules": false`，否则 Babel 会在 Rollup 有机会做处理之前，将我们的模块转成 CommonJS，引起 Rollup 失败。
 
-其次，我们使用`external-helpers`插件，它允许 Rollup 在包的顶部只引用一次 “helpers”，而不是每个使用它们的模块中都引用一遍（这是默认行为）。
+其次，我们使用了`external-helpers`插件，它允许 Rollup 在包的顶部只引用一次 “helpers”，而不是每个使用它们的模块中都引用一遍（这是默认行为）。
 
 第三，我们将`.babelrc`文件放在`src`中，而不是根目录下。 这允许我们对于不同的任务有不同的`.babelrc`配置，比如像测试，如果我们以后需要的话 - 通常为单独的任务单独配置会更好。
 
@@ -186,7 +186,7 @@ export default {
 npm i -D babel-preset-latest babel-plugin-external-helpers
 ```
 
-运行 Rollup 现在将创建一个 bundle 包... 实际上我们并没有使用任何ES2015特性。 我们来改变一下。 编辑`src / main.js`：
+运行 Rollup 现在将生成一个 bundle 包... 实际上我们并没有使用任何 ES2015 特性。 我们来修改下 `src / main.js`：
 
 ```js
 // src/main.js
