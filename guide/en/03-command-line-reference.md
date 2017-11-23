@@ -55,6 +55,42 @@ export default {
 };
 ```
 
+You can also export an array from your **config** file and all the builds will happen in parallel, works in watch mode too.
+
+```javascript
+// rollup.config.js (exporting an array)
+export default [{
+	input: 'main.js',
+	output: {
+		file: 'dist/bundle1.js',
+		format: 'cjs'
+	}
+}, {
+	input: 'main.js',
+	output: {
+		file: 'dist/bundle2.js',
+		format: 'iife'
+	}
+}];
+```
+
+Want to read your config async? No problem! Rollup supports exporting a `Promise` as well. Now you can export a `Promise` which resolves to an object or an array.
+
+```javascript
+  // rollup.config.js
+  export default fetch('/some-remote-service-or-file-which-returns-actual-config');
+```
+
+Similarly, you can do this as well,
+
+```javascript
+  // rollup.config.js (Promise resolving an array)
+  export default Promise.all([
+    fetch('get-config-1'),
+    fetch('get-config-2')
+  ])
+```
+
 You *must* use a configuration file in order to do any of the following:
 
 - bundle one project into multiple output files
