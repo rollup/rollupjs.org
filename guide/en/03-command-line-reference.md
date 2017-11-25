@@ -45,6 +45,7 @@ export default {
     sourcemap,
     sourcemapFile,
     interop,
+    extend,
 
     // danger zone
     exports,
