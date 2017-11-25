@@ -79,6 +79,8 @@ const outputOptions = {
   sourcemap,
   sourcemapFile,
   interop,
+  extend,     // extend existing globals, false by default
+  noConflict, // generate a noConflict method for UMD globals
 
   // danger zone
   exports,
