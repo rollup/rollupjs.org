@@ -10,3 +10,4 @@ public/examples
 public/service-worker*
 server/routes
 server/components
+npm-debug.log
