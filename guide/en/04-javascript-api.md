@@ -51,6 +51,7 @@ const inputOptions = {
 
   // danger zone
   acorn,
+  treeshake,
   context,
   moduleContext,
   legacy
@@ -79,12 +80,14 @@ const outputOptions = {
   sourcemap,
   sourcemapFile,
   interop,
+  extend,
 
   // danger zone
   exports,
   amd,
-  indent
-  strict
+  indent,
+  strict,
+  freeze
 };
 ```
 
@@ -124,7 +127,8 @@ const watchOptions = {
   watch: {
     chokidar,
     include,
-    exclude
+    exclude,
+    clearScreen
   }
 };
 ```

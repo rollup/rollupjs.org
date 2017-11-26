@@ -14,7 +14,7 @@ Consult the [big list of options](#big-list-of-options) for details on each opti
 
 ```javascript
 // rollup.config.js
-export default {
+export default { // can be an array (for multiple inputs)
   // core input options
   input,     // required
   external,
@@ -25,9 +25,10 @@ export default {
 
   // danger zone
   acorn,
+  treeshake,
   context,
   moduleContext,
-  legacy
+  legacy,
 
   output: {  // required (can be an array, for multiple outputs)
     // core output options
@@ -50,28 +51,42 @@ export default {
     // danger zone
     exports,
     amd,
-    indent
-    strict
+    indent,
+    strict,
+    freeze
   },
+
+  watch: {
+    chokidar,
+    include,
+    exclude,
+    clearScreen
+  }
 };
 ```
 
-You can also export an array from your **config** file to build several different bundles at once, even in watch mode.
+You can export an **array** from your config file to build bundles from several different inputs at once, even in watch mode. To build different bundles with the same input, you supply an array of output options for each input:
 
 ```javascript
-// rollup.config.js (exporting an array)
+// rollup.config.js (building more than one bundle)
 export default [{
-	input: 'main.js',
-	output: {
-		file: 'dist/bundle1.js',
-		format: 'cjs'
-	}
+  input: 'main-a.js',
+  output: {
+    file: 'dist/bundle-a.js',
+    format: 'cjs'
+  }
 }, {
-	input: 'main.js',
-	output: {
-		file: 'dist/bundle2.js',
-		format: 'iife'
-	}
+  input: 'main-b.js',
+  output: [
+    {
+      file: 'dist/bundle-b1.js',
+      format: 'cjs'
+    },
+    {
+      file: 'dist/bundle-b2.js',
+      format: 'es'
+    }
+  ]
 }];
 ```
 
@@ -79,10 +94,11 @@ Want to read your config async? No problem! Rollup can also handle a `Promise` w
 
 ```javascript
 // rollup.config.js
+import fetch from  'node-fetch';
 export default fetch('/some-remote-service-or-file-which-returns-actual-config');
 ```
 
-Similarly, you can do this as well,
+Similarly, you can do this as well:
 
 ```javascript
 // rollup.config.js (Promise resolving an array)
@@ -111,7 +127,7 @@ $ rollup --config my.config.js
 
 Many options have command line equivalents. Any arguments passed here will override the config file, if you're using one. See the [big list of options](#big-list-of-options) for details.
 
-```bash
+```
 -i, --input                 Input file (required)
 -o, --output.file           Output (if absent, prints to stdout)
 -f, --output.format [es]    Type of output (amd, cjs, es, iife, umd)

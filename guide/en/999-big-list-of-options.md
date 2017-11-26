@@ -170,7 +170,7 @@ define(['https://d3js.org/d3.v4.min'], function (d3) {
 
 #### banner/footer
 
-`String` A string to prepend/append to the bundle. (Note: `banner` and `footer` options will not break sourcemaps)
+`String` A string to prepend/append to the bundle. You can also supply a `Promise` that resolves to a `String` to generate it asynchronously (Note: `banner` and `footer` options will not break sourcemaps)
 
 ```js
 // rollup.config.js
@@ -183,7 +183,7 @@ export default {
 
 #### intro/outro
 
-`String` Similar to `banner` and `footer`, except that the code goes *inside* any format-specific wrapper
+`String` Similar to `banner` and `footer`, except that the code goes *inside* any format-specific wrapper. As with `banner` and `footer`, you can also supply a `Promise` that resolves to a `String`.
 
 ```js
 export default {
@@ -252,9 +252,44 @@ If `true`, a separate sourcemap file will be created. If `inline`, the sourcemap
 
 You probably don't need to use these options unless you know what you're doing!
 
-#### treeshake
+#### treeshake *`--treeshake`/`--no-treeshake`*
 
-Whether or not to apply tree-shaking. It's recommended that you omit this option (defaults to `treeshake: true`), unless you discover a bug caused by the tree-shaking algorithm in which case use `treeshake: false` once you've filed an issue!
+Can be `true`, `false` or an object (see below), defaults to `true`. Whether or not to apply tree-shaking and to fine-tune the tree-shaking process. Setting this option to `false` will produce bigger bundles but may improve build performance. If you discover a bug caused by the tree-shaking algorithm, please file an issue! 
+Setting this option to an object implies tree-shaking is enabled and grants the following additional options:
+
+**treeshake.pureExternalModules** `true`/`false` (default: `false`). If `true`, assume external dependencies from which nothing is imported do not have other side-effects like mutating global variables or logging.
+```javascript
+// input file
+import {unused} from 'external-a';
+import 'external-b';
+console.log(42);
+```
+
+```javascript
+// output with treeshake.pureExternalModules === false
+import 'external-a';
+import 'external-b';
+console.log(42);
+```
+
+```javascript
+// output with treeshake.pureExternalModules === true
+console.log(42);
+```
+
+**treeshake.propertyReadSideEffects** `true`/`false` (default: `true`). If `false`, assume reading a property of an object never has side-effects. Depending on your code, disabling this option can significantly reduce bundle size but can potentially break functionality if you rely on getters or errors from illegal property access.
+
+```javascript
+// Will be removed if treeshake.propertyReadSideEffects === false
+const foo = {
+  get bar() {
+    console.log('effect');
+    return 'bar';
+  }
+}
+const result = foo.bar;
+const illegalAccess = foo.quux.tooDeep;
+```
 
 #### acorn
 
@@ -350,6 +385,10 @@ export default {
 
 `true` or `false` (defaults to `true`) – whether to include the 'use strict' pragma at the top of generated non-ES6 bundles. Strictly-speaking (geddit?), ES6 modules are *always* in strict mode, so you shouldn't disable this without good reason.
 
+#### freeze *`--freeze`/`--no-freeze`*
+
+`true` or `false` (defaults to `true`) – wether to `Object.freeze()` namespace import objects (i.e. `import * as namespaceImportObject from...`) that are accessed dynamically.
+
 
 ### Watch options
 
@@ -360,7 +399,6 @@ These options only take effect when running Rollup with the `--watch` flag, or u
 A `Boolean` indicating that [chokidar](https://github.com/paulmillr/chokidar) should be used instead of the built-in `fs.watch`, or an `Object` of options that are passed through to chokidar.
 
 You must install chokidar separately if you wish to use it.
-
 
 #### watch.include
 
@@ -376,7 +414,6 @@ export default {
 };
 ```
 
-
 #### watch.exclude
 
 Prevent files from being watched:
@@ -390,3 +427,7 @@ export default {
   }
 };
 ```
+
+#### watch.clearScreen
+
+`true` or `false` (defaults to `true`) – whether to clear the screen when a rebuild is triggered.
