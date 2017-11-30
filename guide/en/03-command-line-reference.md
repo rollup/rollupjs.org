@@ -128,18 +128,24 @@ $ rollup --config my.config.js
 Many options have command line equivalents. Any arguments passed here will override the config file, if you're using one. See the [big list of options](#big-list-of-options) for details.
 
 ```
--i, --input                 Input file (required)
--o, --output.file           Output (if absent, prints to stdout)
+-c, --config                Use this config file (if argument is used but value
+                              is unspecified, defaults to rollup.config.js)
+-i, --input                 Input (alternative to <entry file>)
+-o, --output.file <output>  Output (if absent, prints to stdout)
 -f, --output.format [es]    Type of output (amd, cjs, es, iife, umd)
 -e, --external              Comma-separate list of module IDs to exclude
 -g, --globals               Comma-separate list of `module ID:Global` pairs
                               Any module IDs defined here are added to external
 -n, --name                  Name for UMD export
 -m, --sourcemap             Generate sourcemap (`-m inline` for inline map)
+-l, --legacy                Support IE8
 --amd.id                    ID for AMD module (default is anonymous)
 --amd.define                Function to use in place of `define`
---no-strict                 Omit `"use strict";` in the generated bundle
+--no-strict                 Don't emit a `"use strict";` in the generated modules.
+--no-indent                 Don't indent result
+--environment <values>      Settings passed to config file (see example)
 --no-conflict               Generate a noConflict method for UMD globals
+--no-treeshake              Disable tree-shaking
 --intro                     Content to insert at top of bundle (inside wrapper)
 --outro                     Content to insert at end of bundle (inside wrapper)
 --banner                    Content to insert at top of bundle (outside wrapper)

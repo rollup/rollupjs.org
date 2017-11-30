@@ -258,6 +258,7 @@ Can be `true`, `false` or an object (see below), defaults to `true`. Whether or 
 Setting this option to an object implies tree-shaking is enabled and grants the following additional options:
 
 **treeshake.pureExternalModules** `true`/`false` (default: `false`). If `true`, assume external dependencies from which nothing is imported do not have other side-effects like mutating global variables or logging.
+
 ```javascript
 // input file
 import {unused} from 'external-a';
