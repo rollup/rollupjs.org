@@ -143,7 +143,7 @@ Many options have command line equivalents. Any arguments passed here will overr
 --amd.define                Function to use in place of `define`
 --no-strict                 Don't emit a `"use strict";` in the generated modules.
 --no-indent                 Don't indent result
---environment <values>      Settings passed to config file (see example)
+--environment <values>      Environment variables passed to config file
 --no-conflict               Generate a noConflict method for UMD globals
 --no-treeshake              Disable tree-shaking
 --intro                     Content to insert at top of bundle (inside wrapper)
@@ -170,3 +170,29 @@ Rebuild the bundle when its source files change on disk.
 #### `--silent`
 
 Don't print warnings to the console.
+
+#### `--environment <values>`
+
+Pass additional settings to the config file via `process.ENV`.
+
+```sh
+rollup -c --environment INCLUDE_DEPS,BUILD:production
+
+```
+will set `process.env.INCLUDE_DEPS === 'true'` and `process.env.BUILD === 'production'`. You can use this option several times. In that case, subsequently set variables will overwrite previous definitions. This enables you for instance to overwrite environment variables in package.json scripts:
+
+```json
+// in package.json
+{
+  "scripts": {
+    "build": "rollup -c --environment INCLUDE_DEPS,BUILD:production"
+  }
+}
+```
+
+If you call this script via
+```bash
+npm run build -- --environment BUILD:development
+```
+
+then the config file will receive `process.env.INCLUDE_DEPS === 'true'` and `process.env.BUILD === 'development'`.
