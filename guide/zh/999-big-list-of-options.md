@@ -123,7 +123,7 @@ rollup -i src/main.js ... -g jquery:$,underscore:_
 ```
 
 
-### 高功功能(Advanced functionality)
+### 高级功能(Advanced functionality)
 
 #### 路径(paths)
 
