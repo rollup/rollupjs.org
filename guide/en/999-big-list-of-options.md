@@ -75,7 +75,7 @@ export default {
 Either a `Function` that takes an `id` and returns `true` (external) or `false` (not external), or an `Array` of module IDs that should remain external to the bundle. The IDs should be either:
 
 1. the name of an external dependency
-2. a resolved ID (like an absolute path to a file)
+1. a resolved ID (like an absolute path to a file)
 
 ```js
 // rollup.config.js
@@ -95,11 +95,6 @@ When given as a command line argument, it should be a comma-separated list of ID
 ```bash
 rollup -i src/main.js ... -e foo,bar,baz
 ```
-
-When providing a function, it is actually called with three parameters `(id, parent, isResolved)` that can give you more fine-grained control:
-* `id` is the id of the module in question
-* `parent` is the id of the module doing the import
-* `isResolved` signals whether the `id` has been resolved by e.g. plugins
 
 
 #### globals *`-g`/`--globals`*
