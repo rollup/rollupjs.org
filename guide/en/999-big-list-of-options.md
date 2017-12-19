@@ -73,6 +73,7 @@ export default {
 #### external *`-e`/`--external`*
 
 Either a `Function` that takes an `id` and returns `true` (external) or `false` (not external), or an `Array` of module IDs that should remain external to the bundle. The IDs should be either:
+
 1. the name of an external dependency
 2. a resolved ID (like an absolute path to a file)
 
