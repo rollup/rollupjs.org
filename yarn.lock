@@ -2080,14 +2080,13 @@ rollup-plugin-replace@^1.1.1:
     minimatch "^3.0.2"
     rollup-pluginutils "^1.5.0"
 
-rollup-plugin-svelte@^3.1.0:
-  version "3.1.0"
-  resolved "https://registry.yarnpkg.com/rollup-plugin-svelte/-/rollup-plugin-svelte-3.1.0.tgz#12405b2ac51016c1a35cc1be6840ac0ad6df8163"
+rollup-plugin-svelte@^4.0.0:
+  version "4.0.0"
+  resolved "https://registry.yarnpkg.com/rollup-plugin-svelte/-/rollup-plugin-svelte-4.0.0.tgz#4a40fb8136926b4b1bc7fdccbc1d0f44141b8b93"
   dependencies:
     require-relative "^0.8.7"
     rollup-pluginutils "^2.0.1"
     sourcemap-codec "^1.3.1"
-    svelte "^1.25.1"
 
 rollup-plugin-uglify@^2.0.1:
   version "2.0.1"
@@ -2361,9 +2360,9 @@ surge@^0.19.0:
     tar.gz "0.1.1"
     url-parse-as-address "1.0.0"
 
-svelte@^1.25.1, svelte@^1.30.0:
-  version "1.30.0"
-  resolved "https://registry.yarnpkg.com/svelte/-/svelte-1.30.0.tgz#58b6a56616b082ec012fabdf9f5371785655a076"
+svelte@^1.49.1:
+  version "1.49.1"
+  resolved "https://registry.yarnpkg.com/svelte/-/svelte-1.49.1.tgz#2586fd4da6504d42822f9866af32d47b36607898"
 
 table@^4.0.1:
   version "4.0.1"

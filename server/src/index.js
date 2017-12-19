@@ -39,8 +39,8 @@ app.get( '/repl', ( req, res ) => {
 	servePage( res, {
 		title: 'rollup.js',
 		lang: 'en',
-		nav: Nav.render({ route: 'repl', lang: 'en' }),
-		route: Repl.render() // TODO is there any point? just render an empty box instead?
+		nav: Nav.render({ route: 'repl', lang: 'en' }).html,
+		route: Repl.render().html // TODO is there any point? just render an empty box instead?
 	}).catch( err => {
 		console.log( err.stack );
 	});
@@ -61,12 +61,12 @@ function serveGuide ( req, res, lang ) {
 	servePage( res, {
 		title: 'rollup.js',
 		lang,
-		nav: Nav.render({ route: 'guide', lang }),
+		nav: Nav.render({ route: 'guide', lang }).html,
 		route: Guide.render({
 			sections,
 			summary,
 			lang
-		})
+		}).html
 	}).catch( err => {
 		console.log( err.stack );
 	});
