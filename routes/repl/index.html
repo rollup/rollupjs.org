@@ -111,12 +111,17 @@
 				}
 			}
 
-			return fetch(`/api/examples`).then(r => r.json()).then(examples => {
+			const example = saved ? Promise.resolve(saved) : fetch(`/api/examples/00`).then(r => r.json());
+
+			return Promise.all([
+				fetch(`/api/examples`).then(r => r.json()),
+				example
+			]).then(([examples, example]) => {
 				return {
 					examples,
 					saved,
 					selectedExample,
-					modules: saved ? saved.modules : [],
+					modules: example.modules,
 					options: saved ? saved.options : {
 						format: 'cjs',
 						moduleName: 'myBundle'
