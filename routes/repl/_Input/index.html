@@ -11,7 +11,7 @@
 
 <div ref:modules class='modules'>
 	{{#each modules as module, i}}
-		<Module bind:name='module.name' bind:code='module.code' index='{{i}}' main='{{i===0}}' on:remove='removeModule(i)' :loadedCodemirror/>
+		<Module bind:name='module.name' bind:code='module.code' index='{{i}}' main='{{i===0}}' on:remove='removeModule(i)'/>
 	{{/each}}
 </div>
 
@@ -73,15 +73,15 @@
 		},
 
 		methods: {
-			removeModule ( index ) {
-				const modules = this.get( 'modules' );
-				modules.splice( index, 1 );
+			removeModule(index) {
+				const modules = this.get('modules');
+				modules.splice(index, 1);
 
 				this.set({ modules });
 			},
 
-			createModule () {
-				const modules = this.get( 'modules' );
+			createModule() {
+				const modules = this.get('modules');
 				modules.push({
 					name: `module_${uid++}.js`,
 					code: ''
@@ -89,15 +89,15 @@
 
 				this.set({ modules });
 
-				const inputs = this.refs.modules.querySelectorAll( 'input' );
-				const input = inputs[ inputs.length - 1 ];
+				const inputs = this.refs.modules.querySelectorAll('input');
+				const input = inputs[inputs.length - 1];
 
-				setTimeout( () => {
+				setTimeout(() => {
 					input.focus();
 				});
 			},
 
-			clear () {
+			clear() {
 				this.set({
 					modules: [{ name: 'main.js', code: '' }],
 					selectedExample: null

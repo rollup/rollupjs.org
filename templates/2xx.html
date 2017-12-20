@@ -37,6 +37,7 @@
 	     because `templates/main.js` references it -->
 	<div id='sapper'>%sapper.html%</div>
 
+	<script src='/curl.js'></script>
 	<script>
 		curl.config({
 			dontAddFileExt: /./,
@@ -53,7 +54,6 @@
 		ga('create', 'UA-5602942-9', 'auto');
 		ga('send', 'pageview');
 	</script>
-	<script src='/curl.js'></script>
 	<script src='%sapper.main%'></script>
 </body>
 </html>

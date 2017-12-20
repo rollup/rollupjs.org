@@ -3,13 +3,13 @@
 		<div class='left'>
 			<h2>ES6 modules go in...</h2>
 			<div class='input'>
-				<Input :examples bind:selectedExample bind:modules :loadedCodemirror/>
+				<Input :examples bind:selectedExample bind:modules/>
 			</div>
 		</div>
 		<div class='right'>
 			<h2>...bundle comes out</h2>
 			<div class='output'>
-				<Output bind:options :code :error :warnings :imports :exports :loadedCodemirror/>
+				<Output bind:options :code :error :warnings :imports :exports/>
 			</div>
 		</div>
 	</div>
@@ -80,13 +80,14 @@
 	import Layout from '../_components/Layout.html';
 	import Input from './_Input/index.html';
 	import Output from './_Output/index.html';
-	import recoverState from './_utils/recoverState.js';
 	import debounce from './_utils/debounce.js';
 	import { dirname, resolve } from './_utils/path';
-	import * as load from './_utils/load.js';
-	// import roadtrip from 'roadtrip';
 
 	const versionMatch = typeof window !== 'undefined' ? /version=([^&]+)/.exec( window.location.search ) : null;
+
+	const atob = typeof window !== 'undefined' ?
+		window.atob :
+		base64 => new Buffer(base64, 'base64').toString();
 
 	export default {
 		components: {
@@ -96,29 +97,38 @@
 		},
 
 		preload({ params, query }) {
-			if (params.shareable) {
-				// TODO do all the recoverState stuff here
+			let saved;
+			let selectedExample = null;
+
+			if (query.shareable) {
+				const json = decodeURIComponent(atob(query.shareable));
+
+				try {
+					saved = JSON.parse(json);
+					selectedExample = saved.example;
+				} catch (err) {
+					selectedExample = '00';
+				}
 			}
 
 			return fetch(`/api/examples`).then(r => r.json()).then(examples => {
-				return { examples };
+				return {
+					examples,
+					saved,
+					selectedExample,
+					modules: saved ? saved.modules : [],
+					options: saved ? saved.options : {
+						format: 'cjs',
+						moduleName: 'myBundle'
+					}
+				};
 			});
 		},
 
 		data () {
-			const { saved, selectedExample } = recoverState();
-
 			return {
 				code: '',
 				rollupReady: false,
-
-				selectedExample,
-				modules: saved ? saved.modules : [],
-
-				options: saved ? saved.options : {
-					format: 'cjs',
-					moduleName: 'myBundle'
-				},
 
 				warnings: [],
 				imports: [],
@@ -269,6 +279,9 @@
 
 				const queryString = Object.keys( params ).map( key => `${key}=${params[key]}` ).join( '&' );
 				const url = `/repl?${queryString}`;
+
+				// TODO this should probably be a sapper `goto(url, { replaceState: true })` call
+				window.history.replaceState({}, '', url);
 
 				// TODO
 				// roadtrip.goto( url, { replaceState: true });

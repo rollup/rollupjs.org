@@ -83,34 +83,32 @@
 	import Editor from '../_Editor/index.html';
 
 	export default {
-		components: {
-			Editor
-		},
+		components: { Editor },
 
 		methods: {
-			focusEditor ( event ) {
+			focusEditor(event) {
 				event.preventDefault();
 				this.refs.editor.focus();
 			},
 
-			selectName ( input ) {
-				input.setSelectionRange( 0, input.value.length - 3 );
+			selectName(input) {
+				input.setSelectionRange(0, input.value.length - 3);
 			}
 		},
 
 		events: {
-			tab ( node, callback ) {
-				function handleKeydown ( event ) {
-					if ( event.keyCode === 9 ) {
-						callback.call( this, event );
+			tab(node, callback) {
+				function handleKeydown(event) {
+					if (event.keyCode === 9) {
+						callback.call(this, event);
 					}
 				}
 
-				node.addEventListener( 'keydown', handleKeydown );
+				node.addEventListener('keydown', handleKeydown);
 
 				return {
-					teardown: function () {
-						node.removeEventListener( 'keydown', handleKeydown );
+					teardown: () => {
+						node.removeEventListener('keydown', handleKeydown);
 					}
 				};
 			}

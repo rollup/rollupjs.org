@@ -120,75 +120,75 @@
 			sortedImports: []
 		}),
 
-		oncreate () {
+		oncreate() {
 			let options;
 			let updating;
 
-			this.observe( 'options', o => {
-				this.set( options = o );
+			this.observe('options', o => {
+				this.set(options = o);
 			});
 
-			this.observe( 'imports', imports => {
-				if ( !imports ) return;
+			this.observe('imports', imports => {
+				if (!imports) return;
 
 				// we only care about this stuff in IIFE/UMD mode...
 				// cheeky hack to clean `options.globals`
-				const format = this.get( 'options.format' );
-				if ( format !== 'iife' && format !== 'umd' ) imports = [];
+				const { format } = this.get('options');
+				if (format !== 'iife' && format !== 'umd') imports = [];
 
 				const sortedImports = imports
-					.sort( ( a, b ) => {
+					.sort((a, b) => {
 						return a < b ? -1 : 1;
 					})
-					.map( name => {
+					.map(name => {
 						return {
 							name,
-							value: userGlobals[ name ] || defaultGlobals[ name ] || name
+							value: userGlobals[name] || defaultGlobals[name] || name
 						};
 					});
 
 				let globals = {};
-				sortedImports.forEach( ({ name, value }) => {
-					globals[ name ] = userGlobals[ name ] = value;
+				sortedImports.forEach(({ name, value }) => {
+					globals[name] = userGlobals[name] = value;
 				});
 
 				updating = true;
 				this.set({ sortedImports });
 
-				const options = this.get( 'options' );
+				const options = this.get('options');
 				options.globals = globals;
 				this.set({ options });
 
 				updating = false;
 			});
 
-			this.observe( 'sortedImports', sortedImports => {
-				if ( updating ) return;
+			this.observe('sortedImports', sortedImports => {
+				if (updating) return;
 
 				updating = true;
 				let globals = {};
-				sortedImports.forEach( ({ name, value }) => {
-					globals[ name ] = userGlobals[ name ] = value;
+				sortedImports.forEach(({ name, value }) => {
+					globals[name] = userGlobals[name] = value;
 				});
 
-				const options = this.get( 'options' );
+				const options = this.get('options');
 				options.globals = globals;
 				this.set({ options });
 				updating = false;
 			});
 
 			// two-way binding
-			this.observe( 'format', format => {
+			this.observe('format', format => {
 				options.format = format;
 				this.set({ options });
 			});
 
-			this.observe( 'name', name => {
+			this.observe('name', name => {
 				options.name = options.moduleName = name;
 				this.set({ options });
 			});
 
-			this.observe( 'amd', amd => {
+			this.observe('amd', amd => {
 				options.amd = amd;
 				this.set({ options });
 			});
