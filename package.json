@@ -62,13 +62,11 @@
     "files": [
       "examples",
       "guide",
-      "scripts",
-      "universal",
-      "public",
-      "server",
-      "service-worker",
-      "client",
-      "rollup.config.js"
+      "assets",
+      "routes",
+      "templates",
+      "server.js",
+      "webpack.*.config.js"
     ]
   }
 }
