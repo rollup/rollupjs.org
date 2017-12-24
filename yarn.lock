@@ -3227,11 +3227,12 @@ sander@^0.6.0:
     mkdirp "^0.5.1"
     rimraf "^2.5.2"
 
-sapper@^0.2.2:
-  version "0.2.3"
-  resolved "https://registry.yarnpkg.com/sapper/-/sapper-0.2.3.tgz#1a4b0bb3d9ae878a66d74c1d1889985998c264b0"
+sapper@^0.2.10:
+  version "0.2.10"
+  resolved "https://registry.yarnpkg.com/sapper/-/sapper-0.2.10.tgz#2ae0499e5278f3b7c6d1c8a60bdbae9ebcf30442"
   dependencies:
     chalk "^2.3.0"
+    chokidar "^1.7.0"
     escape-html "^1.0.3"
     mkdirp "^0.5.1"
     relative "^3.0.2"

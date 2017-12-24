@@ -41,7 +41,7 @@
     "express": "^4.16.2",
     "locate-character": "^2.0.1",
     "node-fetch": "^1.7.3",
-    "sapper": "^0.2.2",
+    "sapper": "^0.2.10",
     "serve-static": "^1.13.1"
   },
   "now": {
