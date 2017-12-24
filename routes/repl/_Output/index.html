@@ -1,0 +1,30 @@
+<Status :error :warnings/>
+<BundleOptions bind:options :imports :exports/>
+
+<div class='output'>
+	<Editor :code readonly/>
+</div>
+
+<style>
+	.output {
+		border: 1px solid #eee;
+	}
+</style>
+
+<script>
+	import BundleOptions from './BundleOptions.html';
+	import Status from './Status.html';
+	import Editor from '../_Editor/index.html';
+
+	export default {
+		data: () => ({
+			error: null
+		}),
+
+		components: {
+			BundleOptions,
+			Status,
+			Editor
+		}
+	};
+</script>

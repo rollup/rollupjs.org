@@ -116,7 +116,7 @@ import $ from 'jquery';
 export default {
   ...,
   format: 'iife',
-  moduleName: 'MyBundle',
+  name: 'MyBundle',
   globals: {
     jquery: '$'
   }
@@ -250,7 +250,7 @@ If `true`, a separate sourcemap file will be created. If `inline`, the sourcemap
 
 #### extend
 
-`Boolean` whether or not to extend the global variable defined by the `moduleName` option in `umd` or `iife` formats. When `true`, the global variable will be defined as `(global.moduleName = global.moduleName || {})`. When false, the global defined by `moduleName` will be overwritten like `(global.moduleName = {})`.
+`Boolean` whether or not to extend the global variable defined by the `name` option in `umd` or `iife` formats. When `true`, the global variable will be defined as `(global.name = global.name || {})`. When false, the global defined by `name` will be overwritten like `(global.name = {})`.
 
 ### Danger zone
 
@@ -258,7 +258,7 @@ You probably don't need to use these options unless you know what you're doing!
 
 #### treeshake *`--treeshake`/`--no-treeshake`*
 
-Can be `true`, `false` or an object (see below), defaults to `true`. Whether or not to apply tree-shaking and to fine-tune the tree-shaking process. Setting this option to `false` will produce bigger bundles but may improve build performance. If you discover a bug caused by the tree-shaking algorithm, please file an issue! 
+Can be `true`, `false` or an object (see below), defaults to `true`. Whether or not to apply tree-shaking and to fine-tune the tree-shaking process. Setting this option to `false` will produce bigger bundles but may improve build performance. If you discover a bug caused by the tree-shaking algorithm, please file an issue!
 Setting this option to an object implies tree-shaking is enabled and grants the following additional options:
 
 **treeshake.pureExternalModules** `true`/`false` (default: `false`). If `true`, assume external dependencies from which nothing is imported do not have other side-effects like mutating global variables or logging.

@@ -1,13 +1,5 @@
 .DS_Store
 node_modules
-.gobble*
-dist
-public/js
-public/css
-public/guide
-public/guide-summary
-public/examples
-public/service-worker*
-server/routes
-server/components
-npm-debug.log
+.sapper
+.vscode
+templates/.*

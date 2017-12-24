@@ -101,7 +101,7 @@ import $ from 'jquery';
 export default {
   ...,
   format: 'iife',
-  moduleName: 'MyBundle',
+  name: 'MyBundle',
   globals: {
     jquery: '$'
   }
