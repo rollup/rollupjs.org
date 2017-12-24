@@ -73,9 +73,8 @@ export default {
 #### external *`-e`/`--external`*
 
 Either a `Function` that takes an `id` and returns `true` (external) or `false` (not external), or an `Array` of module IDs that should remain external to the bundle. The IDs should be either:
-
 1. the name of an external dependency
-1. a resolved ID (like an absolute path to a file)
+2. a resolved ID (like an absolute path to a file)
 
 ```js
 // rollup.config.js
@@ -96,6 +95,11 @@ When given as a command line argument, it should be a comma-separated list of ID
 rollup -i src/main.js ... -e foo,bar,baz
 ```
 
+When providing a function, it is actually called with three parameters `(id, parent, isResolved)` that can give you more fine-grained control:
+* `id` is the id of the module in question
+* `parent` is the id of the module doing the import
+* `isResolved` signals whether the `id` has been resolved by e.g. plugins
+
 
 #### globals *`-g`/`--globals`*
 
@@ -112,7 +116,7 @@ import $ from 'jquery';
 export default {
   ...,
   format: 'iife',
-  moduleName: 'MyBundle',
+  name: 'MyBundle',
   globals: {
     jquery: '$'
   }
@@ -246,7 +250,7 @@ If `true`, a separate sourcemap file will be created. If `inline`, the sourcemap
 
 #### extend
 
-`Boolean` whether or not to extend the global variable defined by the `moduleName` option in `umd` or `iife` formats. When `true`, the global variable will be defined as `(global.moduleName = global.moduleName || {})`. When false, the global defined by `moduleName` will be overwritten like `(global.moduleName = {})`.
+`Boolean` whether or not to extend the global variable defined by the `name` option in `umd` or `iife` formats. When `true`, the global variable will be defined as `(global.name = global.name || {})`. When false, the global defined by `name` will be overwritten like `(global.name = {})`.
 
 ### Danger zone
 
@@ -254,7 +258,7 @@ You probably don't need to use these options unless you know what you're doing!
 
 #### treeshake *`--treeshake`/`--no-treeshake`*
 
-Can be `true`, `false` or an object (see below), defaults to `true`. Whether or not to apply tree-shaking and to fine-tune the tree-shaking process. Setting this option to `false` will produce bigger bundles but may improve build performance. If you discover a bug caused by the tree-shaking algorithm, please file an issue! 
+Can be `true`, `false` or an object (see below), defaults to `true`. Whether or not to apply tree-shaking and to fine-tune the tree-shaking process. Setting this option to `false` will produce bigger bundles but may improve build performance. If you discover a bug caused by the tree-shaking algorithm, please file an issue!
 Setting this option to an object implies tree-shaking is enabled and grants the following additional options:
 
 **treeshake.pureExternalModules** `true`/`false` (default: `false`). If `true`, assume external dependencies from which nothing is imported do not have other side-effects like mutating global variables or logging.

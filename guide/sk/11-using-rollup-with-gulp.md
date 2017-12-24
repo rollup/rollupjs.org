@@ -21,10 +21,10 @@ gulp.task('build', function () {
   })
     .then(function (bundle) {
       bundle.write({
+        file: "./dist/library.js",
         format: "umd",
-        moduleName: "library",
-        dest: "./dist/library.js",
-        sourceMap: true
+        name: "library",
+        sourcemap: true
       });
     })
 });
