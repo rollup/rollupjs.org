@@ -132,6 +132,18 @@ For that, we use *plugins*, which change the behaviour of Rollup at key points i
 
 For this tutorial, we'll use [rollup-plugin-json](https://github.com/rollup/rollup-plugin-json), which allows Rollup to import data from a JSON file.
 
+Create a file in the project root called `package.json`, and add the following content:
+
+```json
+{
+  "name": "rollup-tutorial",
+  "version": "1.0.0",
+  "scripts": {
+    "build": "rollup -c"
+  }
+}
+```
+
 Install rollup-plugin-json as a development dependency:
 
 ```bash
