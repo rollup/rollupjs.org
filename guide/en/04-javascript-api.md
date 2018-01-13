@@ -4,6 +4,16 @@ title: JavaScript API
 
 Rollup provides a JavaScript API which is usable from Node.js. You will rarely need to use this, and should probably be using the command line API unless you are extending Rollup itself or using it for something esoteric, such as generating bundles programmatically.
 
+### TypeScript Declarations
+
+If you'd like to use the API in a TypeScript environment you can do so, as now we ship TypeScript declarations.
+
+You need to install some dependencies in case you have [skipLibCheck](https://www.typescriptlang.org/docs/handbook/compiler-options.html) turned off.
+
+```bash
+npm install @types/chokidar source-map magic-string --only=dev
+```
+
 ### rollup.rollup
 
 The `rollup.rollup` function returns a Promise that resolves to a `bundle` object with various properties and methods shown here:
