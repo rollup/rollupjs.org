@@ -134,3 +134,14 @@ const watchOptions = {
 ```
 
 See above for details on `inputOptions` and `outputOptions`, or consult the [big list of options](#big-list-of-options) for info on `chokidar`, `include` and `exclude`.
+
+
+### TypeScript Declarations
+
+If you'd like to use the API in a TypeScript environment you can do so, as now we ship TypeScript declarations.
+
+You need to install some dependencies in case you have [skipLibCheck](https://www.typescriptlang.org/docs/handbook/compiler-options.html) turned off.
+
+```bash
+npm install @types/chokidar source-map magic-string --only=dev
+```
