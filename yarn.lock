@@ -1132,12 +1132,11 @@ eslint-module-utils@^2.1.1:
     debug "^2.6.8"
     pkg-dir "^1.0.0"
 
-eslint-plugin-html@^3.2.0:
-  version "3.2.2"
-  resolved "https://registry.yarnpkg.com/eslint-plugin-html/-/eslint-plugin-html-3.2.2.tgz#ef7093621d3a93de3206fd1f92f347ea9a1a4dfa"
+eslint-plugin-html@^4.0.1:
+  version "4.0.1"
+  resolved "https://registry.yarnpkg.com/eslint-plugin-html/-/eslint-plugin-html-4.0.1.tgz#fc70072263cc938496fbbc9cf648660e41fa269a"
   dependencies:
     htmlparser2 "^3.8.2"
-    semver "^5.4.1"
 
 eslint-plugin-import@^2.7.0:
   version "2.8.0"
@@ -2132,9 +2131,9 @@ make-dir@^1.0.0:
   dependencies:
     pify "^3.0.0"
 
-marked@^0.3.7:
-  version "0.3.7"
-  resolved "https://registry.yarnpkg.com/marked/-/marked-0.3.7.tgz#80ef3bbf1bd00d1c9cfebe42ba1b8c85da258d0d"
+marked@^0.3.12:
+  version "0.3.12"
+  resolved "https://registry.yarnpkg.com/marked/-/marked-0.3.12.tgz#7cf25ff2252632f3fe2406bde258e94eee927519"
 
 math-expression-evaluator@^1.2.14:
   version "1.2.17"
@@ -2379,9 +2378,9 @@ normalize-url@^1.4.0:
     query-string "^4.1.0"
     sort-keys "^1.0.0"
 
-now@^7.3.0:
-  version "7.4.0"
-  resolved "https://registry.yarnpkg.com/now/-/now-7.4.0.tgz#2da0d236fd6d6d9277e9c5cf4ba87ea455788627"
+now@^9.0.1:
+  version "9.0.1"
+  resolved "https://registry.yarnpkg.com/now/-/now-9.0.1.tgz#6489ba61e6fe6bbe18bc301b35212b827465dd7b"
 
 npm-run-path@^2.0.0:
   version "2.0.2"
@@ -3227,9 +3226,9 @@ sander@^0.6.0:
     mkdirp "^0.5.1"
     rimraf "^2.5.2"
 
-sapper@^0.2.10:
-  version "0.2.10"
-  resolved "https://registry.yarnpkg.com/sapper/-/sapper-0.2.10.tgz#2ae0499e5278f3b7c6d1c8a60bdbae9ebcf30442"
+sapper@^0.3.2:
+  version "0.3.2"
+  resolved "https://registry.yarnpkg.com/sapper/-/sapper-0.3.2.tgz#3855010375688c584fc73a0f20497c2e8e6f360f"
   dependencies:
     chalk "^2.3.0"
     chokidar "^1.7.0"
@@ -3251,7 +3250,7 @@ schema-utils@^0.3.0:
   dependencies:
     ajv "^5.0.0"
 
-"semver@2 || 3 || 4 || 5", semver@^5.3.0, semver@^5.4.1:
+"semver@2 || 3 || 4 || 5", semver@^5.3.0:
   version "5.4.1"
   resolved "https://registry.yarnpkg.com/semver/-/semver-5.4.1.tgz#e059c09d8571f0540823733433505d3a2f00b18e"
 
@@ -3507,16 +3506,16 @@ supports-color@^4.0.0, supports-color@^4.2.1, supports-color@^4.4.0:
   dependencies:
     has-flag "^2.0.0"
 
-svelte-loader@^2.3.0:
-  version "2.3.1"
-  resolved "https://registry.yarnpkg.com/svelte-loader/-/svelte-loader-2.3.1.tgz#818ab640c16239622d8ba701bbb0039a4ed45b64"
+svelte-loader@^2.3.3:
+  version "2.3.3"
+  resolved "https://registry.yarnpkg.com/svelte-loader/-/svelte-loader-2.3.3.tgz#62a4074151bfa6277f875e5ad7f1f0fa2637fb4f"
   dependencies:
     loader-utils "^1.1.0"
     tmp "0.0.31"
 
-svelte@^1.49.1:
-  version "1.49.1"
-  resolved "https://registry.yarnpkg.com/svelte/-/svelte-1.49.1.tgz#2586fd4da6504d42822f9866af32d47b36607898"
+svelte@^1.51.1:
+  version "1.51.1"
+  resolved "https://registry.yarnpkg.com/svelte/-/svelte-1.51.1.tgz#b24155038990158e7b463e48c39109da20ff9812"
 
 svgo@^0.7.0:
   version "0.7.2"
