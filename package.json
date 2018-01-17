@@ -24,7 +24,6 @@
     "dev": "node server.js",
     "build": "sapper build",
     "start": "cross-env NODE_ENV=production node server.js",
-    "prestart": "npm run build",
     "lint": "node node_modules/eslint/bin/eslint src --ext .js --ext .html",
     "update_overview": "node scripts/update_overview",
     "rollup": "rollup -c",
