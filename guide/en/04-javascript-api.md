@@ -143,5 +143,5 @@ If you'd like to use the API in a TypeScript environment you can do so, as now w
 You need to install some dependencies in case you have [skipLibCheck](https://www.typescriptlang.org/docs/handbook/compiler-options.html) turned off.
 
 ```bash
-npm install @types/chokidar source-map magic-string --only=dev
+npm install @types/acorn @types/chokidar source-map magic-string --only=dev
 ```
