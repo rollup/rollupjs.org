@@ -51,6 +51,17 @@ import './module.js';
 
 This is useful for polyfills, or when the primary purpose of the imported code is to muck about with prototypes.
 
+#### Dynamic Import
+
+Import modules using the [dynamic import API](https://github.com/tc39/proposal-dynamic-import#import). This API is experimental and available under the **experimentalDynamicImport** flag.
+
+```js
+import('./modules.js').then(({ default: DefaultExport, NamedExport })=> {
+  // do something with modules.
+})
+```
+
+This is useful for code-splitting applications and using modules on-the-fly. Note that dynamic imports are not available when targeting ECMAScript 2015 modules.
 
 ### Exporting
 
