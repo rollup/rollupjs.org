@@ -185,7 +185,7 @@ module.exports = main;
 
 ### Experimental Code Splitting
 
-To use the new experimental code splitting feature, consider a second *entry point* called `src/main2.js` that itself dynamically loads main.js:
+To use the new experimental code splitting feature, we add a second *entry point* called `src/main2.js` that itself dynamically loads main.js:
 
 ```js
 // src/main2.js
@@ -196,7 +196,7 @@ export default function () {
 }
 ```
 
-We can then pass both entry points to the rollup build, and set a folder to output to with the `--dir` option (also passing the experimental flags):
+We can then pass both entry points to the rollup build, and instead of an output file we set a folder to output to with the `--dir` option (also passing the experimental flags):
 
 ```bash
 rollup src/main.js src/main2.js -f cjs --dir dist --experimentalCodeSplitting --experimentalDynamicImport
@@ -208,7 +208,7 @@ Either built entry point can then be run in NodeJS without duplicating any code 
 node -e "require('./dist/main2.js')()"
 ```
 
-To build the same code for the browser, build for native ES modules, an AMD loader or SystemJS.
+You can build the same code for the browser, for native ES modules, an AMD loader or SystemJS.
 
 For example, with `-f es` for native modules:
 
