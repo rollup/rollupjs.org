@@ -6,11 +6,15 @@ title: Big list of options
 
 #### input *`-i`/`--input`*
 
-`String` The bundle's entry point (e.g. your `main.js` or `app.js` or `index.js`)
+`String`|`String[]` The bundle's entry point (e.g. your `main.js` or `app.js` or `index.js`). If you enable `experimentalCodeSplitting`, you can provide an array of entry points which will be bundled to separate chunks.
 
 #### file *`-o`/`--output.file`*
 
-`String` The file to write to. Will also be used to generate sourcemaps, if applicable
+`String` The file to write to. Will also be used to generate sourcemaps, if applicable. If `experimentalCodeSplitting` is enabled and `input` is an array, you must specify `dir` instead of `file`.
+
+#### dir * `--output.dir`*
+
+`String` The directory in which all generated chunks are placed. Only used when `experimentalCodeSplitting` is enabled and `input` is an array in which case this option replaces `file`.
 
 #### format *`-f`/`--output.format`*
 
@@ -21,6 +25,7 @@ title: Big list of options
 * `es` – Keep the bundle as an ES module file
 * `iife` – A self-executing function, suitable for inclusion as a `<script>` tag. (If you want to create a bundle for your application, you probably want to use this, because it leads to smaller file sizes.)
 * `umd` – Universal Module Definition, works as `amd`, `cjs` and `iife` all in one
+* `system` – Native format of the SystemJS loader
 
 #### name *`-n`/`--name`*
 
@@ -300,6 +305,25 @@ const illegalAccess = foo.quux.tooDeep;
 
 Any options that should be passed through to Acorn, such as `allowReserved: true`.
 
+#### acornInjectPlugins
+
+An array of plugins to passed to `acorn`. To e.g. use async iteration, you can specify
+```javascript
+import acornAsyncIteration from 'acorn-async-iteration/inject';
+
+export default {
+    // … other options …
+    acorn: {
+        plugins: { asyncIteration: true }
+    },
+    acornInjectPlugins: [
+        acornAsyncIteration
+    ]
+};
+```
+
+in your rollup configuration.
+
 #### context
 
 By default, the context of a module – i.e., the value of `this` at the top level – is `undefined`. In rare cases you might need to change this to something else, like `'window'`.
@@ -394,6 +418,23 @@ export default {
 
 `true` or `false` (defaults to `true`) – wether to `Object.freeze()` namespace import objects (i.e. `import * as namespaceImportObject from...`) that are accessed dynamically.
 
+### Experimental options
+
+These options reflect new features that have not yet been fully finalized. Specific behaviour and usage may therefore be subject to change.
+
+#### experimentalDynamicImport *`--experimentalDynamicImport`*
+`true` or `false` (defaults to `false`) – adds the necessary acorn plugin to enable parsing dynamic imports, e.g.
+```javascript
+import('./my-module.js').then(moduleNamespace => console.log(moduleNamespace.foo));
+```
+When used without `experimentalCodeSplitting`, statically resolvable dynamic imports will automatically be inlined into your bundle. Also enables the `resolveDynamicImport` plugin hook.
+
+#### experimentalCodeSplitting *`--experimentalCodeSplitting`*
+`true` or `false` (defaults to `false`) – enables you to specify multiple entry points. If this option is enabled AND `input` is an array:
+* You must specify `output.dir` instead of `output.file`
+* Filenames of generated chunks correspond to the filenames of the entry points
+* Additional shared chunks may be generated which are imported by your entry points to avoid code duplication
+* If `experimentalDynamicImport` is enabled as well, statically resolvable dynamic imports will not be inlined but instead generate new chunks
 
 ### Watch options
 

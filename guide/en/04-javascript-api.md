@@ -51,10 +51,15 @@ const inputOptions = {
 
   // danger zone
   acorn,
+  acornInjectPlugins,
   treeshake,
   context,
   moduleContext,
-  legacy
+  legacy,
+          
+  // experimental
+  experimentalDynamicImport,
+  experimentalCodeSplitting
 };
 ```
 
@@ -66,8 +71,9 @@ The `outputOptions` object can contain the following properties (see the [big li
 ```js
 const outputOptions = {
   // core options
-  file,   // required with bundle.write
   format, // required
+  file,
+  dir,
   name,
   globals,
 
