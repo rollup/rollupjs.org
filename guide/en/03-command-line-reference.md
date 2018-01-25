@@ -25,15 +25,21 @@ export default { // can be an array (for multiple inputs)
 
   // danger zone
   acorn,
+  acornInjectPlugins,
   treeshake,
   context,
   moduleContext,
   legacy,
+  
+  // experimental
+  experimentalDynamicImport,
+  experimentalCodeSplitting,
 
   output: {  // required (can be an array, for multiple outputs)
     // core output options
-    file,    // required
     format,  // required
+    file,
+    dir,
     name,
     globals,
 
@@ -65,7 +71,7 @@ export default { // can be an array (for multiple inputs)
 };
 ```
 
-You can export an **array** from your config file to build bundles from several different inputs at once, even in watch mode. To build different bundles with the same input, you supply an array of output options for each input:
+You can export an **array** from your config file to build bundles from several different unrelated inputs at once, even in watch mode. To build different bundles with the same input, you supply an array of output options for each input:
 
 ```javascript
 // rollup.config.js (building more than one bundle)
@@ -90,7 +96,7 @@ export default [{
 }];
 ```
 
-Want to read your config async? No problem! Rollup can also handle a `Promise` which resolves to an object or an array.
+If you want to create your config asynchronously, Rollup can also handle a `Promise` which resolves to an object or an array.
 
 ```javascript
 // rollup.config.js
