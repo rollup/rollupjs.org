@@ -3,28 +3,45 @@
 
 <div class='output'>
 	<Editor :code readonly/>
+	<FileSize :code />
 </div>
 
 <style>
 	.output {
 		border: 1px solid #eee;
 	}
+	.module-size {
+		position: absolute;
+		bottom: 0.5rem;
+		right: 2rem;
+		z-index: 2;
+		border-radius: 0.5rem;
+		padding: 0.4rem;
+		background-color: rgba(225, 225, 225, 0.75);
+		color: rgba(0, 0, 0, 0.5);
+		border: 0;
+		font-size: 12px;
+	}
+	
 </style>
 
 <script>
 	import BundleOptions from './BundleOptions.html';
 	import Status from './Status.html';
 	import Editor from '../_Editor/index.html';
+	import FileSize from '../_FileSize/index.html';
 
 	export default {
 		data: () => ({
-			error: null
+			error: null,
 		}),
 
 		components: {
 			BundleOptions,
 			Status,
-			Editor
-		}
+			Editor,
+			FileSize,
+		},
+
 	};
 </script>

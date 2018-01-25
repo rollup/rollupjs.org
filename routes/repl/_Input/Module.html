@@ -13,6 +13,7 @@
 	</header>
 
 	<Editor ref:editor bind:code/>
+	<FileSize :code />
 </article>
 
 <style>
@@ -20,7 +21,7 @@
 		margin: 0 0 1em 0;
 		border: 1px solid #f4f4f4;
 	}
-
+	
 	header {
 		width: 100%;
 		border-bottom: 1px solid #f4f4f4;
@@ -81,10 +82,11 @@
 
 <script>
 	import Editor from '../_Editor/index.html';
+	import FileSize from '../_FileSize/index.html';
 
 	export default {
-		components: { Editor },
-
+		components: { Editor, FileSize },
+		
 		methods: {
 			focusEditor(event) {
 				event.preventDefault();

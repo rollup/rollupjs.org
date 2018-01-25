@@ -11,7 +11,7 @@
 
 <div ref:modules class='modules'>
 	{{#each modules as module, i}}
-		<Module bind:name='module.name' bind:code='module.code' index='{{i}}' main='{{i===0}}' on:remove='removeModule(i)'/>
+		<Module bind:name='module.name' bind:code='module.code' bind:size='module.size' index='{{i}}' main='{{i===0}}' on:remove='removeModule(i)'/>
 	{{/each}}
 </div>
 
@@ -84,7 +84,9 @@
 				const modules = this.get('modules');
 				modules.push({
 					name: `module_${uid++}.js`,
-					code: ''
+					code: '',
+					size: 0,
+					prettySize: '0 Bytes',
 				});
 
 				this.set({ modules });

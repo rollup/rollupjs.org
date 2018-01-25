@@ -1,0 +1,36 @@
+<span class="module-size"> {{ prettySize }} </span>
+<style>
+	.module-size {
+		position: absolute;
+		bottom: 0.5rem;
+		right: 2rem;
+		z-index: 2;
+		border-radius: 0.5rem;
+		padding: 0.4rem;
+		background-color: rgba(225, 225, 225, 0.75);
+		color: rgba(0, 0, 0, 0.5);
+		border: 0;
+		font-size: 12px;
+	}
+	
+</style>
+
+<script>
+    import prettySize from '../_utils/prettySize.js';
+    import debounce from '../_utils/debounce.js';
+
+    export default {
+		data: () => ({
+			prettySize: '0 Bytes',
+		}),
+
+		oncreate() {
+			this.observe('code', debounce(() => {
+				const size = new Blob([this.get('code') || 0], { type: "text/plain" }).size;
+				this.set({
+					prettySize: prettySize(size),
+				});
+			}), 100)
+		},
+	};
+</script>
