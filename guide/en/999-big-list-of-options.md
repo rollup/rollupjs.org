@@ -6,7 +6,8 @@ title: Big list of options
 
 #### input *`-i`/`--input`*
 
-`String`|`String[]` The bundle's entry point (e.g. your `main.js` or `app.js` or `index.js`). If you enable `experimentalCodeSplitting`, you can provide an array of entry points which will be bundled to separate chunks.
+`String`/ 
+`String[]` The bundle's entry point (e.g. your `main.js` or `app.js` or `index.js`). If you enable `experimentalCodeSplitting`, you can provide an array of entry points which will be bundled to separate chunks.
 
 #### file *`-o`/`--output.file`*
 
@@ -303,11 +304,11 @@ const illegalAccess = foo.quux.tooDeep;
 
 #### acorn
 
-Any options that should be passed through to Acorn, such as `allowReserved: true`.
+Any options that should be passed through to Acorn, such as `allowReserved: true`. Cf. the [Acorn documentation](https://github.com/acornjs/acorn/blob/master/README.md#main-parser) for more available options.
 
 #### acornInjectPlugins
 
-An array of plugins to passed to `acorn`. To e.g. use async iteration, you can specify
+An array of plugins to be injected into Acorn. In order to use a plugin, you need to pass its inject function here and enable it via the `acorn.plugins` option. For instance, to use async iteration, you can specify
 ```javascript
 import acornAsyncIteration from 'acorn-async-iteration/inject';
 
@@ -427,14 +428,15 @@ These options reflect new features that have not yet been fully finalized. Speci
 ```javascript
 import('./my-module.js').then(moduleNamespace => console.log(moduleNamespace.foo));
 ```
-When used without `experimentalCodeSplitting`, statically resolvable dynamic imports will automatically be inlined into your bundle. Also enables the `resolveDynamicImport` plugin hook.
+When used without `experimentalCodeSplitting`, statically resolvable dynamic imports will be automatically inlined into your bundle. Also enables the `resolveDynamicImport` plugin hook.
 
 #### experimentalCodeSplitting *`--experimentalCodeSplitting`*
-`true` or `false` (defaults to `false`) – enables you to specify multiple entry points. If this option is enabled AND `input` is an array:
-* You must specify `output.dir` instead of `output.file`
-* Filenames of generated chunks correspond to the filenames of the entry points
-* Additional shared chunks may be generated which are imported by your entry points to avoid code duplication
-* If `experimentalDynamicImport` is enabled as well, statically resolvable dynamic imports will not be inlined but instead generate new chunks
+`true` or `false` (defaults to `false`) – enables you to specify multiple entry points. If this option is enabled, `input` can be set to an array of entry points to be built into the folder at the provided `output.dir`.
+* Filenames of generated chunks in the `output.dir` folder correspond to the entry point filenames.
+* Shared chunks are generated automatically to avoid code duplication between chunks.
+* Enable the `experimentalDynamicImport` flag to generate new chunks for dynamic imports as well.
+
+`output.dir` and input as an array must both be provided for code splitting to work, the `output.file` option is not compatible with code splitting workflows.
 
 ### Watch options
 
