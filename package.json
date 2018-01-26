@@ -40,7 +40,7 @@
     "express": "^4.16.2",
     "locate-character": "^2.0.1",
     "node-fetch": "^1.7.3",
-    "sapper": "github:lukastaegert/sapper#fix-search-param-handling",
+    "sapper": "github:lukastaegert/sapper#fix-search-param-handling-built",
     "serve-static": "^1.13.1"
   },
   "now": {
