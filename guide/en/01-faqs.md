@@ -16,7 +16,7 @@ Rollup strives to implement the specification for ES modules, not necessarily th
 
 #### Is Rollup meant for building libraries or applications?
 
-Rollup is already used by many major JavaScript libraries, and can also be used to build the vast majority of applications. However if you want to use code-splitting or dynamic imports with older browsers, you will need an additional runtime to handle loading missing chunks. We recommend using [SystemJS](https://github.com/systemjs/systemjs) as it integrates nicely with rollup and is capable of properly handling all ES module features such as live bindings and circular references.
+Rollup is already used by many major JavaScript libraries, and can also be used to build the vast majority of applications. However if you want to use code-splitting or dynamic imports with older browsers, you will need an additional runtime to handle loading missing chunks. We recommend using [SystemJS](https://github.com/systemjs/systemjs) as it integrates nicely with Rollup and is capable of properly handling all ES module features such as live bindings and circular references.
 
 #### Who made the Rollup logo? It's lovely.
 
