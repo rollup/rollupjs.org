@@ -194,3 +194,67 @@ module.exports = main;
 ```
 
 (Notice that only the data we actually need gets imported – `name` and `devDependencies` and other parts of `package.json` are ignored. That's tree-shaking in action!)
+
+### Experimental Code Splitting
+
+To use the new experimental code splitting feature, we add a second *entry point* called `src/main2.js` that itself dynamically loads main.js:
+
+```js
+// src/main2.js
+export default function () {
+  return import('./main.js').then(({ default: main }) => {
+    main();
+  });
+}
+```
+
+We can then pass both entry points to the rollup build, and instead of an output file we set a folder to output to with the `--dir` option (also passing the experimental flags):
+
+```bash
+rollup src/main.js src/main2.js -f cjs --dir dist --experimentalCodeSplitting --experimentalDynamicImport
+```
+
+Either built entry point can then be run in NodeJS without duplicating any code between the modules:
+
+```bash
+node -e "require('./dist/main2.js')()"
+```
+
+You can build the same code for the browser, for native ES modules, an AMD loader or SystemJS.
+
+For example, with `-f es` for native modules:
+
+```bash
+rollup src/main.js src/main2.js -f es --dir dist --experimentalCodeSplitting --experimentalDynamicImport
+```
+
+```html
+<!doctype html>
+<script type="module">
+  import main2 from './dist/main2.js';
+  main2();
+</script>
+```
+
+Or alternatively, for SystemJS with `-f system`:
+
+```bash
+rollup src/main.js src/main2.js -f system --dir dist --experimentalCodeSplitting --experimentalDynamicImport
+```
+
+install SystemJS via
+
+```bash
+npm install --save-dev systemjs
+```
+
+and then load either or both entry points in an HTML page as needed:
+
+```html
+<!doctype html>
+<script src="node_modules/systemjs/dist/system-production.js"></script>
+<script>
+  System.import('./dist/main2.js')
+  .then(({ default: main }) => main());
+</script>
+```
