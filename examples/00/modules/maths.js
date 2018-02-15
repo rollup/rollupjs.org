@@ -1,3 +1,5 @@
+// maths.js
+
 // This function isn't used anywhere, so
 // Rollup excludes it from the bundle...
 export function square ( x ) {
