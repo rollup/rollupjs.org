@@ -4,14 +4,13 @@
   "version": "0.1.0",
   "devDependencies": {
     "console-group": "^0.3.3",
-    "css-loader": "^0.28.7",
-    "eslint": "^4.17.0",
+    "css-loader": "^0.28.10",
+    "eslint": "^4.18.1",
     "eslint-plugin-html": "^4.0.2",
-    "eslint-plugin-import": "^2.7.0",
+    "eslint-plugin-import": "^2.9.0",
     "extract-text-webpack-plugin": "^3.0.2",
     "highlight.js": "^9.12.0",
-    "locate-character": "^2.0.5",
-    "marked": "^0.3.12",
+    "marked": "^0.3.17",
     "now": "^9.0.1",
     "sander": "^0.6.0",
     "style-loader": "^0.20.1",
@@ -33,15 +32,13 @@
     "deploy:ci": "now --token $NOW_TOKEN && now alias --token $NOW_TOKEN"
   },
   "dependencies": {
-    "acorn": "^5.4.1",
-    "codemirror": "^5.34.0",
-    "compression": "^1.7.1",
+    "codemirror": "^5.35.0",
+    "compression": "^1.7.2",
     "cross-env": "^5.1.1",
     "express": "^4.16.2",
-    "locate-character": "^2.0.1",
     "node-fetch": "^1.7.3",
     "sapper": "^0.6.2",
-    "serve-static": "^1.13.1"
+    "serve-static": "^1.13.2"
   },
   "now": {
     "alias": "rollupjs.org",
