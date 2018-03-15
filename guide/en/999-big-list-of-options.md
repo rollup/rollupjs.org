@@ -48,7 +48,7 @@ export default {
 
 Namespaces are supported, so your name can contain dots. The resulting bundle will contain the setup necessary for the namespacing.
 
-```js
+```
 $ rollup -n "a.b.c"
 
 /* ->
@@ -257,6 +257,17 @@ If `true`, a separate sourcemap file will be created. If `inline`, the sourcemap
 #### extend
 
 `Boolean` whether or not to extend the global variable defined by the `name` option in `umd` or `iife` formats. When `true`, the global variable will be defined as `(global.name = global.name || {})`. When false, the global defined by `name` will be overwritten like `(global.name = {})`.
+
+#### namespaceToStringTag
+
+`Boolean` whether to add spec compliant `.toString()` tags to namespace objects. If this option is set,
+
+```javascript
+import * as namespace from './file.js';
+console.log(String(namespace));
+```
+
+will always log `[object Module]`;
 
 ### Danger zone
 

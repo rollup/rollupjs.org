@@ -88,6 +88,7 @@ const outputOptions = {
   sourcemapFile,
   interop,
   extend,
+  namespaceToStringTag,
 
   // danger zone
   exports,

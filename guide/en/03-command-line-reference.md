@@ -54,6 +54,7 @@ export default { // can be an array (for multiple inputs)
     sourcemapFile,
     interop,
     extend,
+    namespaceToStringTag,
 
     // danger zone
     exports,
