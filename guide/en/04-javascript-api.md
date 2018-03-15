@@ -58,8 +58,9 @@ const inputOptions = {
   legacy,
           
   // experimental
+  experimentalCodeSplitting,
   experimentalDynamicImport,
-  experimentalCodeSplitting
+  experimentalPreserveModules
 };
 ```
 
