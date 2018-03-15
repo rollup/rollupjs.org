@@ -48,6 +48,7 @@ const inputOptions = {
   // advanced options
   onwarn,
   cache,
+  perf,
 
   // danger zone
   acorn,

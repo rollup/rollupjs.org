@@ -22,6 +22,7 @@ export default { // can be an array (for multiple inputs)
 
   // advanced input options
   onwarn,
+  perf,
 
   // danger zone
   acorn,
