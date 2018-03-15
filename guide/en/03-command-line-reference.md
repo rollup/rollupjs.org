@@ -130,6 +130,24 @@ $ rollup --config
 $ rollup --config my.config.js
 ```
 
+You can also export a function that returns any of the above configuration formats. This function will be passed the current command line arguments so that you can dynamically adapt your configuration:
+
+```javascript
+// rollup.config.js
+import defaultConfig from './rollup.default.config.js';
+import debugConfig from './rollup.debug.config.js';
+
+export default commandLineArgs => {
+  if (commandLineArgs.debug === true) {
+    return debugConfig;
+  }
+  return defaultConfig;
+}
+```
+
+If you now run `rollup --config --debug`, the debug configuration will be used. Note that it is your responsibility to avoid conflicts with existing rollup options.
+
+
 ### Command line flags
 
 Many options have command line equivalents. Any arguments passed here will override the config file, if you're using one. See the [big list of options](#big-list-of-options) for details.
