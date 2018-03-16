@@ -56,7 +56,6 @@ const inputOptions = {
   treeshake,
   context,
   moduleContext,
-  legacy,
           
   // experimental
   experimentalCodeSplitting,
@@ -89,14 +88,15 @@ const outputOptions = {
   sourcemapFile,
   interop,
   extend,
-  namespaceToStringTag,
 
   // danger zone
   exports,
   amd,
   indent,
   strict,
-  freeze
+  freeze,
+  legacy,
+  namespaceToStringTag
 };
 ```
 

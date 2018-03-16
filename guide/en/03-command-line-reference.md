@@ -30,7 +30,6 @@ export default { // can be an array (for multiple inputs)
   treeshake,
   context,
   moduleContext,
-  legacy,
   
   // experimental
   experimentalCodeSplitting,
@@ -55,14 +54,15 @@ export default { // can be an array (for multiple inputs)
     sourcemapFile,
     interop,
     extend,
-    namespaceToStringTag,
 
     // danger zone
     exports,
     amd,
     indent,
     strict,
-    freeze
+    freeze,
+    legacy,
+    namespaceToStringTag
   },
 
   watch: {
@@ -132,7 +132,7 @@ $ rollup --config
 $ rollup --config my.config.js
 ```
 
-You can also export a function that returns any of the above configuration formats. This function will be passed the current command line arguments so that you can dynamically adapt your configuration:
+You can also export a function that returns any of the above configuration formats. This function will be passed the current command line arguments so that you can dynamically adapt your configuration to respect e.g. `--silent`. You can even define your own command line options if you prefix them with `config`:
 
 ```javascript
 // rollup.config.js
@@ -140,14 +140,14 @@ import defaultConfig from './rollup.default.config.js';
 import debugConfig from './rollup.debug.config.js';
 
 export default commandLineArgs => {
-  if (commandLineArgs.debug === true) {
+  if (commandLineArgs.configDebug === true) {
     return debugConfig;
   }
   return defaultConfig;
 }
 ```
 
-If you now run `rollup --config --debug`, the debug configuration will be used. Note that it is your responsibility to avoid conflicts with existing rollup options.
+If you now run `rollup --config --configDebug`, the debug configuration will be used.
 
 
 ### Command line flags
@@ -158,8 +158,8 @@ Many options have command line equivalents. Any arguments passed here will overr
 -c, --config                Use this config file (if argument is used but value
                               is unspecified, defaults to rollup.config.js)
 -i, --input                 Input (alternative to <entry file>)
--o, --output.file <output>  Output (if absent, prints to stdout)
--f, --output.format [es]    Type of output (amd, cjs, es, iife, umd)
+-o, --file <output>         Output (if absent, prints to stdout)
+-f, --format [es]           Type of output (amd, cjs, es, iife, umd)
 -e, --external              Comma-separate list of module IDs to exclude
 -g, --globals               Comma-separate list of `module ID:Global` pairs
                               Any module IDs defined here are added to external
@@ -177,7 +177,7 @@ Many options have command line equivalents. Any arguments passed here will overr
 --outro                     Content to insert at end of bundle (inside wrapper)
 --banner                    Content to insert at top of bundle (outside wrapper)
 --footer                    Content to insert at end of bundle (outside wrapper)
---interop                   Include interop block (true by default)
+--no-interop                Do not include interop block
 ```
 
 In addition, the following arguments can be used:

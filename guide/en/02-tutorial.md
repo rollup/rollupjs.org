@@ -50,7 +50,7 @@ Now we're ready to create a bundle:
 rollup src/main.js -f cjs
 ```
 
-The `-f` option (short for `--output.format`) specifies what kind of bundle we're creating — in this case, CommonJS (which will run in Node.js). Because we didn't specify an output file, it will be printed straight to `stdout`:
+The `-f` option (short for `--format`) specifies what kind of bundle we're creating — in this case, CommonJS (which will run in Node.js). Because we didn't specify an output file, it will be printed straight to `stdout`:
 
 ```js
 'use strict';
@@ -112,7 +112,7 @@ rollup -c
 You can override any of the options in the config file with the equivalent command line options:
 
 ```bash
-rollup -c -o bundle-2.js # `-o` is short for `--output.file`
+rollup -c -o bundle-2.js # `-o` is equivalent to `--file` (formerly "output")
 ```
 
 (Note that Rollup itself processes the config file, which is why we're able to use `export default` syntax – the code isn't being transpiled with Babel or anything similar, so you can only use ES2015 features that are supported in the version of Node.js that you're running.)
