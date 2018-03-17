@@ -48,6 +48,7 @@ const inputOptions = {
   // advanced options
   onwarn,
   cache,
+  perf,
 
   // danger zone
   acorn,
@@ -55,11 +56,10 @@ const inputOptions = {
   treeshake,
   context,
   moduleContext,
-  legacy,
           
   // experimental
-  experimentalDynamicImport,
-  experimentalCodeSplitting
+  experimentalCodeSplitting,
+  experimentalDynamicImport
 };
 ```
 
@@ -93,7 +93,9 @@ const outputOptions = {
   amd,
   indent,
   strict,
-  freeze
+  freeze,
+  legacy,
+  namespaceToStringTag
 };
 ```
 

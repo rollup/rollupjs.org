@@ -9,15 +9,15 @@ title: Big list of options
 `String`/ 
 `String[]` The bundle's entry point (e.g. your `main.js` or `app.js` or `index.js`). If you enable `experimentalCodeSplitting`, you can provide an array of entry points which will be bundled to separate chunks.
 
-#### file *`-o`/`--output.file`*
+#### output.file *`-o`/`--file`*
 
 `String` The file to write to. Will also be used to generate sourcemaps, if applicable. If `experimentalCodeSplitting` is enabled and `input` is an array, you must specify `dir` instead of `file`.
 
-#### dir * `--output.dir`*
+#### output.dir * `--dir`*
 
-`String` The directory in which all generated chunks are placed. Only used when `experimentalCodeSplitting` is enabled and `input` is an array in which case this option replaces `file`.
+`String` The directory in which all generated chunks are placed. Only used if `experimentalCodeSplitting` is enabled and `input` is an array. In these cases this option replaces `file`.
 
-#### format *`-f`/`--output.format`*
+#### output.format *`-f`/`--format`*
 
 `String` The format of the generated bundle. One of the following:
 
@@ -28,7 +28,7 @@ title: Big list of options
 * `umd` – Universal Module Definition, works as `amd`, `cjs` and `iife` all in one
 * `system` – Native format of the SystemJS loader
 
-#### name *`-n`/`--name`*
+#### output.name *`-n`/`--name`*
 
 `String` The variable name, representing your `iife`/`umd` bundle, by which other scripts on the same page can access it.
 
@@ -48,7 +48,7 @@ export default {
 
 Namespaces are supported, so your name can contain dots. The resulting bundle will contain the setup necessary for the namespacing.
 
-```js
+```
 $ rollup -n "a.b.c"
 
 /* ->
@@ -107,7 +107,7 @@ When providing a function, it is actually called with three parameters `(id, par
 * `isResolved` signals whether the `id` has been resolved by e.g. plugins
 
 
-#### globals *`-g`/`--globals`*
+#### output.globals *`-g`/`--globals`*
 
 `Object` of `id: name` pairs, used for `umd`/`iife` bundles. For example, in a case like this...
 
@@ -121,10 +121,12 @@ import $ from 'jquery';
 // rollup.config.js
 export default {
   ...,
-  format: 'iife',
-  name: 'MyBundle',
-  globals: {
-    jquery: '$'
+  output: {
+    format: 'iife',
+    name: 'MyBundle',
+    globals: {
+      jquery: '$'
+    }
   }
 };
 
@@ -132,7 +134,7 @@ export default {
 var MyBundle = (function ($) {
   // code goes here
 }(window.jQuery));
-*/.
+*/
 ```
 
 Alternatively, supply a function that will turn an external module ID into a global.
@@ -146,7 +148,7 @@ rollup -i src/main.js ... -g jquery:$,underscore:_
 
 ### Advanced functionality
 
-#### paths
+#### output.paths
 
 `Function` that takes an ID and returns a path, or `Object` of `id: path` pairs. Where supplied, these paths will be used in the generated bundle instead of the module ID, allowing you to (for example) load dependencies from a CDN:
 
@@ -178,7 +180,7 @@ define(['https://d3js.org/d3.v4.min'], function (d3) {
 });
 ```
 
-#### banner/footer
+#### output.banner/output.footer *`-banner`/`--footer`*
 
 `String` A string to prepend/append to the bundle. You can also supply a `Promise` that resolves to a `String` to generate it asynchronously (Note: `banner` and `footer` options will not break sourcemaps)
 
@@ -186,19 +188,25 @@ define(['https://d3js.org/d3.v4.min'], function (d3) {
 // rollup.config.js
 export default {
   ...,
-  banner: '/* my-library version ' + version + ' */',
-  footer: '/* follow me on Twitter! @rich_harris */'
+  output: {
+    ...,
+    banner: '/* my-library version ' + version + ' */',
+    footer: '/* follow me on Twitter! @rich_harris */'
+  }
 };
 ```
 
-#### intro/outro
+#### output.intro/output.outro *`--intro`/`--outro`*
 
 `String` Similar to `banner` and `footer`, except that the code goes *inside* any format-specific wrapper. As with `banner` and `footer`, you can also supply a `Promise` that resolves to a `String`.
 
 ```js
 export default {
   ...,
-  intro: 'var ENVIRONMENT = "production";'
+  output: {
+    ...,
+    intro: 'var ENVIRONMENT = "production";'
+  }
 };
 ```
 
@@ -240,23 +248,27 @@ onwarn ({ loc, frame, message }) {
 }
 ```
 
-#### sourcemap *`-m`/`--sourcemap`*
+#### output.sourcemap *`-m`/`--sourcemap`*
 
 If `true`, a separate sourcemap file will be created. If `inline`, the sourcemap will be appended to the resulting `output` file as a data URI.
 
-#### sourcemapFile
+#### output.sourcemapFile *`--sourcemapFile`*
 
 `String` The location of the generated bundle. If this is an absolute path, all the `sources` paths in the sourcemap will be relative to it. The `map.file` property is the basename of `sourcemapFile`, as the location of the sourcemap is assumed to be adjacent to the bundle.
 
 `sourcemapFile` is not required if `output` is specified, in which case an output filename will be inferred by adding ".map"  to the output filename for the bundle.
 
-#### interop
+#### output.interop *`--interop`/*`--no-interop`*
 
-`Boolean` whether or not to add an 'interop block'. By default (`interop: true`), for safety's sake, Rollup will assign any external dependencies' `default` exports to a separate variable if it's necessary to distinguish between default and named exports. This generally only applies if your external dependencies were transpiled (for example with Babel) – if you're sure you don't need it, you can save a few bytes with `interop: false`.
+`true` or `false` (defaults to `true`) – whether or not to add an 'interop block'. By default (`interop: true`), for safety's sake, Rollup will assign any external dependencies' `default` exports to a separate variable if it's necessary to distinguish between default and named exports. This generally only applies if your external dependencies were transpiled (for example with Babel) – if you're sure you don't need it, you can save a few bytes with `interop: false`.
 
-#### extend
+#### output.extend *`--extend`/*`--no-extend`*
 
-`Boolean` whether or not to extend the global variable defined by the `name` option in `umd` or `iife` formats. When `true`, the global variable will be defined as `(global.name = global.name || {})`. When false, the global defined by `name` will be overwritten like `(global.name = {})`.
+`true` or `false` (defaults to `false`) – whether or not to extend the global variable defined by the `name` option in `umd` or `iife` formats. When `true`, the global variable will be defined as `(global.name = global.name || {})`. When false, the global defined by `name` will be overwritten like `(global.name = {})`.
+
+#### perf *`--perf`*
+
+`true` or `false` (defaults to `false`) – whether to collect performance timings. When used from the command line or a configuration file, detailed measurements about the current bundling process will be displayed. When used from the JavaScript API, the returned bundle object will contain an aditional `getTimings()` function that can be called at any time to retrieve all accumulated measurements.
 
 ### Danger zone
 
@@ -325,20 +337,19 @@ export default {
 
 in your rollup configuration.
 
-#### context
+#### context *`--context`*
 
-By default, the context of a module – i.e., the value of `this` at the top level – is `undefined`. In rare cases you might need to change this to something else, like `'window'`.
+`String` By default, the context of a module – i.e., the value of `this` at the top level – is `undefined`. In rare cases you might need to change this to something else, like `'window'`.
 
 #### moduleContext
 
 Same as `options.context`, but per-module – can either be an object of `id: context` pairs, or an `id => context` function.
 
-#### legacy
+#### output.legacy *`-l`/`--legacy`*
 
-Adds support for very old environments like IE8 by stripping out more modern code that might not work reliably, at the cost of deviating slightly from the precise specifications required of ES6 module environments.
+`true` or `false` (defaults to `false`) – adds support for very old environments like IE8 by stripping out more modern code that might not work reliably, at the cost of deviating slightly from the precise specifications required of ES6 module environments.
 
-
-#### exports
+#### output.exports *`--exports`*
 
 `String` What export mode to use. Defaults to `auto`, which guesses your intentions based on what the `entry` module exports:
 
@@ -365,7 +376,7 @@ var yourMethod = require( 'your-lib' ).yourMethod;
 var yourLib = require( 'your-lib' )['default'];
 ```
 
-#### amd *`--amd.id` and `--amd.define`*
+#### output.amd *`--amd.id` and `--amd.define`*
 
 `Object` Can contain the following properties:
 
@@ -399,7 +410,7 @@ export default {
 // -> def(['dependency'],...
 ```
 
-#### indent
+#### output.indent *`--indent`/`--no-indent`*
 
 `String` the indent string to use, for formats that require code to be indented (`amd`, `iife`, `umd`). Can also be `false` (no indent), or `true` (the default – auto-indent)
 
@@ -407,17 +418,31 @@ export default {
 // rollup.config.js
 export default {
   ...,
-  indent: false
+  output: {
+    ...,
+    indent: false
+  }
 };
 ```
 
-#### strict
+#### output.strict *`--strict`/*`--no-strict`*
 
 `true` or `false` (defaults to `true`) – whether to include the 'use strict' pragma at the top of generated non-ES6 bundles. Strictly-speaking (geddit?), ES6 modules are *always* in strict mode, so you shouldn't disable this without good reason.
 
-#### freeze *`--freeze`/`--no-freeze`*
+#### output.freeze *`--freeze`/`--no-freeze`*
 
 `true` or `false` (defaults to `true`) – wether to `Object.freeze()` namespace import objects (i.e. `import * as namespaceImportObject from...`) that are accessed dynamically.
+
+#### output.namespaceToStringTag *`--namespaceToStringTag`/*`--no-namespaceToStringTag`*
+
+`true` or `false` (defaults to `false`) – whether to add spec compliant `.toString()` tags to namespace objects. If this option is set,
+
+```javascript
+import * as namespace from './file.js';
+console.log(String(namespace));
+```
+
+will always log `[object Module]`;
 
 ### Experimental options
 
