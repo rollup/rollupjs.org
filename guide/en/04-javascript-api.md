@@ -59,8 +59,7 @@ const inputOptions = {
           
   // experimental
   experimentalCodeSplitting,
-  experimentalDynamicImport,
-  experimentalPreserveModules
+  experimentalDynamicImport
 };
 ```
 

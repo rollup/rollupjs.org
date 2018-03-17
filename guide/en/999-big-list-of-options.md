@@ -7,15 +7,15 @@ title: Big list of options
 #### input *`-i`/`--input`*
 
 `String`/ 
-`String[]` The bundle's entry point (e.g. your `main.js` or `app.js` or `index.js`). If you enable `experimentalCodeSplitting` or `experimentalPreserveModules`, you can provide an array of entry points which will be bundled to separate chunks.
+`String[]` The bundle's entry point (e.g. your `main.js` or `app.js` or `index.js`). If you enable `experimentalCodeSplitting`, you can provide an array of entry points which will be bundled to separate chunks.
 
 #### output.file *`-o`/`--file`*
 
-`String` The file to write to. Will also be used to generate sourcemaps, if applicable. If `experimentalCodeSplitting` is enabled and `input` is an array or if `experimentalPreserveModules` is enabled, you must specify `dir` instead of `file`.
+`String` The file to write to. Will also be used to generate sourcemaps, if applicable. If `experimentalCodeSplitting` is enabled and `input` is an array, you must specify `dir` instead of `file`.
 
 #### output.dir * `--dir`*
 
-`String` The directory in which all generated chunks are placed. Only used if `experimentalCodeSplitting` is enabled and `input` is an array or if `experimentalPreserveModules` is enabled. In these cases this option replaces `file`.
+`String` The directory in which all generated chunks are placed. Only used if `experimentalCodeSplitting` is enabled and `input` is an array. In these cases this option replaces `file`.
 
 #### output.format *`-f`/`--format`*
 
@@ -462,9 +462,6 @@ When used without `experimentalCodeSplitting`, statically resolvable dynamic imp
 * Enable the `experimentalDynamicImport` flag to generate new chunks for dynamic imports as well.
 
 `output.dir` and input as an array must both be provided for code splitting to work, the `output.file` option is not compatible with code splitting workflows.
-
-#### experimentalPreserveModules *`--experimentalPreserveModules`*
-`true` or `false` (defaults to `false`) performs tree-shaking and output format transformations but preserves the file structure instead of bundling. If this option is enabled, `input` can be set to an array of entry points. The resulting files will be rendered to `output.dir`.
 
 ### Watch options
 

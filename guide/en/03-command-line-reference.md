@@ -34,7 +34,6 @@ export default { // can be an array (for multiple inputs)
   // experimental
   experimentalCodeSplitting,
   experimentalDynamicImport,
-  experimentalPreserveModules,
 
   output: {  // required (can be an array, for multiple outputs)
     // core output options
