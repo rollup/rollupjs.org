@@ -218,18 +218,18 @@ export default {
 
 `Function` that will intercept warning messages. If not supplied, warnings will be deduplicated and printed to the console.
 
-Warnings are objects with at minimum a `code` and a `message` property, meaning you can control how different kinds of warnings are handled:
+The function receives two arguments: the warning object and the default handler. Warnings objects have, at a minimum, a `code` and a `message` property, allowing you to control how different kinds of warnings are handled.
 
 ```js
-onwarn (warning) {
+onwarn (warning, warn) {
   // skip certain warnings
   if (warning.code === 'UNUSED_EXTERNAL_IMPORT') return;
 
   // throw on others
   if (warning.code === 'NON_EXISTENT_EXPORT') throw new Error(warning.message);
 
-  // console.warn everything else
-  console.warn(warning.message);
+  // Use default for everything else
+  warn(warning);
 }
 ```
 
