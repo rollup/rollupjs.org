@@ -7,7 +7,7 @@ title: Big list of options
 #### input *`-i`/`--input`*
 
 `String`/ 
-`String[]` The bundle's entry point (e.g. your `main.js` or `app.js` or `index.js`). If you enable `experimentalCodeSplitting`, you can provide an array of entry points which will be bundled to separate chunks.
+`String[] | { [entryName: string]: string }` The bundle's entry point(s) (e.g. your `main.js` or `app.js` or `index.js`). If you enable `experimentalCodeSplitting`, you can provide an array of entry points or object of named entry points which will be bundled to separate output chunks.
 
 #### output.file *`-o`/`--file`*
 
@@ -462,6 +462,26 @@ When used without `experimentalCodeSplitting`, statically resolvable dynamic imp
 * Enable the `experimentalDynamicImport` flag to generate new chunks for dynamic imports as well.
 
 `output.dir` and input as an array must both be provided for code splitting to work, the `output.file` option is not compatible with code splitting workflows.
+
+#### output.entryNames *`--entryNames`*
+
+`String` the pattern to use for naming entry point output files within `dir` when code splitting. Defaults to `"[alias].js"`.
+
+#### output.chunkNames *`--chunkNames`*
+
+`String` the pattern to use for naming shared chunks created when code-splitting. Defaults to `"[alias]-[hash].js"`.
+
+#### manualChunks *`--manualChunks`*
+
+`{ [chunkAlias: string]: String[] }` allows creating custom shared commmon chunks. Provides an alias for the chunk and the list of modules to include in that chunk. Modules are bundled into the chunk along with their dependencies. If a module is already in a previous chunk, then the chunk will reference it there.
+
+#### optimizeChunks *`--optimizeChunks`*
+
+`true` or `false` (defaults to `false)` - experimental feature to optimize chunk groupings. When a large number of chunks are generated in code-splitting, this allows smaller chunks to group together as long as they are within the `chunkGroupingSize` limit. It results in unnecessary code being loaded in some cases in order to have a smaller number of chunks overall. Disabled by default as it may cause unwanted side effects when loading unexpected code.
+
+#### chunkGroupingSize *`--chunkGroupingSize`*
+
+`number` (defaults to 5000) - the total source length allowed to be loaded unnecessarily when applying chunk grouping optimizations.
 
 ### Watch options
 
