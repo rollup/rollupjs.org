@@ -59,6 +59,9 @@ const inputOptions = {
           
   // experimental
   experimentalCodeSplitting,
+  manualChunks,
+  optimizeChunks,
+  chunkGroupingSize,
   experimentalDynamicImport
 };
 ```
@@ -95,7 +98,11 @@ const outputOptions = {
   strict,
   freeze,
   legacy,
-  namespaceToStringTag
+  namespaceToStringTag,
+  
+  // experimental
+  entryNames,
+  chunkNames
 };
 ```
 
