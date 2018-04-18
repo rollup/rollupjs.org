@@ -34,6 +34,9 @@ export default { // can be an array (for multiple inputs)
   // experimental
   experimentalCodeSplitting,
   experimentalDynamicImport,
+  manualChunks,
+  optimizeChunks,
+  chunkGroupingSize,
 
   output: {  // required (can be an array, for multiple outputs)
     // core output options
@@ -62,6 +65,10 @@ export default { // can be an array (for multiple inputs)
     freeze,
     legacy,
     namespaceToStringTag
+    
+    // experimental
+    entryNames,
+    chunkNames
   },
 
   watch: {
