@@ -6,8 +6,7 @@ title: Big list of options
 
 #### input *`-i`/`--input`*
 
-`String`/ 
-`String[] | { [entryName: string]: string }` The bundle's entry point(s) (e.g. your `main.js` or `app.js` or `index.js`). If you enable `experimentalCodeSplitting`, you can provide an array of entry points or object of named entry points which will be bundled to separate output chunks.
+`String` / `String[]` / `{ [entryName: String]: String }` The bundle's entry point(s) (e.g. your `main.js` or `app.js` or `index.js`). If you enable `experimentalCodeSplitting`, you can provide an array of entry points or object of named entry points which will be bundled to separate output chunks.
 
 #### output.file *`-o`/`--file`*
 
@@ -473,7 +472,7 @@ When used without `experimentalCodeSplitting`, statically resolvable dynamic imp
 
 #### manualChunks *`--manualChunks`*
 
-`{ [chunkAlias: string]: String[] }` allows creating custom shared commmon chunks. Provides an alias for the chunk and the list of modules to include in that chunk. Modules are bundled into the chunk along with their dependencies. If a module is already in a previous chunk, then the chunk will reference it there.
+`{ [chunkAlias: String]: String[] }` allows creating custom shared commmon chunks. Provides an alias for the chunk and the list of modules to include in that chunk. Modules are bundled into the chunk along with their dependencies. If a module is already in a previous chunk, then the chunk will reference it there. Modules defined into chunks this way are considered to be entry points that can execute independently to any parent importers.
 
 #### optimizeChunks *`--optimizeChunks`*
 
