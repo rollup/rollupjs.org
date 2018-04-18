@@ -176,7 +176,7 @@ Many options have command line equivalents. Any arguments passed here will overr
 --outro                     Content to insert at end of bundle (inside wrapper)
 --banner                    Content to insert at top of bundle (outside wrapper)
 --footer                    Content to insert at end of bundle (outside wrapper)
---noInterop                 Do not include interop block
+--no-interop                Do not include interop block
 ```
 
 In addition, the following arguments can be used:
