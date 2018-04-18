@@ -167,11 +167,11 @@ Many options have command line equivalents. Any arguments passed here will overr
 -l, --legacy                Support IE8
 --amd.id                    ID for AMD module (default is anonymous)
 --amd.define                Function to use in place of `define`
---noStrict                  Don't emit a `"use strict";` in the generated modules.
---noIndent                  Don't indent result
+--no-strict                 Don't emit a `"use strict";` in the generated modules.
+--no-indent                 Don't indent result
 --environment <values>      Environment variables passed to config file
 --noConflict                Generate a noConflict method for UMD globals
---noTreeshake               Disable tree-shaking
+--no-treeshake              Disable tree-shaking
 --intro                     Content to insert at top of bundle (inside wrapper)
 --outro                     Content to insert at end of bundle (inside wrapper)
 --banner                    Content to insert at top of bundle (outside wrapper)
