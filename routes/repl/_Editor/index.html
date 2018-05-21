@@ -45,10 +45,14 @@
 </style>
 
 <script>
+	import { observe } from 'svelte-extras';
+
 	export default {
 		oncreate () {
-			import('./codemirror.js').then(CodeMirror => {
+			import('./codemirror.js').then(({ default: CodeMirror }) => {
 				let updating = false;
+
+				const { code, readonly } = this.get();
 
 				this.editor = CodeMirror.fromTextArea( this.refs.editor, {
 					lineNumbers: true,
@@ -56,9 +60,9 @@
 					indentWithTabs: true,
 					indentUnit: 2,
 					tabSize: 2,
-					value: this.get( 'code' ),
+					value: code,
 					mode: 'javascript',
-					readOnly: this.get( 'readonly' )
+					readOnly: readonly
 				});
 
 				// TODO this is a bug. oncreate should only be called once
@@ -96,7 +100,9 @@
 		methods: {
 			resize () {
 				this.editor.refresh();
-			}
+			},
+
+			observe
 		}
 	};
 </script>
