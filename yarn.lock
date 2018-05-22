@@ -2568,7 +2568,7 @@ os-locale@^2.0.0:
     lcid "^1.0.0"
     mem "^1.1.0"
 
-os-tmpdir@^1.0.0, os-tmpdir@~1.0.2:
+os-tmpdir@^1.0.0, os-tmpdir@~1.0.1, os-tmpdir@~1.0.2:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/os-tmpdir/-/os-tmpdir-1.0.2.tgz#bbe67406c79aa85c5cfec766fe5734555dfa1274"
 
@@ -3696,11 +3696,12 @@ supports-color@^5.1.0:
   dependencies:
     has-flag "^2.0.0"
 
-svelte-loader@^1.3.1:
-  version "1.3.1"
-  resolved "https://registry.yarnpkg.com/svelte-loader/-/svelte-loader-1.3.1.tgz#9dd6e9c22ec5d11c3e27d32da6045fd688656b1e"
+svelte-loader@2.3.3:
+  version "2.3.3"
+  resolved "https://registry.yarnpkg.com/svelte-loader/-/svelte-loader-2.3.3.tgz#62a4074151bfa6277f875e5ad7f1f0fa2637fb4f"
   dependencies:
     loader-utils "^1.1.0"
+    tmp "0.0.31"
 
 svelte@^1.54.0:
   version "1.64.1"
@@ -3774,6 +3775,12 @@ timers-browserify@^2.0.4:
   resolved "https://registry.yarnpkg.com/timers-browserify/-/timers-browserify-2.0.4.tgz#96ca53f4b794a5e7c0e1bd7cc88a372298fa01e6"
   dependencies:
     setimmediate "^1.0.4"
+
+tmp@0.0.31:
+  version "0.0.31"
+  resolved "https://registry.yarnpkg.com/tmp/-/tmp-0.0.31.tgz#8f38ab9438e17315e5dbd8b3657e8bfb277ae4a7"
+  dependencies:
+    os-tmpdir "~1.0.1"
 
 tmp@^0.0.33:
   version "0.0.33"
