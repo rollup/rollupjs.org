@@ -26,7 +26,6 @@
     "start": "node build",
     "lint": "node node_modules/eslint/bin/eslint src --ext .js --ext .html",
     "update_overview": "node scripts/update_overview",
-    "rollup": "rollup -c",
     "clean": "rm -rf client/dist && rm -rf server/dist && rm -rf service-worker/dist && mkdir -p client/dist && mkdir -p server/dist && mkdir -p service-worker/dist",
     "stage": "now",
     "deploy": "now && now alias",
