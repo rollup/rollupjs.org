@@ -5,7 +5,7 @@ node_js:
 env:
   global:
     - BUILD_TIMEOUT=10000
-install: npm install
+install: yarn
 after_success: npm run deploy:ci
 branches:
   only:
