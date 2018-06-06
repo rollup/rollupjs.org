@@ -462,13 +462,17 @@ When used without `experimentalCodeSplitting`, statically resolvable dynamic imp
 
 `output.dir` and input as an array must both be provided for code splitting to work, the `output.file` option is not compatible with code splitting workflows.
 
-#### output.entryNames *`--entryNames`*
+#### output.entryFileNames *`--entryFileNames`*
 
 `String` the pattern to use for naming entry point output files within `dir` when code splitting. Defaults to `"[alias].js"`.
 
-#### output.chunkNames *`--chunkNames`*
+#### output.chunkFileNames *`--chunkFileNames`*
 
 `String` the pattern to use for naming shared chunks created when code-splitting. Defaults to `"[alias]-[hash].js"`.
+
+#### output.assetFileNames *`--assetFileNames`*
+
+`String` the pattern to use for naming custom emitted assets to include in the build output when code-splitting. Defaults to `"assets/[name]-[hash][extname]"`.
 
 #### manualChunks *`--manualChunks`*
 

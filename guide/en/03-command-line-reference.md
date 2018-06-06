@@ -33,7 +33,6 @@ export default { // can be an array (for multiple inputs)
   
   // experimental
   experimentalCodeSplitting,
-  experimentalDynamicImport,
   manualChunks,
   optimizeChunks,
   chunkGroupingSize,
@@ -67,8 +66,9 @@ export default { // can be an array (for multiple inputs)
     namespaceToStringTag
     
     // experimental
-    entryNames,
-    chunkNames
+    entryFileNames,
+    chunkFileNames,
+    assetFileNames
   },
 
   watch: {
