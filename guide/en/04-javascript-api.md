@@ -61,8 +61,7 @@ const inputOptions = {
   experimentalCodeSplitting,
   manualChunks,
   optimizeChunks,
-  chunkGroupingSize,
-  experimentalDynamicImport
+  chunkGroupingSize
 };
 ```
 
@@ -101,8 +100,9 @@ const outputOptions = {
   namespaceToStringTag,
   
   // experimental
-  entryNames,
-  chunkNames
+  entryFileNames,
+  chunkFileNames,
+  assetFileNames
 };
 ```
 

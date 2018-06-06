@@ -211,7 +211,7 @@ export default function () {
 We can then pass both entry points to the rollup build, and instead of an output file we set a folder to output to with the `--dir` option (also passing the experimental flags):
 
 ```bash
-rollup src/main.js src/main2.js -f cjs --dir dist --experimentalCodeSplitting --experimentalDynamicImport
+rollup src/main.js src/main2.js -f cjs --dir dist --experimentalCodeSplitting
 ```
 
 Either built entry point can then be run in NodeJS without duplicating any code between the modules:
@@ -225,7 +225,7 @@ You can build the same code for the browser, for native ES modules, an AMD loade
 For example, with `-f es` for native modules:
 
 ```bash
-rollup src/main.js src/main2.js -f es --dir dist --experimentalCodeSplitting --experimentalDynamicImport
+rollup src/main.js src/main2.js -f es --dir dist --experimentalCodeSplitting
 ```
 
 ```html
@@ -239,7 +239,7 @@ rollup src/main.js src/main2.js -f es --dir dist --experimentalCodeSplitting --e
 Or alternatively, for SystemJS with `-f system`:
 
 ```bash
-rollup src/main.js src/main2.js -f system --dir dist --experimentalCodeSplitting --experimentalDynamicImport
+rollup src/main.js src/main2.js -f system --dir dist --experimentalCodeSplitting
 ```
 
 install SystemJS via
