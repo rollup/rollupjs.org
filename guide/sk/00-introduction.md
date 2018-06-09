@@ -18,21 +18,21 @@ Pre prehliadače:
 
 ```bash
 # kompilovať pre využitie v <script> ako samo-spúšťaciu funkciu
-$ rollup main.js --format iife --output bundle.js
+$ rollup main.js --file bundle.js --format iife
 ```
 
 Pre Node.js:
 
 ```bash
 # kompilovať ako CommonJS modul
-$ rollup main.js --format cjs --output bundle.js
+$ rollup main.js --file bundle.js --format cjs
 ```
 
 Pre prehliadače a Node.js:
 
 ```bash
 # formát UMD vyžaduje názov balíčka
-$ rollup main.js --format umd --name "myBundle" --output bundle.js
+$ rollup main.js --file bundle.js --format umd --name "myBundle"
 ```
 
 ### Prečo

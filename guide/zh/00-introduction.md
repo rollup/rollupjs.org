@@ -20,21 +20,21 @@ Rollup 是一个 JavaScript 模块打包器，可以将小块代码编译成大�
 
 ```bash
 # compile to a <script> containing a self-executing function ('iife')
-$ rollup main.js --o bundle.js --f iife
+$ rollup main.js --file bundle.js --format iife
 ```
 
 对于 Node.js:
 
 ```bash
 # compile to a CommonJS module ('cjs')
-$ rollup main.js --o bundle.js --f cjs
+$ rollup main.js --file bundle.js --format cjs
 ```
 
 对于浏览器和 Node.js:
 
 ```bash
 # UMD format requires a bundle name
-$ rollup main.js --o bundle.js -f umd --name "myBundle"
+$ rollup main.js --file bundle.js --format umd --name "myBundle"
 ```
 
 ### 为什么(Why)
