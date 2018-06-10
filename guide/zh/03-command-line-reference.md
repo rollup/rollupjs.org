@@ -73,7 +73,7 @@ $ rollup --config my.config.js
 
 配置文件中的许多选项和命令行的参数是等价的。如果你使用这里的参数，那么将重写配置文件。想了解更多的话，仔细查阅这个[包办大量选项的清单](#big-list-of-options)
 
-```bash
+```text
 -i, --input                 要打包的文件（必须）
 -o, --output.file           输出的文件 (如果没有这个参数，则直接输出到控制台)
 -f, --output.format [es]    输出的文件类型 (amd, cjs, es, iife, umd)

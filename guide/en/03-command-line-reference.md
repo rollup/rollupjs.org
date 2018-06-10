@@ -160,7 +160,7 @@ If you now run `rollup --config --configDebug`, the debug configuration will be 
 
 Many options have command line equivalents. Any arguments passed here will override the config file, if you're using one. See the [big list of options](#big-list-of-options) for details.
 
-```
+```text
 -c, --config                Use this config file (if argument is used but value
                               is unspecified, defaults to rollup.config.js)
 -i, --input                 Input (alternative to <entry file>)

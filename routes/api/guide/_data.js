@@ -3,6 +3,9 @@ import path from 'path';
 import marked from 'marked';
 import hljs from 'highlight.js';
 
+// Register dummy language for plain text code blocks.
+hljs.registerLanguage('text', () => ({}));
+
 export default fs.readdirSync('guide')
 	.filter(dir => {
 		return fs.statSync(`guide/${dir}`).isDirectory();
