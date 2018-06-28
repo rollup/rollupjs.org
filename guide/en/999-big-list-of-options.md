@@ -464,7 +464,7 @@ When used without `experimentalCodeSplitting`, statically resolvable dynamic imp
 
 #### output.entryFileNames *`--entryFileNames`*
 
-`String` the pattern to use for naming entry point output files within `dir` when code splitting. Defaults to `"[alias].js"`.
+`String` the pattern to use for naming entry point output files within `dir` when code splitting. Defaults to `"[name].js"`.
 
 #### output.chunkFileNames *`--chunkFileNames`*
 
