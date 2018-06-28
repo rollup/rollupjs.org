@@ -468,7 +468,7 @@ When used without `experimentalCodeSplitting`, statically resolvable dynamic imp
 
 #### output.chunkFileNames *`--chunkFileNames`*
 
-`String` the pattern to use for naming shared chunks created when code-splitting. Defaults to `"[alias]-[hash].js"`.
+`String` the pattern to use for naming shared chunks created when code-splitting. Defaults to `"[name]-[hash].js"`.
 
 #### output.assetFileNames *`--assetFileNames`*
 
