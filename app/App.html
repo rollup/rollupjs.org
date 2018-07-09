@@ -1,22 +1,22 @@
-<div class='layout'>
-	<Nav :page/>
-	<slot></slot>
-</div>
+<main>
+	<Nav path={props.path}/>
+	<svelte:component this={Page} {...props}/>
+</main>
 
 <style>
-	.layout {
+	main {
 		padding: 3em 0 0 0;
 	}
 
 	@media (min-width: 768px) {
-		.layout {
+		main {
 			padding: 3.6em 0 0 0;
 		}
 	}
 </style>
 
 <script>
-	import Nav from './Nav.html';
+	import Nav from '../components/Nav.html';
 
 	export default {
 		components: {

@@ -1,19 +1,17 @@
-<Layout page='repl'>
-	<div class='repl'>
-		<div class='left'>
-			<h2>ES6 modules go in...</h2>
-			<div class='input'>
-				<Input :examples bind:selectedExample bind:modules/>
-			</div>
-		</div>
-		<div class='right'>
-			<h2>...bundle comes out</h2>
-			<div class='output'>
-				<Output bind:options :code :error :warnings :imports :exports/>
-			</div>
+<div class='repl'>
+	<div class='left'>
+		<h2>ES6 modules go in...</h2>
+		<div class='input'>
+			<Input {examples} bind:selectedExample bind:modules/>
 		</div>
 	</div>
-</Layout>
+	<div class='right'>
+		<h2>...bundle comes out</h2>
+		<div class='output'>
+			<Output bind:options {code} {error} {warnings} {imports} {exports}/>
+		</div>
+	</div>
+</div>
 
 <style>
 	.repl {
@@ -77,10 +75,10 @@
 </style>
 
 <script>
-	import Layout from '../_components/Layout.html';
 	import Input from './_Input/index.html';
 	import Output from './_Output/index.html';
 	import debounce from './_utils/debounce.js';
+	import { observe } from 'svelte-extras';
 	import { dirname, resolve } from './_utils/path';
 
 	const versionMatch = typeof window !== 'undefined' ? /version=([^&]+)/.exec( window.location.search ) : null;
@@ -91,7 +89,6 @@
 
 	export default {
 		components: {
-			Layout,
 			Input,
 			Output
 		},
@@ -166,7 +163,9 @@
 					let updating = false;
 
 					const update = () => {
-						const modules = this.get( 'modules' );
+						const { modules } = this.get();
+
+						console.log({ modules });
 
 						if ( updating ) return; // TODO this is inelegant...
 						updating = true;
@@ -227,7 +226,7 @@
 								exports: bundle.exports
 							});
 
-							const options = this.get( 'options' );
+							const { options } = this.get();
 							return bundle.generate( options );
 						})
 						.then( generated => {
@@ -274,10 +273,12 @@
 					params.version = versionMatch[1];
 				}
 
+				const { modules, options, selectedExample } = this.get();
+
 				const json = JSON.stringify({
-					modules: this.get( 'modules' ),
-					options: this.get( 'options' ),
-					example: this.get( 'selectedExample' )
+					modules,
+					options,
+					example: selectedExample
 				});
 
 				params.shareable = btoa( encodeURIComponent( json ) );
@@ -290,7 +291,9 @@
 
 				// TODO
 				// roadtrip.goto( url, { replaceState: true });
-			}
+			},
+
+			observe
 		}
 	};
 </script>

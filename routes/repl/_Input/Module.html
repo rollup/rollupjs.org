@@ -1,15 +1,15 @@
-<article class='module {{main ? "main-module" : ""}}'>
+<article class='module {main ? "main-module" : ""}'>
 	<header>
-		{{#if main}}
+		{#if main}
 			<span class='entry-module-name'>main.js <span class='entry-module-label'>(entry module)</span></span>
-		{{else}}
+		{:else}
 			<input class='module-name' bind:value='name' on:focus='selectName(this)' on:tab='focusEditor(event)' placeholder='foo.js'>
 
 			<button class='remove' on:click='fire("remove")'>
 				<span class='label'>remove</span>
 				<span class='icon-cancel'></span>
 			</button>
-		{{/if}}
+		{/if}
 	</header>
 
 	<Editor ref:editor bind:code/>
