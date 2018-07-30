@@ -344,10 +344,6 @@ in your rollup configuration.
 
 Same as `options.context`, but per-module – can either be an object of `id: context` pairs, or an `id => context` function.
 
-#### output.legacy *`-l`/`--legacy`*
-
-`true` or `false` (defaults to `false`) – adds support for very old environments like IE8 by stripping out more modern code that might not work reliably, at the cost of deviating slightly from the precise specifications required of ES6 module environments.
-
 #### output.exports *`--exports`*
 
 `String` What export mode to use. Defaults to `auto`, which guesses your intentions based on what the `entry` module exports:

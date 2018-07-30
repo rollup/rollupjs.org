@@ -96,7 +96,6 @@ const outputOptions = {
   indent,
   strict,
   freeze,
-  legacy,
   namespaceToStringTag,
   
   // experimental
