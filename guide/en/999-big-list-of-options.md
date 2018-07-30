@@ -320,6 +320,7 @@ Any options that should be passed through to Acorn, such as `allowReserved: true
 #### acornInjectPlugins
 
 An array of plugins to be injected into Acorn. In order to use a plugin, you need to pass its inject function here and enable it via the `acorn.plugins` option. For instance, to use async iteration, you can specify
+
 ```javascript
 import acornAsyncIteration from 'acorn-async-iteration/inject';
 
@@ -445,9 +446,12 @@ These options reflect new features that have not yet been fully finalized. Speci
 
 #### experimentalDynamicImport *`--experimentalDynamicImport`*
 `true` or `false` (defaults to `false`) – adds the necessary acorn plugin to enable parsing dynamic imports, e.g.
+
 ```javascript
-import('./my-module.js').then(moduleNamespace => console.log(moduleNamespace.foo));
+import('./my-module.js')
+  .then(moduleNamespace => console.log(moduleNamespace.foo));
 ```
+
 When used without `experimentalCodeSplitting`, statically resolvable dynamic imports will be automatically inlined into your bundle. Also enables the `resolveDynamicImport` plugin hook.
 
 #### experimentalCodeSplitting *`--experimentalCodeSplitting`*

@@ -208,8 +208,8 @@ Pass additional settings to the config file via `process.ENV`.
 
 ```sh
 rollup -c --environment INCLUDE_DEPS,BUILD:production
-
 ```
+
 will set `process.env.INCLUDE_DEPS === 'true'` and `process.env.BUILD === 'production'`. You can use this option several times. In that case, subsequently set variables will overwrite previous definitions. This enables you for instance to overwrite environment variables in package.json scripts:
 
 ```json
@@ -222,6 +222,7 @@ will set `process.env.INCLUDE_DEPS === 'true'` and `process.env.BUILD === 'produ
 ```
 
 If you call this script via
+
 ```bash
 npm run build -- --environment BUILD:development
 ```
