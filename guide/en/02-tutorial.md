@@ -222,10 +222,10 @@ node -e "require('./dist/main2.js')()"
 
 You can build the same code for the browser, for native ES modules, an AMD loader or SystemJS.
 
-For example, with `-f es` for native modules:
+For example, with `-f esm` for native modules:
 
 ```bash
-rollup src/main.js src/main2.js -f es --dir dist --experimentalCodeSplitting
+rollup src/main.js src/main2.js -f esm --dir dist --experimentalCodeSplitting
 ```
 
 ```html
