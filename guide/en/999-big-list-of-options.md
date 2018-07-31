@@ -78,6 +78,7 @@ export default {
 #### external *`-e`/`--external`*
 
 Either a `Function` that takes an `id` and returns `true` (external) or `false` (not external), or an `Array` of module IDs that should remain external to the bundle. The IDs should be either:
+
 1. the name of an external dependency
 2. a resolved ID (like an absolute path to a file)
 
@@ -101,6 +102,7 @@ rollup -i src/main.js ... -e foo,bar,baz
 ```
 
 When providing a function, it is actually called with three parameters `(id, parent, isResolved)` that can give you more fine-grained control:
+
 * `id` is the id of the module in question
 * `parent` is the id of the module doing the import
 * `isResolved` signals whether the `id` has been resolved by e.g. plugins
@@ -456,6 +458,7 @@ When used without `experimentalCodeSplitting`, statically resolvable dynamic imp
 
 #### experimentalCodeSplitting *`--experimentalCodeSplitting`*
 `true` or `false` (defaults to `false`) – enables you to specify multiple entry points. If this option is enabled, `input` can be set to an array of entry points to be built into the folder at the provided `output.dir`.
+
 * Filenames of generated chunks in the `output.dir` folder correspond to the entry point filenames.
 * Shared chunks are generated automatically to avoid code duplication between chunks.
 * Enable the `experimentalDynamicImport` flag to generate new chunks for dynamic imports as well.
