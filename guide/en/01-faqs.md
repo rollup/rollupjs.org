@@ -14,6 +14,22 @@ Tree-shaking, also known as "live code inclusion," is the process of eliminating
 
 Rollup strives to implement the specification for ES modules, not necessarily the behaviors of Node.js, npm, `require()`, and CommonJS. Consequently, loading of CommonJS modules and use of Node's module location resolution logic are both implemented as optional plugins, not included by default in the Rollup core. Just `npm install` the [CommonJS](https://github.com/rollup/rollup-plugin-commonjs) and [node-resolve](https://github.com/rollup/rollup-plugin-node-resolve) plugins and then enable them using a `rollup.config.js` file and you should be all set.
 
+#### Why isn't node-resolve a built-in feature?
+
+There are two primary reasons:
+
+1. Philosophically, it's because Rollup is essentially a [polyfill](https://en.wikipedia.org/wiki/Polyfill_(programming)) of sorts for
+native module loaders in both Node and browsers. In a browser,`import foo from 'foo'`
+won't work, because browsers don't use Node's resolution algorithm.
+
+2. On a practical level, it's just much easier to develop software if these
+concerns are neatly separated out with a good API. Rollup's core is quite large,
+and everything that stops it getting larger is a good thing. Meanwhile, it's
+easier to fix bugs and add features.
+
+Please see [this issue](https://github.com/rollup/rollup/issues/1555#issuecomment-322862209)
+for a more verbose explanation.
+
 #### Is Rollup meant for building libraries or applications?
 
 Rollup is already used by many major JavaScript libraries, and can also be used to build the vast majority of applications. However if you want to use code-splitting or dynamic imports with older browsers, you will need an additional runtime to handle loading missing chunks. We recommend using the [SystemJS Production Build](https://github.com/systemjs/systemjs#browser-production) as it integrates nicely with Rollup's system format output and is capable of properly handling all the ES module live bindings and re-export edge cases. Alternatively, an AMD loader can be used as well.
