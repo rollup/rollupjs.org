@@ -102,6 +102,8 @@ export default {
 };
 ```
 
+(Note that you can use CJS modules as well, to wit, `module.exports = {/* config */}`)
+
 To use the config file, we use the `--config` or `-c` flag:
 
 ```bash
