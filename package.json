@@ -21,6 +21,7 @@
     "rollup-plugin-svelte": "^4.3.0",
     "rollup-plugin-terser": "^2.0.2",
     "sander": "^0.6.0",
+    "shx": "^0.3.2",
     "sirv-cli": "^0.2.1",
     "svelte": "^2.13.2"
   },
@@ -30,11 +31,11 @@
     "test": "npm run lint",
     "start": "sirv export",
     "lint": "markdownlint --config markdownlint.json guide/en/**/*.md",
-    "update_overview": "node scripts/update_overview",
+    "update-guide": "git clone --depth 1 --branch inline-docs git@github.com:rollup/rollup.git temp-rollup &&  shx rm -rf guide/en && shx cp -r temp-rollup/guide/. guide/en && shx rm -rf temp-rollup",
     "clean": "rm -rf client/dist && rm -rf server/dist && rm -rf service-worker/dist && mkdir -p client/dist && mkdir -p server/dist && mkdir -p service-worker/dist",
     "stage": "(cd export && now .)",
-    "predeploy": "npm test && npm run build",
-    "predeploy:ci": "npm test && npm test && npm run build",
+    "predeploy": "npm run update-guide && npm test && npm run build",
+    "predeploy:ci": "npm run update-guide && npm test && npm test && npm run build",
     "deploy": "(cd export && now . && now alias)",
     "deploy:ci": "(cd export && now . --token $NOW_TOKEN && now alias --token $NOW_TOKEN)"
   },
