@@ -74,14 +74,14 @@
 
 		methods: {
 			removeModule(index) {
-				const modules = this.get('modules');
+				const { modules } = this.get();
 				modules.splice(index, 1);
 
 				this.set({ modules });
 			},
 
 			createModule() {
-				const modules = this.get('modules');
+				const { modules } = this.get();
 				modules.push({
 					name: `module_${uid++}.js`,
 					code: ''

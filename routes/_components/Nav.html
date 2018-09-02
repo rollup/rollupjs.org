@@ -224,19 +224,20 @@
 
 		methods: {
 			toggleOpen () {
-				const open = this.get( 'open' );
+				const { open } = this.get();
 
 				// if the menu is closing, scroll back to the top *after* it
 				// shuts. otherwise, scroll back to the top immediately
 				// (just in case the user reopened before it happened).
 				// The reason we don't just do it when the menu opens is
 				// that the scrollbar visibly flashes
-				if ( open ) {
-					setTimeout( () => {
-						if ( !this.get( 'open' ) ) {
+				if (open) {
+					setTimeout(() => {
+						const { open } = this.get();
+						if (!open) {
 							this.refs.nav.scrollTop = 0;
 						}
-					}, 350 );
+					}, 350);
 				} else {
 					this.refs.nav.scrollTop = 0;
 				}

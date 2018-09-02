@@ -180,7 +180,7 @@
 					let updating = false;
 
 					const update = () => {
-						const modules = this.get( 'modules' );
+						const { modules } = this.get();
 
 						if ( updating ) return; // TODO this is inelegant...
 						updating = true;
@@ -241,8 +241,8 @@
 								exports: bundle.exports
 							});
 
-							const options = this.get( 'options' );
-							return bundle.generate( options );
+							const { options } = this.get();
+							return bundle.generate(options);
 						})
 						.then( generated => {
 							this.set({
@@ -291,10 +291,12 @@
 					params.version = versionMatch[1];
 				}
 
+				const { modules, options, selectedExample } = this.get();
+
 				const json = JSON.stringify({
-					modules: this.get( 'modules' ),
-					options: this.get( 'options' ),
-					example: this.get( 'selectedExample' )
+					modules,
+					options,
+					example: selectedExample
 				});
 
 				params.shareable = btoa( encodeURIComponent( json ) );

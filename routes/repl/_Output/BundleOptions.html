@@ -136,7 +136,8 @@
 
 				// we only care about this stuff in IIFE/UMD mode...
 				// cheeky hack to clean `options.globals`
-				const { format } = this.get('options');
+				const { options } = this.get();
+				const { format } = options;
 				if (format !== 'iife' && format !== 'umd') imports = [];
 
 				const sortedImports = imports
@@ -158,7 +159,6 @@
 				updating = true;
 				this.set({ sortedImports });
 
-				const options = this.get('options');
 				options.globals = globals;
 				this.set({ options });
 
@@ -174,7 +174,7 @@
 					globals[name] = userGlobals[name] = value;
 				});
 
-				const options = this.get('options');
+				const { options } = this.get();
 				options.globals = globals;
 				this.set({ options });
 				updating = false;
