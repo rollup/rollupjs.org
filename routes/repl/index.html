@@ -100,6 +100,7 @@
 				fulfil(window.rollup);
 			};
 			script.onerror = reject;
+			document.querySelector('head').appendChild(script);
 		});
 	}
 
@@ -165,7 +166,7 @@
 			this.observe( 'selectedExample', id => {
 				if ( !id ) return;
 
-				fetch(`/api/examples/${id}`).then(r => r.json()).then(example => {
+				fetch(`api/examples/${id}`).then(r => r.json()).then(example => {
 					settingModulesViaExample = true;
 					this.set({ modules: example.modules });
 					settingModulesViaExample = false;
@@ -185,7 +186,7 @@
 						if ( updating ) return; // TODO this is inelegant...
 						updating = true;
 
-						// console.clear();
+						console.clear();
 						console.log( `running Rollup version %c${rollup.VERSION}`, 'font-weight: bold' );
 						this.updateUrl();
 
