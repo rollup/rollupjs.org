@@ -34,11 +34,12 @@
     "lint": "markdownlint --config markdownlint.json guide/en/**/*.md",
     "update_overview": "node scripts/update_overview",
     "clean": "rm -rf client/dist && rm -rf server/dist && rm -rf service-worker/dist && mkdir -p client/dist && mkdir -p server/dist && mkdir -p service-worker/dist",
-    "stage": "now",
+    "stage": "(cd export && now .)",
     "deploy": "npm run test && (cd export && now . && now alias)",
     "deploy:ci": "npm run test && (cd export && now . --token $NOW_TOKEN && now alias --token $NOW_TOKEN)"
   },
   "dependencies": {
+    "@babel/runtime": "^7.0.0",
     "codemirror": "^5.35.0",
     "compression": "^1.7.2",
     "cross-env": "^5.1.1",

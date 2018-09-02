@@ -8,8 +8,16 @@
 	%sapper.base%
 
 	<link rel='stylesheet' href='global.css'>
+	<link rel='stylesheet' href='fontello/css/fontello.css'>
 	<link rel='manifest' href='manifest.json'>
 	<link rel='icon' type='image/png' href='favicon.png'>
+
+	<meta name='twitter:card' content='summary_large_image'>
+	<meta name='twitter:site' content='@rollupjs'>
+	<meta name='twitter:creator' content='@rollupjs'>
+	<meta name='twitter:title' content='Rollup'>
+	<meta name='twitter:description' content='The JavaScript module bundler'>
+	<meta name='twitter:image' content='https://rollupjs.org/images/twitter-card.jpg'>
 
 	<!-- Sapper generates a <style> tag containing critical CSS
 	     for the current page. CSS for the rest of the app is
@@ -29,5 +37,15 @@
 	     and anything else it needs to hydrate the app and
 	     initialise the router -->
 	%sapper.scripts%
+
+	<script>
+		(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+		(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+		m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+		})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+		ga('create', 'UA-5602942-9', 'auto');
+		ga('send', 'pageview');
+	</script>
 </body>
 </html>

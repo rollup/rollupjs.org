@@ -1,7 +1,15 @@
+<svelte:head>
+	<title>rollup.js</title>
+</svelte:head>
+
 <div class='layout'>
 	<Nav page={child.segment === 'repl' ? 'repl' : 'guide'}/>
 	<svelte:component this={child.component} {...child.props}/>
 </div>
+
+{#each langs as lang}
+	<a hidden href="guide/{lang}">{lang}</a>
+{/each}
 
 <style>
 	.layout {
@@ -19,6 +27,13 @@
 	export default {
 		components: {
 			Nav: './_components/Nav.html'
+		},
+
+		preload() {
+			// ensure guide is generated for each language
+			return this.fetch('guide/langs.json').then(r => r.json()).then(langs => {
+				return { langs };
+			});
 		}
 	};
 </script>

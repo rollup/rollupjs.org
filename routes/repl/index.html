@@ -13,6 +13,12 @@
 	</div>
 </div>
 
+<!-- trick Sapper into generating example JSON files -->
+<!-- TODO use a <link> to do this instead! -->
+{#each examples as example}
+	<a hidden href="api/examples/{example.id}.json">{example.title}</a>
+{/each}
+
 <style>
 	.repl {
 		height: calc(100% - 3.6em);
@@ -122,10 +128,10 @@
 				}
 			}
 
-			const example = saved ? Promise.resolve(saved) : this.fetch(`api/examples/00`).then(r => r.json());
+			const example = saved ? Promise.resolve(saved) : this.fetch(`api/examples/00.json`).then(r => r.json());
 
 			return Promise.all([
-				this.fetch(`api/examples`).then(r => r.json()),
+				this.fetch(`api/examples.json`).then(r => r.json()),
 				example
 			]).then(([examples, example]) => {
 				return {
@@ -162,7 +168,7 @@
 			this.observe( 'selectedExample', id => {
 				if ( !id ) return;
 
-				fetch(`api/examples/${id}`).then(r => r.json()).then(example => {
+				fetch(`api/examples/${id}.json`).then(r => r.json()).then(example => {
 					settingModulesViaExample = true;
 					this.set({ modules: example.modules });
 					settingModulesViaExample = false;
