@@ -1,5 +1,5 @@
 <div class='layout'>
-	<Nav segment={child.segment}/>
+	<Nav page={child.segment === 'repl' ? 'repl' : 'guide'}/>
 	<svelte:component this={child.component} {...child.props}/>
 </div>
 

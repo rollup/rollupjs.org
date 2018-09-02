@@ -1,19 +1,17 @@
-<Layout page='repl'>
-	<div class='repl'>
-		<div class='left'>
-			<h2>ES6 modules go in...</h2>
-			<div class='input'>
-				<Input {examples} bind:selectedExample bind:modules/>
-			</div>
-		</div>
-		<div class='right'>
-			<h2>...bundle comes out</h2>
-			<div class='output'>
-				<Output bind:options {code} {error} {warnings} {imports} {exports}/>
-			</div>
+<div class='repl'>
+	<div class='left'>
+		<h2>ES6 modules go in...</h2>
+		<div class='input'>
+			<Input {examples} bind:selectedExample bind:modules/>
 		</div>
 	</div>
-</Layout>
+	<div class='right'>
+		<h2>...bundle comes out</h2>
+		<div class='output'>
+			<Output bind:options {code} {error} {warnings} {imports} {exports}/>
+		</div>
+	</div>
+</div>
 
 <style>
 	.repl {
@@ -78,7 +76,6 @@
 
 <script>
 	import { observe } from 'svelte-extras';
-	import Layout from '../_components/Layout.html';
 	import Input from './_Input/index.html';
 	import Output from './_Output/index.html';
 	import debounce from './_utils/debounce.js';
@@ -106,7 +103,6 @@
 
 	export default {
 		components: {
-			Layout,
 			Input,
 			Output
 		},

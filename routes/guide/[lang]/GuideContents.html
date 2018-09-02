@@ -74,8 +74,14 @@
 
 <script>
 	export default {
+		data() {
+			return {
+				active: null
+			};
+		},
+
 		computed: {
-			base: ({ lang }) => `/guide/${lang}`
+			base: ({ lang }) => `guide/${lang}`
 		},
 
 		oncreate() {
