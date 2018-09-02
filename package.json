@@ -3,31 +3,39 @@
   "author": "Rich Harris",
   "version": "0.1.0",
   "devDependencies": {
+    "@babel/core": "^7.0.0",
+    "@babel/plugin-syntax-dynamic-import": "^7.0.0",
+    "@babel/plugin-transform-runtime": "^7.0.0",
+    "@babel/preset-env": "^7.0.0",
+    "chokidar": "^2.0.4",
     "console-group": "^0.3.3",
-    "css-loader": "^0.28.10",
     "extract-text-webpack-plugin": "^3.0.2",
     "highlight.js": "^9.12.0",
     "markdownlint-cli": "^0.12.0",
     "marked": "^0.3.17",
-    "now": "^9.0.1",
+    "now": "^11.4.1",
+    "rollup": "^0.65.0",
+    "rollup-plugin-babel": "^4.0.2",
+    "rollup-plugin-commonjs": "^9.1.6",
+    "rollup-plugin-node-resolve": "^3.3.0",
+    "rollup-plugin-replace": "^2.0.0",
+    "rollup-plugin-svelte": "^4.3.0",
+    "rollup-plugin-terser": "^2.0.2",
     "sander": "^0.6.0",
-    "style-loader": "^0.20.1",
-    "svelte": "^1.54.0",
-    "svelte-loader": "2.3.3",
-    "uglifyjs-webpack-plugin": "^1.1.8",
-    "webpack": "^3.10.0"
+    "svelte": "^2.13.2",
+    "uglifyjs-webpack-plugin": "^1.1.8"
   },
   "scripts": {
-    "dev": "node server.js",
-    "build": "sapper build",
+    "dev": "sapper dev",
+    "build": "sapper export --legacy",
     "test": "npm run lint",
     "start": "cross-env NODE_ENV=production node server.js",
     "lint": "markdownlint --config markdownlint.json guide/en/**/*.md",
     "update_overview": "node scripts/update_overview",
     "clean": "rm -rf client/dist && rm -rf server/dist && rm -rf service-worker/dist && mkdir -p client/dist && mkdir -p server/dist && mkdir -p service-worker/dist",
     "stage": "now",
-    "deploy": "npm run test && now && now alias",
-    "deploy:ci": "npm run test && now --token $NOW_TOKEN && now alias --token $NOW_TOKEN"
+    "deploy": "npm run test && (cd export && now . && now alias)",
+    "deploy:ci": "npm run test && (cd export && now . --token $NOW_TOKEN && now alias --token $NOW_TOKEN)"
   },
   "dependencies": {
     "codemirror": "^5.35.0",
@@ -35,8 +43,10 @@
     "cross-env": "^5.1.1",
     "express": "^4.16.2",
     "node-fetch": "^1.7.3",
-    "sapper": "^0.6.2",
-    "serve-static": "^1.13.2"
+    "polka": "^0.4.0",
+    "sapper": "^0.19.0",
+    "serve-static": "^1.13.2",
+    "sirv": "^0.2.1"
   },
   "now": {
     "alias": "rollupjs.org",

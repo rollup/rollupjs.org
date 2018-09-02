@@ -1,41 +1,41 @@
 <div class='options'>
 	<section class='clearfix'>
 		<h3>options.format</h3>
-		{{#each formats as format, i}}
+		{#each formats as format, i}
 			<button
-				class='{{format.value === options.format ? "selected": ""}}'
+				class='{format.value === options.format ? "selected": ""}'
 				on:click='set({ format: format.value })'
-			>{{format.name}}</button>
-		{{/each}}
+			>{format.name}</button>
+		{/each}
 	</section>
 
-	{{#if options.format === 'amd' || options.format === 'umd'}}
+	{#if options.format === 'amd' || options.format === 'umd'}
 		<section intro-outro='slide:fast'>
 			<h3>options.amd.id</h3>
 			<input bind:value='amd.id' placeholder='leave blank for anonymous module'>
 		</section>
-	{{/if}}
+	{/if}
 
-	{{#if options.format === 'iife' || options.format === 'umd'}}
-		{{#if exports.length}}
+	{#if options.format === 'iife' || options.format === 'umd'}
+		{#if exports.length}
 			<section intro-outro='slide:fast'>
 				<h3>options.name</h3>
 				<input bind:value='name'>
 			</section>
-		{{/if}}
+		{/if}
 
-		{{#if sortedImports.length}}
+		{#if sortedImports.length}
 			<section>
 				<h3 intro-outro='slide:fast'>options.globals</h3>
-				{{#each sortedImports as x @name}}
+				{#each sortedImports as x (x.name)}
 					<div intro-outro='slide:fast'>
-						<input value='{{x.value}}'>
-						<code>'{{x.name}}'</code>
+						<input value='{x.value}'>
+						<code>'{x.name}'</code>
 					</div>
-				{{/each}}
+				{/each}
 			</section>
-		{{/if}}
-	{{/if}}
+		{/if}
+	{/if}
 </div>
 
 <style>

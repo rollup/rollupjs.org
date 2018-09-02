@@ -1,18 +1,18 @@
 <header class='start-here clearfix'>
 	<select bind:value='selectedExample'>
-		<option disabled selected value='{{null}}'>Select an example...</option>
-		{{#each examples as example}}
-			<option value='{{example.id}}'>{{example.title}}</option>
-		{{/each}}
+		<option disabled selected value='{null}'>Select an example...</option>
+		{#each examples as example}
+			<option value='{example.id}'>{example.title}</option>
+		{/each}
 	</select>
 
 	<button class='start-over' on:click='clear()'>Start over</button>
 </header>
 
 <div ref:modules class='modules'>
-	{{#each modules as module, i}}
-		<Module bind:name='module.name' bind:code='module.code' index='{{i}}' main='{{i===0}}' on:remove='removeModule(i)'/>
-	{{/each}}
+	{#each modules as module, i}
+		<Module bind:name='module.name' bind:code='module.code' index='{i}' main='{i===0}' on:remove='removeModule(i)'/>
+	{/each}
 </div>
 
 <button class='new-module' on:click='createModule()'><span class='icon icon-plus'></span> add module</button>

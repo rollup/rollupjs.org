@@ -3,13 +3,13 @@
 		<div class='left'>
 			<h2>ES6 modules go in...</h2>
 			<div class='input'>
-				<Input :examples bind:selectedExample bind:modules/>
+				<Input {examples} bind:selectedExample bind:modules/>
 			</div>
 		</div>
 		<div class='right'>
 			<h2>...bundle comes out</h2>
 			<div class='output'>
-				<Output bind:options :code :error :warnings :imports :exports/>
+				<Output bind:options {code} {error} {warnings} {imports} {exports}/>
 			</div>
 		</div>
 	</div>
@@ -111,10 +111,10 @@
 				}
 			}
 
-			const example = saved ? Promise.resolve(saved) : fetch(`/api/examples/00`).then(r => r.json());
+			const example = saved ? Promise.resolve(saved) : this.fetch(`api/examples/00`).then(r => r.json());
 
 			return Promise.all([
-				fetch(`/api/examples`).then(r => r.json()),
+				this.fetch(`api/examples`).then(r => r.json()),
 				example
 			]).then(([examples, example]) => {
 				return {

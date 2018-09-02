@@ -4,16 +4,16 @@
 			<strong>rollup.js</strong>
 		</div>
 
-		{{#each sections as section}}
-			<section id='{{section.slug}}'>
-				<h2>{{section.metadata.title}}</h2>
-				{{{section.html}}}
+		{#each sections as section}
+			<section id='{section.slug}'>
+				<h2>{section.metadata.title}</h2>
+				{@html section.html}
 			</section>
-		{{/each}}
+		{/each}
 	</div>
 
 	<div class='sidebar'>
-		<GuideContents ref:contents :sections lang='{{params.lang}}'/>
+		<GuideContents ref:contents {sections} lang='{params.lang}'/>
 	</div>
 </Layout>
 
@@ -224,7 +224,7 @@
 
 	export default {
 		preload({ params }) {
-			return fetch(`/api/guide/${params.lang}`).then(r => r.json()).then(sections => {
+			return this.fetch(`guide/${params.lang}.json`).then(r => r.json()).then(sections => {
 				return { sections };
 			});
 		},

@@ -1,19 +1,19 @@
-<div class='status {{error ? "error": "success"}}'>
-	{{#if error}}
+<div class='status {error ? "error": "success"}'>
+	{#if error}
 		<span>
 			<span class='icon icon-error'></span>
-			<strong>{{error.name}}:</strong> {{error.message}}
+			<strong>{error.name}:</strong> {error.message}
 		</span>
-	{{else}}
+	{:else}
 		<span>
 			<span class='icon icon-ok'></span>
 			Rollup successful!
 
-			{{#if warnings.length}}
-				({{warnings.length}} {{warnings.length === 1 ? 'warning' : 'warnings'}} — check the console)
-			{{/if}}
+			{#if warnings.length}
+				({warnings.length} {warnings.length === 1 ? 'warning' : 'warnings'} — check the console)
+			{/if}
 		</span>
-	{{/if}}
+	{/if}
 </div>
 
 <style>
