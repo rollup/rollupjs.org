@@ -45,9 +45,11 @@
 </style>
 
 <script>
+	import { observe } from 'svelte-extras';
+
 	export default {
 		oncreate () {
-			import('./codemirror.js').then(CodeMirror => {
+			import('./codemirror.js').then(({ default: CodeMirror }) => {
 				let updating = false;
 
 				this.editor = CodeMirror.fromTextArea( this.refs.editor, {
@@ -94,6 +96,9 @@
 		},
 
 		methods: {
+			// TODO this is temporary
+			observe,
+
 			resize () {
 				this.editor.refresh();
 			}

@@ -77,6 +77,7 @@
 </style>
 
 <script>
+	import { observe } from 'svelte-extras';
 	import Layout from '../_components/Layout.html';
 	import Input from './_Input/index.html';
 	import Output from './_Output/index.html';
@@ -87,7 +88,20 @@
 
 	const atob = typeof window !== 'undefined' ?
 		window.atob :
-		base64 => new Buffer(base64, 'base64').toString();
+		base64 => Buffer.from(base64, 'base64').toString();
+
+	function loadRollup(url) {
+		// TODO expose an ESM build of rollup.browser.js, so we
+		// can just use import()
+		return new Promise((fulfil, reject) => {
+			const script = document.createElement('script');
+			script.src = url;
+			script.onload = () => {
+				fulfil(window.rollup);
+			};
+			script.onerror = reject;
+		});
+	}
 
 	export default {
 		components: {
@@ -158,7 +172,7 @@
 				});
 			});
 
-			curl([ url ])
+			loadRollup(url)
 				.then( rollup => {
 					window.rollup = rollup;
 					this.set({ rollupReady: true });
@@ -264,6 +278,9 @@
 		},
 
 		methods: {
+			// TODO this is temporary
+			observe,
+
 			updateUrl () {
 				if ( typeof history === 'undefined' ) return;
 

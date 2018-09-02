@@ -107,7 +107,7 @@
 				node.addEventListener('keydown', handleKeydown);
 
 				return {
-					teardown: () => {
+					destroy: () => {
 						node.removeEventListener('keydown', handleKeydown);
 					}
 				};

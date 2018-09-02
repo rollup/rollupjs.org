@@ -94,6 +94,8 @@
 </style>
 
 <script>
+	import { observe } from 'svelte-extras';
+
 	const defaultGlobals = {
 		jquery: 'jQuery'
 	};
@@ -194,6 +196,11 @@
 				this.set({ options });
 			});
 		},
+
+		methods: {
+			// TODO this is temporary
+			observe
+		}
 
 		// TODO reinstate slide transitions on option boxes
 		// transitions: { slide }

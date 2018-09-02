@@ -23,6 +23,7 @@
     "rollup-plugin-terser": "^2.0.2",
     "sander": "^0.6.0",
     "svelte": "^2.13.2",
+    "svelte-extras": "^2.0.2",
     "uglifyjs-webpack-plugin": "^1.1.8"
   },
   "scripts": {
