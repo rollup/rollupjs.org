@@ -4,7 +4,7 @@
 		{#each formats as format, i}
 			<button
 				class='{format.value === options.format ? "selected": ""}'
-				on:click='set({ format: format.value })'
+				on:click='setFormat(format.value)'
 			>{format.name}</button>
 		{/each}
 	</section>
@@ -12,7 +12,7 @@
 	{#if options.format === 'amd' || options.format === 'umd'}
 		<section>
 			<h3>options.amd.id</h3>
-			<input bind:value='amd.id' placeholder='leave blank for anonymous module'>
+			<input bind:value='options.amd.id' placeholder='leave blank for anonymous module'>
 		</section>
 	{/if}
 
@@ -20,7 +20,7 @@
 		{#if exports.length}
 			<section>
 				<h3>options.name</h3>
-				<input bind:value='name'>
+				<input bind:value='options.name'>
 			</section>
 		{/if}
 
@@ -29,7 +29,7 @@
 				<h3>options.globals</h3>
 				{#each sortedImports as x (x.name)}
 					<div>
-						<input value='{x.value}'>
+						<input bind:value='options.globals[x.name]'>
 						<code>'{x.name}'</code>
 					</div>
 				{/each}
@@ -89,8 +89,6 @@
 </style>
 
 <script>
-	import { observe } from 'svelte-extras';
-
 	const defaultGlobals = {
 		jquery: 'jQuery'
 	};
@@ -108,93 +106,43 @@
 				{ name: 'system', value: 'system' }
 			],
 
-			format: 'amd',
-			name: 'myBundle',
-			amd: {
-				id: ''
+			options: {
+				format: 'amd',
+				name: 'myBundle',
+				amd: {
+					id: ''
+				}
 			},
 
+			imports: [],
 			exports: [],
 			sortedImports: []
 		}),
 
-		oncreate() {
-			let options;
-			let updating;
-
-			this.observe('options', o => {
-				this.set(options = o);
-			});
-
-			this.observe('imports', imports => {
-				if (!imports) return;
-
+		computed: {
+			sortedImports: ({ imports, options }) => {
 				// we only care about this stuff in IIFE/UMD mode...
 				// cheeky hack to clean `options.globals`
-				const { options } = this.get();
 				const { format } = options;
-				if (format !== 'iife' && format !== 'umd') imports = [];
+				if (format !== 'iife' && format !== 'umd') return [];
 
-				const sortedImports = imports
-					.sort((a, b) => {
-						return a < b ? -1 : 1;
-					})
+				return imports
+					.sort((a, b) => a < b ? -1 : 1)
 					.map(name => {
 						return {
 							name,
 							value: userGlobals[name] || defaultGlobals[name] || name
 						};
 					});
-
-				let globals = {};
-				sortedImports.forEach(({ name, value }) => {
-					globals[name] = userGlobals[name] = value;
-				});
-
-				updating = true;
-				this.set({ sortedImports });
-
-				options.globals = globals;
-				this.set({ options });
-
-				updating = false;
-			});
-
-			this.observe('sortedImports', sortedImports => {
-				if (updating) return;
-
-				updating = true;
-				let globals = {};
-				sortedImports.forEach(({ name, value }) => {
-					globals[name] = userGlobals[name] = value;
-				});
-
-				const { options } = this.get();
-				options.globals = globals;
-				this.set({ options });
-				updating = false;
-			});
-
-			// two-way binding
-			this.observe('format', format => {
-				options.format = format;
-				this.set({ options });
-			});
-
-			this.observe('name', name => {
-				options.name = name;
-				this.set({ options });
-			});
-
-			this.observe('amd', amd => {
-				options.amd = amd;
-				this.set({ options });
-			});
+			}
 		},
 
 		methods: {
-			// TODO this is temporary
-			observe
+			setFormat(format) {
+				const { options } = this.get();
+				options.format = format;
+				this.set({ options });
+			}
 		}
 	};
 </script>
