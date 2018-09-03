@@ -81,7 +81,6 @@
 </style>
 
 <script>
-	import { observe } from 'svelte-extras';
 	import Input from './_Input/index.html';
 	import Output from './_Output/index.html';
 	import debounce from './_utils/debounce.js';
@@ -158,131 +157,129 @@
 			};
 		},
 
-		oncreate () {
+		async oncreate () {
 			const url = versionMatch ?
 				'https://unpkg.com/rollup@' + versionMatch[1] + '/dist/rollup.browser.js' :
 				'https://unpkg.com/rollup/dist/rollup.browser.js';
 
-			let settingModulesViaExample = false;
+			this.settingModulesViaExample = false;
+			this.updating = false;
 
-			this.observe( 'selectedExample', id => {
-				if ( !id ) return;
+			// TODO instead of debouncing, we should bundle in a worker
+			this.debouncedBundle = debounce(() => this.bundle(), 100);
 
-				fetch(`api/examples/${id}.json`).then(r => r.json()).then(example => {
-					settingModulesViaExample = true;
+			const rollup = await loadRollup(url);
+			this.set({ rollupReady: true });
+			this.bundle();
+		},
+
+		onstate({ changed, current }) {
+			if (changed.selectedExample && current.selectedExample) {
+				fetch(`api/examples/${current.selectedExample}.json`).then(r => r.json()).then(example => {
+					this.settingModulesViaExample = true;
 					this.set({ modules: example.modules });
-					settingModulesViaExample = false;
+					this.settingModulesViaExample = false;
 				});
-			});
+			}
 
-			loadRollup(url)
-				.then( rollup => {
-					window.rollup = rollup;
-					this.set({ rollupReady: true });
+			if (current.rollupReady) {
+				if (changed.modules) {
+					if (this.settingModulesViaExample) {
+						this.bundle();
+					} else {
+						this.set({ selectedExample: null });
+						this.debouncedBundle();
+					}
+				}
 
-					let updating = false;
-
-					const update = () => {
-						const { modules } = this.get();
-
-						if ( updating ) return; // TODO this is inelegant...
-						updating = true;
-
-						console.clear();
-						console.log( `running Rollup version %c${rollup.VERSION}`, 'font-weight: bold' );
-						this.updateUrl();
-
-						let moduleById = {};
-
-						modules.forEach( module => {
-							moduleById[ module.name ] = module;
-						});
-
-						const warnings = [];
-
-						/*global rollup */
-						rollup.rollup({
-							input: 'main.js',
-							entry: 'main.js', // for older versions
-							plugins: [{
-								resolveId ( importee, importer ) {
-									if ( !importer ) return importee;
-									if ( importee[0] !== '.' ) return false;
-
-									let resolved = resolve( dirname( importer ), importee ).replace( /^\.\//, '' );
-									if ( resolved in moduleById ) return resolved;
-
-									resolved += '.js';
-									if ( resolved in moduleById ) return resolved;
-
-									throw new Error( `Could not resolve '${importee}' from '${importer}'` );
-								},
-								load: function ( id ) {
-									return moduleById[ id ].code;
-								}
-							}],
-							onwarn ( warning ) {
-								warnings.push( warning );
-
-								console.group( warning.loc ? warning.loc.file : '' );
-
-								console.warn( warning.message );
-
-								if ( warning.frame ) {
-									console.log( warning.frame );
-								}
-
-								if ( warning.url ) {
-									console.log( `See ${warning.url} for more information` );
-								}
-
-								console.groupEnd();
-							}
-						}).then( bundle => {
-							this.set({
-								imports: bundle.imports,
-								exports: bundle.exports
-							});
-
-							const { options } = this.get();
-							return bundle.generate(options);
-						})
-						.then( generated => {
-							this.set({
-								code: generated.code,
-								error: null,
-								warnings
-							});
-						})
-						.catch( error => {
-							this.set({ error });
-							if ( error.frame ) console.log( error.frame );
-							setTimeout( () => {
-								throw error;
-							});
-						})
-						.then( () => {
-							updating = false;
-						});
-					};
-
-					const debouncedUpdate = debounce( update, 100 );
-
-					this.observe( 'modules', () => {
-						if ( settingModulesViaExample ) {
-							update();
-						} else {
-							this.set({ selectedExample: null }); // TODO this doesn't update the UI — why? Svelte bug?
-							debouncedUpdate();
-						}
-					});
-					this.observe( 'options', update );
-				});
+				if (changed.options) this.bundle();
+			}
 		},
 
 		methods: {
-			// TODO this is temporary
-			observe,
+			async bundle() {
+				if (!window.rollup) return;
+
+				const { modules } = this.get();
+
+				if (this.updating) return; // TODO this is inelegant...
+				this.updating = true;
+
+				console.clear();
+				console.log(`running Rollup version %c${window.rollup.VERSION}`, 'font-weight: bold');
+				this.updateUrl();
+
+				let moduleById = {};
+
+				modules.forEach(module => {
+					moduleById[module.name] = module;
+				});
+
+				const warnings = [];
+
+				try {
+					const bundle = await rollup.rollup({
+						input: 'main.js',
+						entry: 'main.js', // for older versions
+						plugins: [{
+							resolveId ( importee, importer ) {
+								if ( !importer ) return importee;
+								if ( importee[0] !== '.' ) return false;
+
+								let resolved = resolve( dirname( importer ), importee ).replace( /^\.\//, '' );
+								if ( resolved in moduleById ) return resolved;
+
+								resolved += '.js';
+								if ( resolved in moduleById ) return resolved;
+
+								throw new Error( `Could not resolve '${importee}' from '${importer}'` );
+							},
+							load: function ( id ) {
+								return moduleById[ id ].code;
+							}
+						}],
+						onwarn ( warning ) {
+							warnings.push( warning );
+
+							console.group( warning.loc ? warning.loc.file : '' );
+
+							console.warn( warning.message );
+
+							if ( warning.frame ) {
+								console.log( warning.frame );
+							}
+
+							if ( warning.url ) {
+								console.log( `See ${warning.url} for more information` );
+							}
+
+							console.groupEnd();
+						}
+					});
+
+					this.set({
+						imports: bundle.imports,
+						exports: bundle.exports
+					});
+
+					const { options } = this.get();
+					const generated = await bundle.generate(options);
+
+					this.set({
+						code: generated.code,
+						error: null,
+						warnings
+					});
+				} catch(error) {
+					this.set({ error });
+					if ( error.frame ) console.log( error.frame );
+					setTimeout( () => {
+						throw error;
+					});
+				}
+
+				this.updating = false;
+			},
 
 			updateUrl () {
 				if ( typeof history === 'undefined' ) return;
