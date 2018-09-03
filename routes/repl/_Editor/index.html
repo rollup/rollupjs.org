@@ -45,16 +45,14 @@
 </style>
 
 <script>
-	import { observe } from 'svelte-extras';
-
 	export default {
-		oncreate () {
+		oncreate() {
 			import('./codemirror.js').then(({ default: CodeMirror }) => {
 				let updating = false;
 
 				const { code, readonly } = this.get();
 
-				this.editor = CodeMirror.fromTextArea( this.refs.editor, {
+				this.editor = CodeMirror.fromTextArea(this.refs.editor, {
 					lineNumbers: true,
 					lineWrapping: true,
 					indentWithTabs: true,
@@ -67,41 +65,40 @@
 
 				// TODO this is a bug. oncreate should only be called once
 				// the component is actually in the DOM
-				setTimeout( () => {
+				setTimeout(() => {
 					this.editor.refresh();
 				});
 
-				setTimeout( () => {
+				setTimeout(() => {
 					this.editor.refresh();
 				}, 100);
 
-				this.editor.on( 'change', instance => {
-					if ( !updating ) {
+				this.editor.on('change', instance => {
+					if (!updating) {
 						updating = true;
 						this.set({ code: instance.getValue() });
 						updating = false;
 					}
 				});
 
-				this.observe( 'code', code => {
-					if ( !updating && code != null ) {
+				this.on('state', ({ changed, current }) => {
+					if (changed.code && !updating && current.code !== null) {
 						updating = true;
-						this.editor.setValue( code );
+						this.editor.setValue(current.code);
 						updating = false;
 					}
 				});
 
-				this.on( 'destroy', () => {
+				this.on('destroy', () => {
 					this.editor.toTextArea();
 				});
+
+				this.editor.setValue(code);
 			});
 		},
 
 		methods: {
-			// TODO this is temporary
-			observe,
-
-			resize () {
+			resize() {
 				this.editor.refresh();
 			}
 		}
