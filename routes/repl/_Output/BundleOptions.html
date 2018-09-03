@@ -10,7 +10,7 @@
 	</section>
 
 	{#if options.format === 'amd' || options.format === 'umd'}
-		<section intro-outro='slide:fast'>
+		<section>
 			<h3>options.amd.id</h3>
 			<input bind:value='amd.id' placeholder='leave blank for anonymous module'>
 		</section>
@@ -18,7 +18,7 @@
 
 	{#if options.format === 'iife' || options.format === 'umd'}
 		{#if exports.length}
-			<section intro-outro='slide:fast'>
+			<section>
 				<h3>options.name</h3>
 				<input bind:value='name'>
 			</section>
@@ -26,9 +26,9 @@
 
 		{#if sortedImports.length}
 			<section>
-				<h3 intro-outro='slide:fast'>options.globals</h3>
+				<h3>options.globals</h3>
 				{#each sortedImports as x (x.name)}
-					<div intro-outro='slide:fast'>
+					<div>
 						<input value='{x.value}'>
 						<code>'{x.name}'</code>
 					</div>
@@ -196,8 +196,5 @@
 			// TODO this is temporary
 			observe
 		}
-
-		// TODO reinstate slide transitions on option boxes
-		// transitions: { slide }
 	};
 </script>
