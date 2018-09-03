@@ -9,7 +9,6 @@
     "@babel/preset-env": "^7.0.0",
     "chokidar": "^2.0.4",
     "console-group": "^0.3.3",
-    "extract-text-webpack-plugin": "^3.0.2",
     "highlight.js": "^9.12.0",
     "markdownlint-cli": "^0.12.0",
     "marked": "^0.3.17",
@@ -23,8 +22,7 @@
     "rollup-plugin-terser": "^2.0.2",
     "sander": "^0.6.0",
     "svelte": "^2.13.2",
-    "svelte-extras": "^2.0.2",
-    "uglifyjs-webpack-plugin": "^1.1.8"
+    "svelte-extras": "^2.0.2"
   },
   "scripts": {
     "dev": "sapper dev",
@@ -43,23 +41,8 @@
     "codemirror": "^5.35.0",
     "compression": "^1.7.2",
     "cross-env": "^5.1.1",
-    "express": "^4.16.2",
-    "node-fetch": "^1.7.3",
     "polka": "^0.4.0",
     "sapper": "^0.19.0",
-    "serve-static": "^1.13.2",
     "sirv": "^0.2.1"
-  },
-  "now": {
-    "alias": "rollupjs.org",
-    "files": [
-      "examples",
-      "guide",
-      "assets",
-      "routes",
-      "templates",
-      "server.js",
-      "webpack.*.config.js"
-    ]
   }
 }
