@@ -21,8 +21,7 @@
     "rollup-plugin-svelte": "^4.3.0",
     "rollup-plugin-terser": "^2.0.2",
     "sander": "^0.6.0",
-    "svelte": "^2.13.2",
-    "svelte-extras": "^2.0.2"
+    "svelte": "^2.13.2"
   },
   "scripts": {
     "dev": "sapper dev",
