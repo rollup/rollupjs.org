@@ -1,4 +1,10 @@
 {
 	"name": "rollupjs.org",
-	"alias": "rollupjs.org"
+	"alias": "rollupjs.org",
+	"dependencies": {
+		"serve": "*"
+	},
+	"scripts": {
+		"start": "serve ."
+	}
 }
