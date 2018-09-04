@@ -1,17 +1,17 @@
 <ul class='guide-toc'>
-	{{#each sections as section}}
+	{#each sections as section}
 		<li>
-			<a class='section {{section.slug === active ? "active": ""}}' href='{{base}}#{{section.slug}}'>{{section.metadata.title}}</a>
+			<a class='section {section.slug === active ? "active": ""}' href='{base}#{section.slug}'>{section.metadata.title}</a>
 
 			<ul class='subsections'>
-				{{#each section.subsections as subsection}}
+				{#each section.subsections as subsection}
 					<li>
-						<a class='subsection {{subsection.slug === active ? "active": ""}}' href='{{base}}#{{subsection.slug}}'>{{subsection.title}}</a>
+						<a class='subsection {subsection.slug === active ? "active": ""}' href='{base}#{subsection.slug}'>{subsection.title}</a>
 					</li>
-				{{/each}}
+				{/each}
 			</ul>
 		</li>
-	{{/each}}
+	{/each}
 </ul>
 
 <style>
@@ -74,8 +74,14 @@
 
 <script>
 	export default {
+		data() {
+			return {
+				active: null
+			};
+		},
+
 		computed: {
-			base: lang => `/guide/${lang}`
+			base: ({ lang }) => `guide/${lang}`
 		},
 
 		oncreate() {
@@ -84,7 +90,7 @@
 			};
 
 			window.addEventListener('hashchange', onhashchange, false);
-			this.on('teardown', () => {
+			this.on('destroy', () => {
 				window.removeEventListener('hashchange', onhashchange, false);
 			});
 

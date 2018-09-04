@@ -9,7 +9,7 @@ export function get(req, res, next) {
 	const { id } = req.params;
 
 	if (id in lookup) {
-		res.set({
+		res.writeHead(200, {
 			'Content-Type': 'application/json',
 			'Cache-Control': `max-age=${30 * 60 * 1e3}` // 30 minutes
 		});

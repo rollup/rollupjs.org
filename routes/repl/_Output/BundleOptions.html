@@ -1,41 +1,41 @@
 <div class='options'>
 	<section class='clearfix'>
 		<h3>options.format</h3>
-		{{#each formats as format, i}}
+		{#each formats as format, i}
 			<button
-				class='{{format.value === options.format ? "selected": ""}}'
-				on:click='set({ format: format.value })'
-			>{{format.name}}</button>
-		{{/each}}
+				class='{format.value === options.format ? "selected": ""}'
+				on:click='setFormat(format.value)'
+			>{format.name}</button>
+		{/each}
 	</section>
 
-	{{#if options.format === 'amd' || options.format === 'umd'}}
-		<section intro-outro='slide:fast'>
+	{#if options.format === 'amd' || options.format === 'umd'}
+		<section>
 			<h3>options.amd.id</h3>
-			<input bind:value='amd.id' placeholder='leave blank for anonymous module'>
+			<input bind:value='options.amd.id' placeholder='leave blank for anonymous module'>
 		</section>
-	{{/if}}
+	{/if}
 
-	{{#if options.format === 'iife' || options.format === 'umd'}}
-		{{#if exports.length}}
-			<section intro-outro='slide:fast'>
-				<h3>options.name</h3>
-				<input bind:value='name'>
-			</section>
-		{{/if}}
-
-		{{#if sortedImports.length}}
+	{#if options.format === 'iife' || options.format === 'umd'}
+		{#if exports.length}
 			<section>
-				<h3 intro-outro='slide:fast'>options.globals</h3>
-				{{#each sortedImports as x @name}}
-					<div intro-outro='slide:fast'>
-						<input value='{{x.value}}'>
-						<code>'{{x.name}}'</code>
-					</div>
-				{{/each}}
+				<h3>options.name</h3>
+				<input bind:value='options.name'>
 			</section>
-		{{/if}}
-	{{/if}}
+		{/if}
+
+		{#if sortedImports.length}
+			<section>
+				<h3>options.globals</h3>
+				{#each sortedImports as x (x.name)}
+					<div>
+						<input bind:value='options.globals[x.name]'>
+						<code>'{x.name}'</code>
+					</div>
+				{/each}
+			</section>
+		{/if}
+	{/if}
 </div>
 
 <style>
@@ -74,11 +74,6 @@
 		font-weight: 700;
 	}
 
-	label {
-		display: block;
-		padding: 0 0 0 8em;
-	}
-
 	input {
 		padding-left: 1.5em;
 	}
@@ -111,91 +106,43 @@
 				{ name: 'system', value: 'system' }
 			],
 
-			format: 'amd',
-			name: 'myBundle',
-			amd: {
-				id: ''
+			options: {
+				format: 'amd',
+				name: 'myBundle',
+				amd: {
+					id: ''
+				}
 			},
 
+			imports: [],
 			exports: [],
 			sortedImports: []
 		}),
 
-		oncreate() {
-			let options;
-			let updating;
-
-			this.observe('options', o => {
-				this.set(options = o);
-			});
-
-			this.observe('imports', imports => {
-				if (!imports) return;
-
+		computed: {
+			sortedImports: ({ imports, options }) => {
 				// we only care about this stuff in IIFE/UMD mode...
 				// cheeky hack to clean `options.globals`
-				const { format } = this.get('options');
-				if (format !== 'iife' && format !== 'umd') imports = [];
+				const { format } = options;
+				if (format !== 'iife' && format !== 'umd') return [];
 
-				const sortedImports = imports
-					.sort((a, b) => {
-						return a < b ? -1 : 1;
-					})
+				return imports
+					.sort((a, b) => a < b ? -1 : 1)
 					.map(name => {
 						return {
 							name,
 							value: userGlobals[name] || defaultGlobals[name] || name
 						};
 					});
-
-				let globals = {};
-				sortedImports.forEach(({ name, value }) => {
-					globals[name] = userGlobals[name] = value;
-				});
-
-				updating = true;
-				this.set({ sortedImports });
-
-				const options = this.get('options');
-				options.globals = globals;
-				this.set({ options });
-
-				updating = false;
-			});
-
-			this.observe('sortedImports', sortedImports => {
-				if (updating) return;
-
-				updating = true;
-				let globals = {};
-				sortedImports.forEach(({ name, value }) => {
-					globals[name] = userGlobals[name] = value;
-				});
-
-				const options = this.get('options');
-				options.globals = globals;
-				this.set({ options });
-				updating = false;
-			});
-
-			// two-way binding
-			this.observe('format', format => {
-				options.format = format;
-				this.set({ options });
-			});
-
-			this.observe('name', name => {
-				options.name = name;
-				this.set({ options });
-			});
-
-			this.observe('amd', amd => {
-				options.amd = amd;
-				this.set({ options });
-			});
+			}
 		},
 
-		// TODO reinstate slide transitions on option boxes
-		// transitions: { slide }
+		methods: {
+			setFormat(format) {
+				const { options } = this.get();
+				options.format = format;
+				this.set({ options });
+			}
+		}
 	};
 </script>
