@@ -21,13 +21,14 @@
     "rollup-plugin-svelte": "^4.3.0",
     "rollup-plugin-terser": "^2.0.2",
     "sander": "^0.6.0",
+    "sirv-cli": "^0.2.1",
     "svelte": "^2.13.2"
   },
   "scripts": {
     "dev": "sapper dev",
     "build": "sapper export --legacy",
     "test": "npm run lint",
-    "start": "cross-env NODE_ENV=production node server.js",
+    "start": "sirv export",
     "lint": "markdownlint --config markdownlint.json guide/en/**/*.md",
     "update_overview": "node scripts/update_overview",
     "clean": "rm -rf client/dist && rm -rf server/dist && rm -rf service-worker/dist && mkdir -p client/dist && mkdir -p server/dist && mkdir -p service-worker/dist",
