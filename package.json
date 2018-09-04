@@ -32,6 +32,8 @@
     "update_overview": "node scripts/update_overview",
     "clean": "rm -rf client/dist && rm -rf server/dist && rm -rf service-worker/dist && mkdir -p client/dist && mkdir -p server/dist && mkdir -p service-worker/dist",
     "stage": "(cd export && now .)",
+    "predeploy": "npm run build",
+    "predeploy:ci": "npm run build",
     "deploy": "npm run test && (cd export && now . && now alias)",
     "deploy:ci": "npm run test && (cd export && now . --token $NOW_TOKEN && now alias --token $NOW_TOKEN)"
   },
