@@ -133,15 +133,18 @@
 				this.fetch(`api/examples.json`).then(r => r.json()),
 				example
 			]).then(([examples, example]) => {
+				const options = saved ? saved.options : {
+					format: 'cjs',
+					name: 'myBundle'
+				};
+				if (!options.amd) options.amd = { id: '' };
+
 				return {
 					examples,
 					saved,
 					selectedExample,
 					modules: example.modules,
-					options: saved ? saved.options : {
-						format: 'cjs',
-						name: 'myBundle'
-					}
+					options
 				};
 			});
 		},
