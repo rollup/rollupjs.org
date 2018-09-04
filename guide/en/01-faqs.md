@@ -18,14 +18,8 @@ Rollup strives to implement the specification for ES modules, not necessarily th
 
 There are two primary reasons:
 
-1. Philosophically, it's because Rollup is essentially a [polyfill](https://en.wikipedia.org/wiki/Polyfill_(programming)) of sorts for
-native module loaders in both Node and browsers. In a browser,`import foo from 'foo'`
-won't work, because browsers don't use Node's resolution algorithm.
-
-2. On a practical level, it's just much easier to develop software if these
-concerns are neatly separated out with a good API. Rollup's core is quite large,
-and everything that stops it getting larger is a good thing. Meanwhile, it's
-easier to fix bugs and add features.
+1. Philosophically, it's because Rollup is essentially a [polyfill](https://en.wikipedia.org/wiki/Polyfill_(programming)) of sorts for native module loaders in both Node and browsers. In a browser,`import foo from 'foo'` won't work, because browsers don't use Node's resolution algorithm.
+2. On a practical level, it's just much easier to develop software if these concerns are neatly separated out with a good API. Rollup's core is quite large, and everything that stops it getting larger is a good thing. Meanwhile, it's easier to fix bugs and add features.
 
 Please see [this issue](https://github.com/rollup/rollup/issues/1555#issuecomment-322862209)
 for a more verbose explanation.
