@@ -10,7 +10,7 @@ Rollup的配置文件是可选的，但是使用配置文件的作用很强大�
 
 配置文件是一个ES6模块，它对外暴露一个对象，这个对象包含了一些Rollup需要的一些选项。通常，我们把这个配置文件叫做`rollup.config.js`，它通常位于项目的根目录
 
-仔细查阅这个[包办大量选项的清单](#big-list-of-options)，你可以根据你自己的需要把它配置到你的配置文件中
+仔细查阅这个[包办大量选项的清单](guide/zh#big-list-of-options)，你可以根据你自己的需要把它配置到你的配置文件中
 
 ```javascript
 // rollup.config.js
@@ -71,7 +71,7 @@ $ rollup --config my.config.js
 
 ### 命令行的参数(Command line flags)
 
-配置文件中的许多选项和命令行的参数是等价的。如果你使用这里的参数，那么将重写配置文件。想了解更多的话，仔细查阅这个[包办大量选项的清单](#big-list-of-options)
+配置文件中的许多选项和命令行的参数是等价的。如果你使用这里的参数，那么将重写配置文件。想了解更多的话，仔细查阅这个[包办大量选项的清单](guide/zh#big-list-of-options)
 
 ```text
 -i, --input                 要打包的文件（必须）

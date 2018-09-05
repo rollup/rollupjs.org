@@ -24,7 +24,7 @@ module.exports = {
 
 It may be pertinent if you want to use the config file not only from the command line, but also from your custom scripts programmatically.
 
-Consult the [big list of options](#big-list-of-options) for details on each option you can include in your config file.
+Consult the [big list of options](guide/en#big-list-of-options) for details on each option you can include in your config file.
 
 ```javascript
 // rollup.config.js
@@ -171,7 +171,7 @@ If you now run `rollup --config --configDebug`, the debug configuration will be 
 
 ### Command line flags
 
-Many options have command line equivalents. Any arguments passed here will override the config file, if you're using one. See the [big list of options](#big-list-of-options) for details.
+Many options have command line equivalents. Any arguments passed here will override the config file, if you're using one. See the [big list of options](guide/en#big-list-of-options) for details.
 
 ```text
 -c, --config                Use this config file (if argument is used but value
