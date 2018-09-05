@@ -2,11 +2,15 @@
 title: JavaScript API
 ---
 
-Rollup provides a JavaScript API which is usable from Node.js. You will rarely need to use this, and should probably be using the command line API unless you are extending Rollup itself or using it for something esoteric, such as generating bundles programmatically.
+Rollup provides a JavaScript API which is usable from Node.js. You will rarely
+need to use this, and should probably be using the command line API unless you
+are extending Rollup itself or using it for something esoteric, such as
+generating bundles programmatically.
 
 ### rollup.rollup
 
-The `rollup.rollup` function returns a Promise that resolves to a `bundle` object with various properties and methods shown here:
+The `rollup.rollup` function returns a Promise that resolves to a `bundle`
+object with various properties and methods shown here:
 
 ```javascript
 const rollup = require('rollup');
@@ -36,7 +40,8 @@ build();
 
 #### inputOptions
 
-The `inputOptions` object can contain the following properties (see the [big list of options](#big-list-of-options) for full details on these):
+The `inputOptions` object can contain the following properties (see the
+  [big list of options](#big-list-of-options) for full details on these):
 
 ```js
 const inputOptions = {
@@ -68,7 +73,8 @@ const inputOptions = {
 
 #### outputOptions
 
-The `outputOptions` object can contain the following properties (see the [big list of options](#big-list-of-options) for full details on these):
+The `outputOptions` object can contain the following properties (see the
+[big list of options](#big-list-of-options) for full details on these):
 
 ```js
 const outputOptions = {
@@ -97,7 +103,7 @@ const outputOptions = {
   strict,
   freeze,
   namespaceToStringTag,
-  
+
   // experimental
   entryFileNames,
   chunkFileNames,
@@ -108,7 +114,9 @@ const outputOptions = {
 
 ### rollup.watch
 
-Rollup also provides a `rollup.watch` function that rebuilds your bundle when it detects that the individual modules have changed on disk. It is used internally when you run Rollup from the command line with the `--watch` flag.
+Rollup also provides a `rollup.watch` function that rebuilds your bundle when it
+detects that the individual modules have changed on disk. It is used internally
+when you run Rollup from the command line with the `--watch` flag.
 
 ```js
 const rollup = require('rollup');
@@ -132,7 +140,8 @@ watcher.close();
 
 #### watchOptions
 
-The `watchOptions` argument is a config (or an array of configs) that you would export from a config file.
+The `watchOptions` argument is a config (or an array of configs) that you would
+export from a config file.
 
 ```js
 const watchOptions = {
@@ -147,15 +156,20 @@ const watchOptions = {
 };
 ```
 
-See above for details on `inputOptions` and `outputOptions`, or consult the [big list of options](#big-list-of-options) for info on `chokidar`, `include` and `exclude`.
+See above for details on `inputOptions` and `outputOptions`, or consult the
+[big list of options](#big-list-of-options) for info on `chokidar`, `include`
+and `exclude`.
 
 
 ### TypeScript Declarations
 
-If you'd like to use the API in a TypeScript environment you can do so, as now we ship TypeScript declarations.
+If you'd like to use the API in a TypeScript environment you can do so, as now
+we ship TypeScript declarations.
 
-You need to install some dependencies in case you have [skipLibCheck](https://www.typescriptlang.org/docs/handbook/compiler-options.html) turned off.
+You need to install some dependencies in case you have
+[skipLibCheck](https://www.typescriptlang.org/docs/handbook/compiler-options.html)
+turned off.
 
-```bash
+```console
 npm install @types/acorn @types/chokidar source-map magic-string --only=dev
 ```
