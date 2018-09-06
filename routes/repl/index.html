@@ -149,6 +149,8 @@
 				} catch (err) {
 					this.set({ selectedExample: '00' });
 				}
+			} else {
+				this.set({ selectedExample: '00' });
 			}
 
 			const url = versionMatch ?
@@ -195,7 +197,7 @@
 
 				const { modules } = this.get();
 
-				if (this.updating) return; // TODO this is inelegant...
+				if (this.updating || !modules.length) return; // TODO this is inelegant...
 				this.updating = true;
 
 				console.clear();
