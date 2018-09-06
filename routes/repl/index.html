@@ -113,39 +113,8 @@
 		},
 
 		preload({ params, query }) {
-			let saved;
-			let selectedExample = null;
-
-			if (query.shareable) {
-				const json = decodeURIComponent(atob(query.shareable));
-
-				try {
-					saved = JSON.parse(json);
-					selectedExample = saved.example;
-				} catch (err) {
-					selectedExample = '00';
-				}
-			}
-
-			const example = saved ? Promise.resolve(saved) : this.fetch(`api/examples/00.json`).then(r => r.json());
-
-			return Promise.all([
-				this.fetch(`api/examples.json`).then(r => r.json()),
-				example
-			]).then(([examples, example]) => {
-				const options = saved ? saved.options : {
-					format: 'cjs',
-					name: 'myBundle'
-				};
-				if (!options.amd) options.amd = { id: '' };
-
-				return {
-					examples,
-					saved,
-					selectedExample,
-					modules: example.modules,
-					options
-				};
+			return this.fetch(`api/examples.json`).then(r => r.json()).then(examples => {
+				return { examples };
 			});
 		},
 
@@ -154,6 +123,14 @@
 				code: '',
 				rollupReady: false,
 
+				options: {
+					format: 'cjs',
+					name: 'myBundle',
+					amd: { id: '' }
+				},
+
+				selectedExample: null,
+				modules: [],
 				warnings: [],
 				imports: [],
 				exports: []
@@ -161,6 +138,19 @@
 		},
 
 		async oncreate () {
+			const { query } = this.get();
+
+			if (query.shareable) {
+				const json = decodeURIComponent(atob(query.shareable));
+
+				try {
+					const saved = JSON.parse(json);
+					this.set(saved);
+				} catch (err) {
+					this.set({ selectedExample: '00' });
+				}
+			}
+
 			const url = versionMatch ?
 				'https://unpkg.com/rollup@' + versionMatch[1] + '/dist/rollup.browser.js' :
 				'https://unpkg.com/rollup/dist/rollup.browser.js';
