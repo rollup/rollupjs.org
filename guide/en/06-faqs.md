@@ -7,7 +7,7 @@ title: Frequently Asked Questions
 ES modules are an official standard and the clear path forward for JavaScript
 code structure, whereas CommonJS modules are an idiosyncratic legacy format that
 served as a stopgap solution before ES modules had been proposed. ES modules
-allow static analysis that enables optimizations like tree-shaking, and provide
+allow static analysis that helps with optimizations like tree-shaking, and provide
 advanced features like circular references and live bindings.
 
 #### What Is "tree-shaking?"

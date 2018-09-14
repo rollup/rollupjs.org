@@ -65,8 +65,6 @@ is to muck about with prototypes.
 
 Import modules using the
 [dynamic import API](https://github.com/tc39/proposal-dynamic-import#import).
-This API is experimental and available under the `experimentalDynamicImport`
-flag.
 
 ```js
 import('./modules.js').then(({ default: DefaultExport, NamedExport })=> {

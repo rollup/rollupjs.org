@@ -205,7 +205,7 @@ a new file, `src/.babelrc`:
 }
 ```
 
-There are a few unusual elements to this setup. First; we're setting
+There are a few unusual elements to this setup. First, we're setting
 `"modules": false`, otherwise Babel will convert our modules to CommonJS before
 Rollup gets a chance to do its thing, causing it to fail.
 
