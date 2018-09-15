@@ -1,5 +1,4 @@
 {
   "default": false,
-  "blanks-around-fences": true,
-  "blanks-around-lists": true
+  "blanks-around-fences": true
 }
