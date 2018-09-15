@@ -25,7 +25,7 @@ of CommonJS modules and use of Node's module location resolution logic are both
 implemented as optional plugins, not included by default in the Rollup core.
 Just `npm install` the [CommonJS](https://github.com/rollup/rollup-plugin-commonjs)
 and [node-resolve](https://github.com/rollup/rollup-plugin-node-resolve) plugins
-and then enable them using a `rollup.config.js` file and you should be all set.
+and then enable them using a `rollup.config.js` file and you should be all set. If the modules import JSON files, you will also need the [json](https://github.com/rollup/rollup-plugin-json) plugin.
 
 #### Why isn't node-resolve a built-in feature?
 
