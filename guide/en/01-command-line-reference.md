@@ -2,18 +2,13 @@
 title: Command Line Interface
 ---
 
-Rollup should typically be used from the command line. You can provide an
-optional Rollup configuration file to simplify command line usage and enable
-advanced Rollup functionality.
+Rollup should typically be used from the command line. You can provide an  optional Rollup configuration file to simplify command line usage and enable advanced Rollup functionality.
 
 ### Configuration Files
 
-Rollup configuration files are optional, but they are powerful and convenient
-and thus **recommended**.
+Rollup configuration files are optional, but they are powerful and convenient and thus **recommended**.
 
-A config file is an ES6 module that exports a default object with the desired
-options. Typically, it is called `rollup.config.js` and sits in the root
-directory of your project.
+A config file is an ES6 module that exports a default object with the desired options. Typically, it is called `rollup.config.js` and sits in the root directory of your project.
 
 Also you can use CJS modules syntax for the config file.
 
@@ -29,8 +24,7 @@ module.exports = {
 
 It may be pertinent if you want to use the config file not only from the command line, but also from your custom scripts programmatically.
 
-Consult the [big list of options](guide/en#big-list-of-options) for details on each
-option you can include in your config file.
+Consult the [big list of options](guide/en#big-list-of-options) for details on each option you can include in your config file.
 
 ```javascript
 // rollup.config.js
@@ -100,10 +94,7 @@ export default { // can be an array (for multiple inputs)
 };
 ```
 
-You can export an **array** from your config file to build bundles from several
-different unrelated inputs at once, even in watch mode. To build different
-bundles with the same input, you supply an array of output options for each
-input:
+You can export an **array** from your config file to build bundles from several different unrelated inputs at once, even in watch mode. To build different bundles with the same input, you supply an array of output options for each input:
 
 ```javascript
 // rollup.config.js (building more than one bundle)
@@ -129,8 +120,7 @@ export default [{
 }];
 ```
 
-If you want to create your config asynchronously, Rollup can also handle a
-`Promise` which resolves to an object or an array.
+If you want to create your config asynchronously, Rollup can also handle a `Promise` which resolves to an object or an array.
 
 ```javascript
 // rollup.config.js
@@ -151,10 +141,7 @@ export default Promise.all([
 You *must* use a configuration file in order to do any of the following:
 
 - bundle one project into multiple output files
-- use Rollup plugins, such as
-[rollup-plugin-node-resolve](https://github.com/rollup/rollup-plugin-node-resolve)
-and [rollup-plugin-commonjs](https://github.com/rollup/rollup-plugin-commonjs)
-which let you load CommonJS modules from the Node.js ecosystem
+- use Rollup plugins, such as [rollup-plugin-node-resolve](https://github.com/rollup/rollup-plugin-node-resolve) and [rollup-plugin-commonjs](https://github.com/rollup/rollup-plugin-commonjs) which let you load CommonJS modules from the Node.js ecosystem
 
 To use Rollup with a configuration file, pass the `--config` or `-c` flags.
 
@@ -166,10 +153,7 @@ $ rollup --config
 $ rollup --config my.config.js
 ```
 
-You can also export a function that returns any of the above configuration
-formats. This function will be passed the current command line arguments so that
-you can dynamically adapt your configuration to respect e.g. `--silent`. You can
-even define your own command line options if you prefix them with `config`:
+You can also export a function that returns any of the above configuration formats. This function will be passed the current command line arguments so that you can dynamically adapt your configuration to respect e.g. `--silent`. You can even define your own command line options if you prefix them with `config`:
 
 ```javascript
 // rollup.config.js
@@ -184,15 +168,12 @@ export default commandLineArgs => {
 }
 ```
 
-If you now run `rollup --config --configDebug`, the debug configuration will be
-used.
+If you now run `rollup --config --configDebug`, the debug configuration will be used.
 
 
 ### Command line flags
 
-Many options have command line equivalents. Any arguments passed here will
-override the config file, if you're using one. See the
-[big list of options](guide/en#big-list-of-options) for details.
+Many options have command line equivalents. Any arguments passed here will override the config file, if you're using one. See the [big list of options](guide/en#big-list-of-options) for details.
 
 ```text
 -c, --config                Use this config file (if argument is used but value
@@ -245,11 +226,7 @@ Pass additional settings to the config file via `process.ENV`.
 rollup -c --environment INCLUDE_DEPS,BUILD:production
 ```
 
-will set `process.env.INCLUDE_DEPS === 'true'` and
-`process.env.BUILD === 'production'`. You can use this option several times. In
-that case, subsequently set variables will overwrite previous definitions. This
-enables you for instance to overwrite environment variables in `package.json`
-scripts:
+will set `process.env.INCLUDE_DEPS === 'true'` and `process.env.BUILD === 'production'`. You can use this option several times. In that case, subsequently set variables will overwrite previous definitions. This enables you for instance to overwrite environment variables in `package.json` scripts:
 
 ```json
 // in package.json
@@ -266,5 +243,4 @@ If you call this script via:
 npm run build -- --environment BUILD:development
 ```
 
-then the config file will receive `process.env.INCLUDE_DEPS === 'true'` and
-`process.env.BUILD === 'development'`.
+then the config file will receive `process.env.INCLUDE_DEPS === 'true'` and `process.env.BUILD === 'development'`.

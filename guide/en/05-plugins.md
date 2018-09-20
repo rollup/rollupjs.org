@@ -4,22 +4,15 @@ title: Plugins
 
 ### Overview
 
-A Rollup plugin is a package which exports a function that returns an object
-with one or more of the [properties](guide/en#properties) and [hooks](guide/en#hooks)
-described below, and which follows our [conventions](guide/en#conventions).
+A Rollup plugin is a package which exports a function that returns an object with one or more of the [properties](guide/en#properties) and [hooks](guide/en#hooks) described below, and which follows our [conventions](guide/en#conventions).
 
-Plugins allow you to customise Rollup's behaviour by, for example, transpiling
-code before bundling, or finding third-party modules in your `node_modules` folder.
-For an example on how to use them, see [Using plugins](guide/en#using-plugins).
+Plugins allow you to customise Rollup's behaviour by, for example, transpiling code before bundling, or finding third-party modules in your `node_modules` folder. For an example on how to use them, see [Using plugins](guide/en#using-plugins).
 
-A List of Plugins may be found at https://github.com/rollup/awesome. If you
-would like to make a suggestion for a plugin, please submit a Pull Request.
+A List of Plugins may be found at https://github.com/rollup/awesome. If you would like to make a suggestion for a plugin, please submit a Pull Request.
 
 ### A Simple Example
 
-The following plugin will intercept any imports of `virtual-module` without accessing
-the file system. This is for instance necessary if you want to use Rollup in a browser.
-It can even be used to replace entry points as shown in the example.
+The following plugin will intercept any imports of `virtual-module` without accessing the file system. This is for instance necessary if you want to use Rollup in a browser. It can even be used to replace entry points as shown in the example.
 
 ```js
 // rollup-plugin-my-example.js
@@ -57,13 +50,11 @@ export default ({
 
 - Plugins should have a clear name with `rollup-plugin-` prefix.
 - Include `rollup-plugin` keyword in `package.json`.
-- Plugins should be tested. We recommend [mocha](https://github.com/mochajs/mocha)
-or [ava](https://github.com/avajs/ava) which support promises out of the box.
+- Plugins should be tested. We recommend [mocha](https://github.com/mochajs/mocha) or [ava](https://github.com/avajs/ava) which support promises out of the box.
 - Use asynchronous methods when it is possible.
 - Document your plugin in English.
 - Make sure your plugin outputs correct source mappings if appropriate.
-- If your plugin uses 'virtual modules' (e.g. for helper functions), prefix the
-module ID with `\0`. This prevents other plugins from trying to process it.
+- If your plugin uses 'virtual modules' (e.g. for helper functions), prefix the module ID with `\0`. This prevents other plugins from trying to process it.
 
 ### Properties
 
@@ -81,23 +72,17 @@ A `String`, or a `Function` that returns a `String` or `Promise`.
 Type: `Function`<br>
 Signature: `( inputOptions ) => options`
 
-Replaces or manipulates the options object passed to `rollup.rollup`. Returning
-`null` does not replace anything.
+Replaces or manipulates the options object passed to `rollup.rollup`. Returning `null` does not replace anything.
 
 ### Hooks
 
-In addition to properties defining the identity of your plugin, you may also
-specify properties that correspond to available build hooks. Hooks can affect
-how a build is run, provide information about a build, or modify a build once
-complete.
+In addition to properties defining the identity of your plugin, you may also specify properties that correspond to available build hooks. Hooks can affect how a build is run, provide information about a build, or modify a build once complete.
 
 #### `buildEnd`
 Type: `Function`<br>
 Signature: `( error ) => void`
 
-Called when rollup has finished bundling, but before `generate` or `write` is
-called; you can also return a Promise. If an error occurred during the build,
-it is passed on to this hook.
+Called when rollup has finished bundling, but before `generate` or `write` is called; you can also return a Promise. If an error occurred during the build, it is passed on to this hook.
 
 #### `buildStart`
 Type: `Function`<br>
@@ -114,9 +99,7 @@ A `String`, or a `Function` that returns a `String` or `Promise`.
 Type: `Function`<br>
 Signature: `( outputOptions, bundle, isWrite ) => (void|Promise)`
 
-Called when `bundle.generate()` or `bundle.write()` is being executed. `bundle`
-provides the full list of files being written or generated along with their
-details.
+Called when `bundle.generate()` or `bundle.write()` is being executed. `bundle` provides the full list of files being written or generated along with their details.
 
 #### `intro`
 Type: `String|Function`
@@ -127,8 +110,7 @@ A `String`, or a `Function` that returns a `String` or `Promise`.
 Type: `Function`<br>
 Signature: `( id ) => (code | { code, map } | Promise)`
 
-Defines a custom loader. Returning `null` defers to other `load` functions
-(and eventually the default behavior of loading from the file system).
+Defines a custom loader. Returning `null` defers to other `load` functions (and eventually the default behavior of loading from the file system).
 
 #### `outro`
 Type: `String|Function`
@@ -139,18 +121,13 @@ A `String`, or a `Function` that returns a `String` or `Promise`.
 Type: `Function`<br>
 Signature: `(code, { modules, exports, imports, fileName, isEntry }, outputOptions) => (code | { code, map} | Promise)`
 
-Can be used to transform individual chunks. Called for each Rollup output chunk
-file. Returning `null` will apply no transformations.
+Can be used to transform individual chunks. Called for each Rollup output chunk file. Returning `null` will apply no transformations.
 
 #### `resolveId`
 Type: `Function`<br>
 Signature: `( importee, importer ) => (id|Promise)`
 
-Defines a custom resolver. A resolver loader can be useful for e.g. locating
-third-party dependencies. Returning `null` or `undefined` defers to other
-`resolveId` functions (and eventually the default resolution behavior);
-returning `false` signals that `importee` should be treated as an external
-module and not included in the bundle.
+Defines a custom resolver. A resolver loader can be useful for e.g. locating third-party dependencies. Returning `null` or `undefined` defers to other `resolveId` functions (and eventually the default resolution behavior); returning `false` signals that `importee` should be treated as an external module and not included in the bundle.
 
 #### `transform`
 Type: `Function`<br>
@@ -162,49 +139,42 @@ Can be used to transform individual modules.
 Type: `Function`<br>
 Signature: `(file) => { }`
 
-Notifies a plugin whenever rollup has detected a change to a monitored file in
-`--watch` mode.
+Notifies a plugin whenever rollup has detected a change to a monitored file in `--watch` mode.
 
 ### Deprecated
 
 ☢️ These hooks have been deprecated and may be removed in a future Rollup version.
 
-* `ongenerate` - _**Use [`generateBundle`](guide/en#generatebundle)**_ - Function hook
+- `ongenerate` - _**Use [`generateBundle`](guide/en#generatebundle)**_ - Function hook
 called when `bundle.generate()` is being executed.
 
-* `onwrite` - _**Use [`generateBundle`](guide/en#generatebundle)**_ - Function hook
+- `onwrite` - _**Use [`generateBundle`](guide/en#generatebundle)**_ - Function hook
 called when `bundle.write()` is being executed, after the file has been written
 to disk.
 
-* `transformBundle` – _**Use [`renderChunk`](guide/en#renderchunk)**_ - A `( source, { format } ) =>
+- `transformBundle` – _**Use [`renderChunk`](guide/en#renderchunk)**_ - A `( source, { format } ) =>
 code` or `( source, { format } ) => { code, map }` bundle transformer function.
 
-* `transformChunk` – _**Use [`renderChunk`](guide/en#renderchunk)**_ - A `( source, outputOptions,
+- `transformChunk` – _**Use [`renderChunk`](guide/en#renderchunk)**_ - A `( source, outputOptions,
 chunk ) => code | { code, map}` chunk transformer function.
 
 More properties may be supported in future, as and when they prove necessary.
 
 ### Context
 
-A number of utility functions and informational bits can be accessed from within
-all [hooks](guide/en#hooks) via `this`:
+A number of utility functions and informational bits can be accessed from within all [hooks](guide/en#hooks) via `this`:
 
 #### `this.emitAsset( assetName, source )`
 
-Emits a custom file to include in the build output, returning its `assetId`. You
-can defer setting the source if you provide it later via
-`this.setAssetSource(assetId)`. A string or Buffer source must be set for each
-asset through either method or an error will be thrown on generate completion.
+Emits a custom file to include in the build output, returning its `assetId`. You can defer setting the source if you provide it later via `this.setAssetSource(assetId)`. A string or Buffer source must be set for each asset through either method or an error will be thrown on generate completion.
 
 #### `this.error( error [, position] )`
 
-Structurally equivalent to `this.warn`, except that it will also abort the
-bundling process.
+Structurally equivalent to `this.warn`, except that it will also abort the bundling process.
 
 #### `this.getAssetFileName( assetId )`
 
-Get the file name of an asset, according to the `assetFileNames` output option
-pattern.
+Get the file name of an asset, according to the `assetFileNames` output option pattern.
 
 ####  `this.isExternal( id, parentId, isResolved )`
 
@@ -221,8 +191,7 @@ Use Rollup's internal acorn instance to parse code to an AST.
 
 #### `this.resolveId(importee, importer)`
 
-Resolve imports to module ids (i.e. file names). Uses the same hooks as Rollup
-itself.
+Resolve imports to module ids (i.e. file names). Uses the same hooks as Rollup itself.
 
 #### `this.setAssetSource( assetId, source )`
 
@@ -230,12 +199,9 @@ Set the deferred source of an asset.
 
 #### `this.warn( warning [, position] )`
 
-Using this method will queue warnings for a build. These warnings will be
-printed by the CLI just like internally-generated warnings (except with the
-plugin name), or captured by custom `onwarn` handlers.
+Using this method will queue warnings for a build. These warnings will be printed by the CLI just like internally-generated warnings (except with the plugin name), or captured by custom `onwarn` handlers.
 
-The `warning` argument can be a `String` or an `Object` with (at minimum) a
-`message` property:
+The `warning` argument can be a `String` or an `Object` with (at minimum) a `message` property:
 
 ```js
 this.warn( 'hmm...' );
@@ -243,22 +209,13 @@ this.warn( 'hmm...' );
 this.warn({ message: 'hmm...' });
 ```
 
-Use the second form if you need to add additional properties to your warning
-object. Rollup will augment the warning object with a `plugin` property
-containing the plugin name, `code` (`PLUGIN_WARNING`) and `id` (the file being
-transformed) properties.
+Use the second form if you need to add additional properties to your warning object. Rollup will augment the warning object with a `plugin` property containing the plugin name, `code` (`PLUGIN_WARNING`) and `id` (the file being transformed) properties.
 
-The `position` argument is a character index where the warning was raised. If
-present, Rollup will augment the warning object with `pos`, `loc` (a standard
-`{ file, line, column }` object) and `frame` (a snippet of code showing the error).
+The `position` argument is a character index where the warning was raised. If present, Rollup will augment the warning object with `pos`, `loc` (a standard `{ file, line, column }` object) and `frame` (a snippet of code showing the error).
 
 ### Asset URLs
 
-To reference an asset URL reference from within JS code, use the
-`import.meta.ROLLUP_ASSET_URL_[assetId]` replacement. The following example
-represents emitting a CSS file for a module that then exports a URL that is
-constructed to correctly point to the emitted file from the target runtime
-environment.
+To reference an asset URL reference from within JS code, use the `import.meta.ROLLUP_ASSET_URL_[assetId]` replacement. The following example represents emitting a CSS file for a module that then exports a URL that is constructed to correctly point to the emitted file from the target runtime environment.
 
 
 ```js
@@ -270,22 +227,13 @@ load (id) {
 
 ### Advanced Loaders
 
-The `load` hook can optionally return a `{ code, ast }` object. The `ast` must
-be a standard ESTree AST with `start` and `end` properties for each node.
+The `load` hook can optionally return a `{ code, ast }` object. The `ast` must be a standard ESTree AST with `start` and `end` properties for each node.
 
 ### Transformers
 
-Transformer plugins (i.e. those that return a `transform` function for e.g.
-transpiling non-JS files) should support `options.include` and `options.exclude`,
-both of which can be a minimatch pattern or an array of minimatch patterns. If
-`options.include` is omitted or of zero length, files should be included by
-default; otherwise they should only be included if the ID matches one of the
-patterns.
+Transformer plugins (i.e. those that return a `transform` function for e.g. transpiling non-JS files) should support `options.include` and `options.exclude`, both of which can be a minimatch pattern or an array of minimatch patterns. If `options.include` is omitted or of zero length, files should be included by default; otherwise they should only be included if the ID matches one of the patterns.
 
-The `transform` hook, if returning an object, can also include an `ast` property.
-Only use this feature if you know what you're doing. Note that only the last AST
-in a chain of transforms will be used (and if there are transforms, any ASTs
-generated by the `load` hook will be discarded for the transformed modules.)
+The `transform` hook, if returning an object, can also include an `ast` property. Only use this feature if you know what you're doing. Note that only the last AST in a chain of transforms will be used (and if there are transforms, any ASTs generated by the `load` hook will be discarded for the transformed modules.)
 
 #### Example Transformer
 
@@ -315,12 +263,7 @@ export default function myPlugin ( options = {} ) {
 
 #### Source Code Transformations
 
-If a plugin transforms source code, it should generate a sourcemap automatically,
-unless there's a specific `sourceMap: false` option. Rollup only cares about the
-`mappings` property (everything else is handled automatically). If it doesn't
-make sense to generate a sourcemap, (e.g.
-[rollup-plugin-string](https://github.com/TrySound/rollup-plugin-string)),
-return an empty sourcemap:
+If a plugin transforms source code, it should generate a sourcemap automatically, unless there's a specific `sourceMap: false` option. Rollup only cares about the `mappings` property (everything else is handled automatically). If it doesn't make sense to generate a sourcemap, (e.g. [rollup-plugin-string](https://github.com/TrySound/rollup-plugin-string)), return an empty sourcemap:
 
 ```js
 return {
