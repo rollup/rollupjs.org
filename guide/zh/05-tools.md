@@ -215,7 +215,7 @@ module.exports = main;
 
 Rollup 返回 gulp 能明白的 promises，所以集成是很容易的。
 
-语法与配置文件非常相似，但属性分为两个不同的操作，对应于[JavaScript API](#JavaScript-API)：
+语法与配置文件非常相似，但属性分为两个不同的操作，对应于[JavaScript API](guide/zh#javascript-api)：
 
 ```js
 const gulp = require('gulp');

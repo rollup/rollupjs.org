@@ -259,7 +259,7 @@ relatively painless.
 
 The syntax is very similar to the configuration file, but the properties are
 split across two different operations corresponding to the
-[JavaScript API](#JavaScript-API):
+[JavaScript API](guide/en#javascript-api):
 
 ```js
 const gulp = require('gulp');

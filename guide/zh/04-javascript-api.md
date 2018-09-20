@@ -36,7 +36,7 @@ build();
 
 #### 输入参数(inputOptions)
 
-`inputOptions` 对象包含下列属性 (查看[big list of options](#big-list-of-options) 以获得这些参数更详细的资料):
+`inputOptions` 对象包含下列属性 (查看[big list of options](guide/zh#big-list-of-options) 以获得这些参数更详细的资料):
 
 ```js
 const inputOptions = {
@@ -60,7 +60,7 @@ const inputOptions = {
 
 #### 输出参数(outputOptions)
 
-`outputOptions` 对象包括下列属性 (查看 [big list of options](#big-list-of-options) 以获得这些参数更详细的资料):
+`outputOptions` 对象包括下列属性 (查看 [big list of options](guide/zh#big-list-of-options) 以获得这些参数更详细的资料):
 
 ```js
 const outputOptions = {
@@ -129,4 +129,4 @@ const watchOptions = {
 };
 ```
 
-查看以上文档知道更多 `inputOptions` 和 `outputOptions` 的细节, 或查询 [big list of options](#big-list-of-options) 关 `chokidar`, `include` 和 `exclude` 的资料。
+查看以上文档知道更多 `inputOptions` 和 `outputOptions` 的细节, 或查询 [big list of options](guide/zh#big-list-of-options) 关 `chokidar`, `include` 和 `exclude` 的资料。

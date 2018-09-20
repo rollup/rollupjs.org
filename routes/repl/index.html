@@ -1,19 +1,23 @@
-<Layout page='repl'>
-	<div class='repl'>
-		<div class='left'>
-			<h2>ES6 modules go in...</h2>
-			<div class='input'>
-				<Input :examples bind:selectedExample bind:modules/>
-			</div>
-		</div>
-		<div class='right'>
-			<h2>...bundle comes out</h2>
-			<div class='output'>
-				<Output bind:options :code :error :warnings :imports :exports/>
-			</div>
+<div class='repl'>
+	<div class='left'>
+		<h2>ES6 modules go in...</h2>
+		<div class='input'>
+			<Input {examples} bind:selectedExample bind:modules/>
 		</div>
 	</div>
-</Layout>
+	<div class='right'>
+		<h2>...bundle comes out</h2>
+		<div class='output'>
+			<Output bind:options {code} {error} {warnings} {imports} {exports}/>
+		</div>
+	</div>
+</div>
+
+<!-- trick Sapper into generating example JSON files -->
+<!-- TODO use a <link> to do this instead! -->
+{#each examples as example}
+	<a hidden href="api/examples/{example.id}.json">{example.title}</a>
+{/each}
 
 <style>
 	.repl {
@@ -77,7 +81,6 @@
 </style>
 
 <script>
-	import Layout from '../_components/Layout.html';
 	import Input from './_Input/index.html';
 	import Output from './_Output/index.html';
 	import debounce from './_utils/debounce.js';
@@ -87,46 +90,31 @@
 
 	const atob = typeof window !== 'undefined' ?
 		window.atob :
-		base64 => new Buffer(base64, 'base64').toString();
+		base64 => Buffer.from(base64, 'base64').toString();
+
+	function loadRollup(url) {
+		// TODO expose an ESM build of rollup.browser.js, so we
+		// can just use import()
+		return new Promise((fulfil, reject) => {
+			const script = document.createElement('script');
+			script.src = url;
+			script.onload = () => {
+				fulfil(window.rollup);
+			};
+			script.onerror = reject;
+			document.querySelector('head').appendChild(script);
+		});
+	}
 
 	export default {
 		components: {
-			Layout,
 			Input,
 			Output
 		},
 
 		preload({ params, query }) {
-			let saved;
-			let selectedExample = null;
-
-			if (query.shareable) {
-				const json = decodeURIComponent(atob(query.shareable));
-
-				try {
-					saved = JSON.parse(json);
-					selectedExample = saved.example;
-				} catch (err) {
-					selectedExample = '00';
-				}
-			}
-
-			const example = saved ? Promise.resolve(saved) : fetch(`/api/examples/00`).then(r => r.json());
-
-			return Promise.all([
-				fetch(`/api/examples`).then(r => r.json()),
-				example
-			]).then(([examples, example]) => {
-				return {
-					examples,
-					saved,
-					selectedExample,
-					modules: example.modules,
-					options: saved ? saved.options : {
-						format: 'cjs',
-						name: 'myBundle'
-					}
-				};
+			return this.fetch(`api/examples.json`).then(r => r.json()).then(examples => {
+				return { examples };
 			});
 		},
 
@@ -135,135 +123,159 @@
 				code: '',
 				rollupReady: false,
 
+				options: {
+					format: 'cjs',
+					name: 'myBundle',
+					amd: { id: '' }
+				},
+
+				selectedExample: null,
+				modules: [],
 				warnings: [],
 				imports: [],
 				exports: []
 			};
 		},
 
-		oncreate () {
+		async oncreate () {
+			const { query } = this.get();
+
+			if (query.shareable) {
+				const json = decodeURIComponent(atob(query.shareable));
+
+				try {
+					const saved = JSON.parse(json);
+					this.set(saved);
+				} catch (err) {
+					this.set({ selectedExample: '00' });
+				}
+			} else {
+				this.set({ selectedExample: '00' });
+			}
+
 			const url = versionMatch ?
 				'https://unpkg.com/rollup@' + versionMatch[1] + '/dist/rollup.browser.js' :
 				'https://unpkg.com/rollup/dist/rollup.browser.js';
 
-			let settingModulesViaExample = false;
+			this.settingModulesViaExample = false;
+			this.updating = false;
 
-			this.observe( 'selectedExample', id => {
-				if ( !id ) return;
+			// TODO instead of debouncing, we should bundle in a worker
+			this.debouncedBundle = debounce(() => this.bundle(), 100);
 
-				fetch(`/api/examples/${id}`).then(r => r.json()).then(example => {
-					settingModulesViaExample = true;
+			const rollup = await loadRollup(url);
+			this.set({ rollupReady: true });
+			this.bundle();
+		},
+
+		onstate({ changed, current }) {
+			if (changed.selectedExample && current.selectedExample) {
+				fetch(`api/examples/${current.selectedExample}.json`).then(r => r.json()).then(example => {
+					this.settingModulesViaExample = true;
 					this.set({ modules: example.modules });
-					settingModulesViaExample = false;
+					this.settingModulesViaExample = false;
 				});
-			});
+			}
 
-			curl([ url ])
-				.then( rollup => {
-					window.rollup = rollup;
-					this.set({ rollupReady: true });
+			if (current.rollupReady) {
+				if (changed.modules) {
+					if (this.settingModulesViaExample) {
+						this.bundle();
+					} else {
+						this.set({ selectedExample: null });
+						this.debouncedBundle();
+					}
+				}
 
-					let updating = false;
-
-					const update = () => {
-						const modules = this.get( 'modules' );
-
-						if ( updating ) return; // TODO this is inelegant...
-						updating = true;
-
-						// console.clear();
-						console.log( `running Rollup version %c${rollup.VERSION}`, 'font-weight: bold' );
-						this.updateUrl();
-
-						let moduleById = {};
-
-						modules.forEach( module => {
-							moduleById[ module.name ] = module;
-						});
-
-						const warnings = [];
-
-						/*global rollup */
-						rollup.rollup({
-							input: 'main.js',
-							entry: 'main.js', // for older versions
-							plugins: [{
-								resolveId ( importee, importer ) {
-									if ( !importer ) return importee;
-									if ( importee[0] !== '.' ) return false;
-
-									let resolved = resolve( dirname( importer ), importee ).replace( /^\.\//, '' );
-									if ( resolved in moduleById ) return resolved;
-
-									resolved += '.js';
-									if ( resolved in moduleById ) return resolved;
-
-									throw new Error( `Could not resolve '${importee}' from '${importer}'` );
-								},
-								load: function ( id ) {
-									return moduleById[ id ].code;
-								}
-							}],
-							onwarn ( warning ) {
-								warnings.push( warning );
-
-								console.group( warning.loc ? warning.loc.file : '' );
-
-								console.warn( warning.message );
-
-								if ( warning.frame ) {
-									console.log( warning.frame );
-								}
-
-								if ( warning.url ) {
-									console.log( `See ${warning.url} for more information` );
-								}
-
-								console.groupEnd();
-							}
-						}).then( bundle => {
-							this.set({
-								imports: bundle.imports,
-								exports: bundle.exports
-							});
-
-							const options = this.get( 'options' );
-							return bundle.generate( options );
-						})
-						.then( generated => {
-							this.set({
-								code: generated.code,
-								error: null,
-								warnings
-							});
-						})
-						.catch( error => {
-							this.set({ error });
-							if ( error.frame ) console.log( error.frame );
-							setTimeout( () => {
-								throw error;
-							});
-						})
-						.then( () => {
-							updating = false;
-						});
-					};
-
-					const debouncedUpdate = debounce( update, 100 );
-
-					this.observe( 'modules', () => {
-						if ( settingModulesViaExample ) {
-							update();
-						} else {
-							this.set({ selectedExample: null }); // TODO this doesn't update the UI — why? Svelte bug?
-							debouncedUpdate();
-						}
-					});
-					this.observe( 'options', update );
-				});
+				if (changed.options) this.bundle();
+			}
 		},
 
 		methods: {
+			async bundle() {
+				if (!window.rollup) return;
+
+				const { modules } = this.get();
+
+				if (this.updating || !modules.length) return; // TODO this is inelegant...
+				this.updating = true;
+
+				console.clear();
+				console.log(`running Rollup version %c${window.rollup.VERSION}`, 'font-weight: bold');
+				this.updateUrl();
+
+				let moduleById = {};
+
+				modules.forEach(module => {
+					moduleById[module.name] = module;
+				});
+
+				const warnings = [];
+
+				try {
+					const bundle = await rollup.rollup({
+						input: 'main.js',
+						entry: 'main.js', // for older versions
+						plugins: [{
+							resolveId ( importee, importer ) {
+								if ( !importer ) return importee;
+								if ( importee[0] !== '.' ) return false;
+
+								let resolved = resolve( dirname( importer ), importee ).replace( /^\.\//, '' );
+								if ( resolved in moduleById ) return resolved;
+
+								resolved += '.js';
+								if ( resolved in moduleById ) return resolved;
+
+								throw new Error( `Could not resolve '${importee}' from '${importer}'` );
+							},
+							load: function ( id ) {
+								return moduleById[ id ].code;
+							}
+						}],
+						onwarn ( warning ) {
+							warnings.push( warning );
+
+							console.group( warning.loc ? warning.loc.file : '' );
+
+							console.warn( warning.message );
+
+							if ( warning.frame ) {
+								console.log( warning.frame );
+							}
+
+							if ( warning.url ) {
+								console.log( `See ${warning.url} for more information` );
+							}
+
+							console.groupEnd();
+						}
+					});
+
+					this.set({
+						imports: bundle.imports,
+						exports: bundle.exports
+					});
+
+					const { options } = this.get();
+					const generated = await bundle.generate(options);
+
+					this.set({
+						code: generated.code,
+						error: null,
+						warnings
+					});
+				} catch(error) {
+					this.set({ error });
+					if ( error.frame ) console.log( error.frame );
+					setTimeout( () => {
+						throw error;
+					});
+				}
+
+				this.updating = false;
+			},
+
 			updateUrl () {
 				if ( typeof history === 'undefined' ) return;
 
@@ -274,10 +286,12 @@
 					params.version = versionMatch[1];
 				}
 
+				const { modules, options, selectedExample } = this.get();
+
 				const json = JSON.stringify({
-					modules: this.get( 'modules' ),
-					options: this.get( 'options' ),
-					example: this.get( 'selectedExample' )
+					modules,
+					options,
+					example: selectedExample
 				});
 
 				params.shareable = btoa( encodeURIComponent( json ) );

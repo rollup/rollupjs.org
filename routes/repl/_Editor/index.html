@@ -46,55 +46,59 @@
 
 <script>
 	export default {
-		oncreate () {
-			import('./codemirror.js').then(CodeMirror => {
+		oncreate() {
+			import('./codemirror.js').then(({ default: CodeMirror }) => {
 				let updating = false;
 
-				this.editor = CodeMirror.fromTextArea( this.refs.editor, {
+				const { code, readonly } = this.get();
+
+				this.editor = CodeMirror.fromTextArea(this.refs.editor, {
 					lineNumbers: true,
 					lineWrapping: true,
 					indentWithTabs: true,
 					indentUnit: 2,
 					tabSize: 2,
-					value: this.get( 'code' ),
+					value: code,
 					mode: 'javascript',
-					readOnly: this.get( 'readonly' )
+					readOnly: readonly
 				});
 
 				// TODO this is a bug. oncreate should only be called once
 				// the component is actually in the DOM
-				setTimeout( () => {
+				setTimeout(() => {
 					this.editor.refresh();
 				});
 
-				setTimeout( () => {
+				setTimeout(() => {
 					this.editor.refresh();
 				}, 100);
 
-				this.editor.on( 'change', instance => {
-					if ( !updating ) {
+				this.editor.on('change', instance => {
+					if (!updating) {
 						updating = true;
 						this.set({ code: instance.getValue() });
 						updating = false;
 					}
 				});
 
-				this.observe( 'code', code => {
-					if ( !updating && code != null ) {
+				this.on('state', ({ changed, current }) => {
+					if (changed.code && !updating && current.code !== null) {
 						updating = true;
-						this.editor.setValue( code );
+						this.editor.setValue(current.code);
 						updating = false;
 					}
 				});
 
-				this.on( 'destroy', () => {
+				this.on('destroy', () => {
 					this.editor.toTextArea();
 				});
+
+				this.editor.setValue(code);
 			});
 		},
 
 		methods: {
-			resize () {
+			resize() {
 				this.editor.refresh();
 			}
 		}

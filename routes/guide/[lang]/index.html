@@ -1,21 +1,19 @@
-<Layout page='guide'>
-	<div ref:container class='content'>
-		<div class="hero">
-			<strong>rollup.js</strong>
-		</div>
-
-		{{#each sections as section}}
-			<section id='{{section.slug}}'>
-				<h2>{{section.metadata.title}}</h2>
-				{{{section.html}}}
-			</section>
-		{{/each}}
+<div ref:container class='content'>
+	<div class="hero">
+		<strong>rollup.js</strong>
 	</div>
 
-	<div class='sidebar'>
-		<GuideContents ref:contents :sections lang='{{params.lang}}'/>
-	</div>
-</Layout>
+	{#each sections as section}
+		<section id='{section.slug}'>
+			<h2>{section.metadata.title}</h2>
+			{@html section.html}
+		</section>
+	{/each}
+</div>
+
+<div class='sidebar'>
+	<GuideContents ref:contents {sections} lang='{params.lang}'/>
+</div>
 
 <style>
 	.sidebar {
@@ -203,7 +201,6 @@
 </style>
 
 <script>
-	import Layout from '../../_components/Layout.html';
 	import GuideContents from './GuideContents.html';
 
 	function throttle ( fn, ms ) {
@@ -224,7 +221,7 @@
 
 	export default {
 		preload({ params }) {
-			return fetch(`/api/guide/${params.lang}`).then(r => r.json()).then(sections => {
+			return this.fetch(`guide/${params.lang}.json`).then(r => r.json()).then(sections => {
 				return { sections };
 			});
 		},
@@ -277,7 +274,7 @@
 				setTimeout( onresize, 5000 )
 			];
 
-			this.on( 'teardown', () => {
+			this.on( 'destroy', () => {
 				window.removeEventListener( 'scroll', onscroll, true );
 				window.removeEventListener( 'resize', onresize, true );
 
@@ -289,7 +286,6 @@
 		},
 
 		components: {
-			Layout,
 			GuideContents
 		}
 	};

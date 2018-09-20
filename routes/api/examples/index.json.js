@@ -8,7 +8,7 @@ const contents = JSON.stringify(examples.map(example => {
 }));
 
 export function get(req, res) {
-	res.set({
+	res.writeHead(200, {
 		'Content-Type': 'application/json',
 		'Cache-Control': `max-age=${30 * 60 * 1e3}` // 30 minutes
 	});

@@ -1,0 +1,12 @@
+{
+  "name": "rollupjs.org",
+  "now": {
+    "alias": "rollupjs.org"
+  },
+  "dependencies": {
+    "serve": "*"
+  },
+  "scripts": {
+    "start": "serve ."
+  }
+}

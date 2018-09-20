@@ -1,16 +1,16 @@
-<div class='{{open ? "open": "closed"}} mousecatcher' on:click='set({ open: false })'></div>
+<div class='{open ? "open": "closed"} mousecatcher' on:click='set({ open: false })'></div>
 
 <div class='container'>
-	<span class="menu-link" on:click='toggleOpen()'>{{open ? 'Close' : 'Menu'}}</span>
+	<span class="menu-link" on:click='toggleOpen()'>{open ? 'Close' : 'Menu'}</span>
 
 	<!-- TODO persist language choice -->
-	<a href='/guide/en' class='logo'>rollup.js</a>
+	<a rel="prefetch" href='guide/en' class='logo'>rollup.js</a>
 </div>
 
-<nav ref:nav class='{{open ? "open": "closed"}}' on:click='set({ open: false })'>
+<nav ref:nav class='{open ? "open": "closed"}' on:click='set({ open: false })'>
 	<ul class='primary'>
-		<li><a class='{{page === "guide" ? "active": ""}}' href='/guide/en'>guide</a></li>
-		<li><a class='{{page === "repl" ? "active": ""}}' href='/repl'>repl</a></li>
+		<li><a rel="prefetch" class='{page === "guide" ? "active": ""}' href='guide/en'>guide</a></li>
+		<li><a rel="prefetch" class='{page === "repl" ? "active": ""}' href='repl'>repl</a></li>
 		<li><a href='https://gitter.im/rollup/rollup'>chat</a></li>
 		<li><a href='https://github.com/rollup/rollup'>github</a></li>
 	</ul>
@@ -224,19 +224,20 @@
 
 		methods: {
 			toggleOpen () {
-				const open = this.get( 'open' );
+				const { open } = this.get();
 
 				// if the menu is closing, scroll back to the top *after* it
 				// shuts. otherwise, scroll back to the top immediately
 				// (just in case the user reopened before it happened).
 				// The reason we don't just do it when the menu opens is
 				// that the scrollbar visibly flashes
-				if ( open ) {
-					setTimeout( () => {
-						if ( !this.get( 'open' ) ) {
+				if (open) {
+					setTimeout(() => {
+						const { open } = this.get();
+						if (!open) {
 							this.refs.nav.scrollTop = 0;
 						}
-					}, 350 );
+					}, 350);
 				} else {
 					this.refs.nav.scrollTop = 0;
 				}

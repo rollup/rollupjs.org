@@ -79,7 +79,7 @@ export default {
 
 Either a `Function` that takes an `id` and returns `true` (external) or `false` (not external), or an `Array` of module IDs that should remain external to the bundle. The IDs should be either:
 
-1. the name of an external dependency
+1. the name of an external dependency, exactly the way it is written in the import statement. I.e. to mark `import "dependency.js"` as external, use `"dependency.js"` while to mark `import "dependency"` as external, use `"dependency"`
 2. a resolved ID (like an absolute path to a file)
 
 ```js
@@ -90,7 +90,7 @@ export default {
   ...,
   external: [
     'some-externally-required-library',
-    path.resolve( './src/some-local-file-that-should-not-be-bundled.js' )
+    path.resolve( __dirname, 'src/some-local-file-that-should-not-be-bundled.js' )
   ]
 };
 ```
@@ -107,6 +107,8 @@ When providing a function, it is actually called with three parameters `(id, par
 * `parent` is the id of the module doing the import
 * `isResolved` signals whether the `id` has been resolved by e.g. plugins
 
+When creating an `iife` or `umd` bundle, you will need to provide global variable names to replace your external imports via the `output.globals` option.
+
 
 #### output.globals *`-g`/`--globals`*
 
@@ -116,12 +118,13 @@ When providing a function, it is actually called with three parameters `(id, par
 import $ from 'jquery';
 ```
 
-...we want to tell Rollup that the `jquery` module ID equates to the global `$` variable:
+...we want to tell Rollup that `jquery` is external and the `jquery` module ID equates to the global `$` variable:
 
 ```js
 // rollup.config.js
 export default {
   ...,
+  external: ['jquery'],
   output: {
     format: 'iife',
     name: 'MyBundle',
@@ -146,6 +149,25 @@ When given as a command line argument, it should be a comma-separated list of `i
 rollup -i src/main.js ... -g jquery:$,underscore:_
 ```
 
+To tell Rollup that a local file should be replaced by a global variable, use an absolute id:
+
+```js
+// rollup.config.js
+import path from 'path';
+const externalId = path.resolve( __dirname, 'src/some-local-file-that-should-not-be-bundled.js' );
+
+export default {
+  ...,
+  external: [externalId],
+  output: {
+    format: 'iife',
+    name: 'MyBundle',
+    globals: {
+      [externalId]: 'globalVariable'
+    }
+  }
+};
+```
 
 ### Advanced functionality
 
@@ -269,7 +291,7 @@ If `true`, a separate sourcemap file will be created. If `inline`, the sourcemap
 
 #### perf *`--perf`*
 
-`true` or `false` (defaults to `false`) – whether to collect performance timings. When used from the command line or a configuration file, detailed measurements about the current bundling process will be displayed. When used from the JavaScript API, the returned bundle object will contain an aditional `getTimings()` function that can be called at any time to retrieve all accumulated measurements.
+`true` or `false` (defaults to `false`) – whether to collect performance timings. When used from the command line or a configuration file, detailed measurements about the current bundling process will be displayed. When used from the [JavaScript API](guide/en#javascript-api), the returned bundle object will contain an aditional `getTimings()` function that can be called at any time to retrieve all accumulated measurements.
 
 ### Danger zone
 

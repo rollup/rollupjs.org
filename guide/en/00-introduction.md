@@ -17,7 +17,7 @@ possible natively, but Rollup lets you do it today.
 Install with `npm install --global rollup`. Rollup can be used either through a
 [command line interface](https://github.com/rollup/rollup/wiki/Command-Line-Interface)
 with an optional configuration file, or else through its
-[JavaScript API](https://github.com/rollup/rollup/wiki/JavaScript-API). Run
+[JavaScript API](guide/en#javascript-api). Run
 `rollup --help` to see the available options and parameters.
 
 > See [rollup-starter-lib](https://github.com/rollup/rollup-starter-lib) and
