@@ -42,7 +42,7 @@ export default {
   }
 };
 
-// -> var MyBundle = (function () {...
+// -> const MyBundle = (function () {...
 ```
 
 Namespaces are supported, so your name can contain dots. The resulting bundle will contain the setup necessary for the namespacing.
@@ -59,7 +59,7 @@ this.a.b.c = ...
 
 #### plugins
 
-`Array` of plugin objects (or a single plugin object) – see [Getting started with plugins](#getting-started-with-plugins) for more information. Remember to call the imported plugin function (i.e. `commonjs()`, not just `commonjs`).
+`Array` of plugin objects (or a single plugin object) – see [Using plugins](guide/en#using-plugins) for more information. Remember to call the imported plugin function (i.e. `commonjs()`, not just `commonjs`).
 
 ```js
 // rollup.config.js
@@ -135,7 +135,7 @@ export default {
 };
 
 /*
-var MyBundle = (function ($) {
+const MyBundle = (function ($) {
   // code goes here
 }(window.jQuery));
 */
@@ -228,7 +228,7 @@ export default {
   ...,
   output: {
     ...,
-    intro: 'var ENVIRONMENT = "production";'
+    intro: 'const ENVIRONMENT = "production";'
   }
 };
 ```
@@ -380,20 +380,20 @@ Same as `options.context`, but per-module – can either be an object of `id: co
 The difference between `default` and `named` affects how other people can consume your bundle. If you use `default`, a CommonJS user could do this, for example:
 
 ```js
-var yourLib = require( 'your-lib' );
+const yourLib = require( 'your-lib' );
 ```
 
 With `named`, a user would do this instead:
 
 ```js
-var yourMethod = require( 'your-lib' ).yourMethod;
+const yourMethod = require( 'your-lib' ).yourMethod;
 ```
 
 The wrinkle is that if you use `named` exports but *also* have a `default` export, a user would have to do something like this to use the default export:
 
 ```js
-var yourMethod = require( 'your-lib' ).yourMethod;
-var yourLib = require( 'your-lib' )['default'];
+const yourMethod = require( 'your-lib' ).yourMethod;
+const yourLib = require( 'your-lib' )['default'];
 ```
 
 #### output.amd *`--amd.id` and `--amd.define`*

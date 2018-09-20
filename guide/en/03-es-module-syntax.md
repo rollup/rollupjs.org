@@ -1,12 +1,17 @@
 ---
-title: ES module syntax
+title: ES Module Syntax
 ---
 
-The following is intended as a lightweight reference for the module behaviors defined in the [ES2015 specification](https://www.ecma-international.org/ecma-262/6.0/), since a proper understanding of the import and export statements are essential to successful use of Rollup.
+The following is intended as a lightweight reference for the module behaviors
+defined in the [ES2015 specification](https://www.ecma-international.org/ecma-262/6.0/),
+since a proper understanding of the import and export statements are essential
+to successful use of Rollup.
 
 ### Importing
 
-Imported values cannot be reassigned, though imported objects and arrays *can* be mutated (and the exporting module, and any other importers, will be affected by the mutation). In that way, they behave similarly to `const` declarations.
+Imported values cannot be reassigned, though imported objects and arrays *can*
+be mutated (and the exporting module, and any other importers, will be affected
+by the mutation). In that way, they behave similarly to `const` declarations.
 
 
 #### Named Imports
@@ -17,7 +22,8 @@ Import a specific item from a source module, with its original name.
 import { something } from './module.js';
 ```
 
-Import a specific item from a source module, with a custom name assigned upon import.
+Import a specific item from a source module, with a custom name assigned upon
+import.
 
 ```js
 import { something as somethingElse } from './module.js';
@@ -25,13 +31,16 @@ import { something as somethingElse } from './module.js';
 
 #### Namespace Imports
 
-Import everything from the source module as an object which exposes all the source module's named exports as properties and methods. Default exports are excluded from this object.
+Import everything from the source module as an object which exposes all the
+source module's named exports as properties and methods. Default exports are
+excluded from this object.
 
 ```js
 import * as module from './module.js'
 ```
 
-The `something` example from above would then be attached to the imported object as a property, e.g. `module.something`.
+The `something` example from above would then be attached to the imported object
+as a property, e.g. `module.something`.
 
 #### Default Import
 
@@ -53,7 +62,8 @@ This is useful for polyfills, or when the primary purpose of the imported code i
 
 #### Dynamic Import
 
-Import modules using the [dynamic import API](https://github.com/tc39/proposal-dynamic-import#import). This API is experimental and available under the `experimentalDynamicImport` flag.
+Import modules using the
+[dynamic import API](https://github.com/tc39/proposal-dynamic-import#import).
 
 ```js
 import('./modules.js').then(({ default: DefaultExport, NamedExport })=> {
@@ -70,7 +80,7 @@ This is useful for code-splitting applications and using modules on-the-fly.
 Export a value that has been previously declared:
 
 ```js
-var something = true;
+const something = true;
 export { something };
 ```
 
@@ -84,7 +94,7 @@ Export a value immediately upon declaration:
 
 ```js
 // this works with `var`, `let`, `const`, `class`, and `function`
-export var something = true;
+export const something = true;
 ```
 
 

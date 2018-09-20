@@ -2,9 +2,9 @@
 title: Command Line Interface
 ---
 
-Rollup should typically be used from the command line. You can provide an optional Rollup configuration file to simplify command line usage and enable advanced Rollup functionality.
+Rollup should typically be used from the command line. You can provide an  optional Rollup configuration file to simplify command line usage and enable advanced Rollup functionality.
 
-### Configuration files
+### Configuration Files
 
 Rollup configuration files are optional, but they are powerful and convenient and thus **recommended**.
 
@@ -28,6 +28,7 @@ Consult the [big list of options](guide/en#big-list-of-options) for details on e
 
 ```javascript
 // rollup.config.js
+
 export default { // can be an array (for multiple inputs)
   // core input options
   input,     // required
@@ -97,6 +98,7 @@ You can export an **array** from your config file to build bundles from several 
 
 ```javascript
 // rollup.config.js (building more than one bundle)
+
 export default [{
   input: 'main-a.js',
   output: {
@@ -143,7 +145,7 @@ You *must* use a configuration file in order to do any of the following:
 
 To use Rollup with a configuration file, pass the `--config` or `-c` flags.
 
-```bash
+```console
 # use Rollup with a rollup.config.js file
 $ rollup --config
 
@@ -224,7 +226,7 @@ Pass additional settings to the config file via `process.ENV`.
 rollup -c --environment INCLUDE_DEPS,BUILD:production
 ```
 
-will set `process.env.INCLUDE_DEPS === 'true'` and `process.env.BUILD === 'production'`. You can use this option several times. In that case, subsequently set variables will overwrite previous definitions. This enables you for instance to overwrite environment variables in package.json scripts:
+will set `process.env.INCLUDE_DEPS === 'true'` and `process.env.BUILD === 'production'`. You can use this option several times. In that case, subsequently set variables will overwrite previous definitions. This enables you for instance to overwrite environment variables in `package.json` scripts:
 
 ```json
 // in package.json
@@ -235,9 +237,9 @@ will set `process.env.INCLUDE_DEPS === 'true'` and `process.env.BUILD === 'produ
 }
 ```
 
-If you call this script via
+If you call this script via:
 
-```bash
+```console
 npm run build -- --environment BUILD:development
 ```
 

@@ -56,7 +56,7 @@ const inputOptions = {
   treeshake,
   context,
   moduleContext,
-          
+
   // experimental
   experimentalCodeSplitting,
   manualChunks,
@@ -97,7 +97,7 @@ const outputOptions = {
   strict,
   freeze,
   namespaceToStringTag,
-  
+
   // experimental
   entryFileNames,
   chunkFileNames,
@@ -156,6 +156,6 @@ If you'd like to use the API in a TypeScript environment you can do so, as now w
 
 You need to install some dependencies in case you have [skipLibCheck](https://www.typescriptlang.org/docs/handbook/compiler-options.html) turned off.
 
-```bash
+```console
 npm install @types/acorn @types/chokidar source-map magic-string --only=dev
 ```
