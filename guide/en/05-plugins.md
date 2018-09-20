@@ -2,34 +2,56 @@
 title: Plugins
 ---
 
+### Overview
+
+A Rollup plugin is a package which exports a function that returns an object
+with one or more of the [properties](guide/en#properties) and [hooks](guide/en#hooks)
+described below, and which follows our [conventions](guide/en#conventions).
+
 Plugins allow you to customise Rollup's behaviour by, for example, transpiling
 code before bundling, or finding third-party modules in your `node_modules` folder.
-
-## List of plugins
+For an example on how to use them, see [Using plugins](guide/en#using-plugins).
 
 A List of Plugins may be found at https://github.com/rollup/awesome. If you
 would like to make a suggestion for a plugin, please submit a Pull Request.
 
-## Using plugins
+### A Simple Example
 
-Rollup accepts an array of plugins:
+The following plugin will intercept any imports of `virtual-module` without accessing
+the file system. This is for instance necessary if you want to use Rollup in a browser.
+It can even be used to replace entry points as shown in the example.
 
 ```js
-import { rollup } from 'rollup';
-import nodeResolve from 'rollup-plugin-node-resolve';
+// rollup-plugin-my-example.js
+export default function myExample () {
+  return {
+    name: 'my-example', // this name will show up in warnings and errors
+    resolveId ( importee ) {
+      if (importee === 'virtual-module') {
+        return importee; // this signals that rollup should not ask other plugins or check the file system to find this id
+      }
+      return null; // other ids should be handled as usually
+    },
+    load ( id ) {
+      if (id === 'virtual-module') {
+        return 'export default "This is virtual!"'; // the source code for "virtual-module"
+      }
+      return null; // other ids should be handled as usually
+    }
+  };
+}
 
-rollup({
-  entry: 'main.js',
-  plugins: [ nodeResolve({ jsnext: true, main: true }) ]
-}).then(...);
+// rollup.config.js
+import myExample from './rollup-plugin-my-example.js';
+export default ({
+  input: 'virtual-module', // resolved by our plugin
+  plugins: [myExample()],
+  output: [{
+    file: 'bundle.js',
+    format: 'esm'
+  }]
+});
 ```
-
-Consult each plugin's documentation for details.
-
-## Creating plugins
-
-A Rollup plugin is a package which exports a function that returns an object
-with one or more of the properties described below, and follows our conventions.
 
 ### Conventions
 
