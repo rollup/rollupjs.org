@@ -147,17 +147,17 @@ Notifies a plugin whenever rollup has detected a change to a monitored file in
 
 ☢️ These hooks have been deprecated and may be removed in a future Rollup version.
 
-* `ongenerate` - _**Use [`generateBundle`](#generatebundle)**_ - Function hook
+* `ongenerate` - _**Use [`generateBundle`](guide/en#generatebundle)**_ - Function hook
 called when `bundle.generate()` is being executed.
 
-* `onwrite` - _**Use [`generateBundle`](#generatebundle)**_ - Function hook
+* `onwrite` - _**Use [`generateBundle`](guide/en#generatebundle)**_ - Function hook
 called when `bundle.write()` is being executed, after the file has been written
 to disk.
 
-* `transformBundle` – _**Use [`renderChunk`](#renderchunk)**_ - A `( source, { format } ) =>
+* `transformBundle` – _**Use [`renderChunk`](guide/en#renderchunk)**_ - A `( source, { format } ) =>
 code` or `( source, { format } ) => { code, map }` bundle transformer function.
 
-* `transformChunk` – _**Use [`renderChunk`](#renderchunk)**_ - A `( source, outputOptions,
+* `transformChunk` – _**Use [`renderChunk`](guide/en#renderchunk)**_ - A `( source, outputOptions,
 chunk ) => code | { code, map}` chunk transformer function.
 
 More properties may be supported in future, as and when they prove necessary.
@@ -165,7 +165,7 @@ More properties may be supported in future, as and when they prove necessary.
 ### Context
 
 A number of utility functions and informational bits can be accessed from within
-all [hooks](#hooks) via `this`:
+all [hooks](guide/en#hooks) via `this`:
 
 #### `this.emitAsset( assetName, source )`
 
