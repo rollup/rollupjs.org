@@ -281,6 +281,26 @@ If `true`, a separate sourcemap file will be created. If `inline`, the sourcemap
 
 `sourcemapFile` is not required if `output` is specified, in which case an output filename will be inferred by adding ".map"  to the output filename for the bundle.
 
+#### output.sourcemapPathTransform
+
+`Function` A transformation to apply to each path in a sourcemap. For instance the following will change all paths to be relative to the `src` directory.
+
+```js
+import path from 'path';
+export default ({
+  input: 'src/main',
+  output: [{
+    file: 'bundle.js',
+    sourcemapPathTransform: relativePath => {
+      // will transform e.g. "src/main.js" -> "main.js"
+      return path.relative('src', relativePath)
+    },
+    format: 'esm',
+    sourcemap: true
+  }]
+});
+```
+
 #### output.interop *`--interop`/*`--no-interop`*
 
 `true` or `false` (defaults to `true`) – whether or not to add an 'interop block'. By default (`interop: true`), for safety's sake, Rollup will assign any external dependencies' `default` exports to a separate variable if it's necessary to distinguish between default and named exports. This generally only applies if your external dependencies were transpiled (for example with Babel) – if you're sure you don't need it, you can save a few bytes with `interop: false`.

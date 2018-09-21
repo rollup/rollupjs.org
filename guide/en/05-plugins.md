@@ -99,7 +99,7 @@ A `String`, or a `Function` that returns a `String` or `Promise`.
 Type: `Function`<br>
 Signature: `( outputOptions, bundle, isWrite ) => (void|Promise)`
 
-Called when `bundle.generate()` or `bundle.write()` is being executed. `bundle` provides the full list of files being written or generated along with their details.
+Called at the end of `bundle.generate()` or `bundle.write()`. `bundle` provides the full list of files being written or generated along with their details.
 
 #### `intro`
 Type: `String|Function`
@@ -122,6 +122,18 @@ Type: `Function`<br>
 Signature: `(code, { modules, exports, imports, fileName, isEntry }, outputOptions) => (code | { code, map} | Promise)`
 
 Can be used to transform individual chunks. Called for each Rollup output chunk file. Returning `null` will apply no transformations.
+
+#### `renderError`
+Type: `Function`<br>
+Signature: `( error ) => void`
+
+Called when rollup encounters an error during `bundle.generate()` or `bundle.write()`. The error is passed to this hook. To get notified when generation completes successfully, use the `generateBundle` hook.
+
+#### `renderStart`
+Type: `Function`<br>
+Signature: `( ) => (void|Promise)`
+
+Called initially each time `bundle.generate()` or `bundle.write()` is called. To get notified when generation has completed, use the `generateBundle` and `renderError` hooks.
 
 #### `resolveId`
 Type: `Function`<br>
