@@ -14,7 +14,7 @@ Furthermore, **it poses a security risk** in that a malicious module could acces
 
 Luckily, unless you *really do* intend for the evaluated code to have access to local variables (in which case you're probably doing something wrong!), you can achieve the same effect in one of two ways:
 
-##### eval2 = eval
+#### eval2 = eval
 
 Simply 'copying' `eval` provides you with a function that does exactly the same thing, but which runs in the global scope rather than the local one:
 
@@ -28,7 +28,7 @@ var eval2 = eval;
 })();
 ```
 
-##### `new Function`
+#### `new Function`
 
 Using the [Function constructor](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function) generates a function from the supplied string. Again, it runs in the global scope. If you need to call the function repeatedly, this is much, *much* faster than using `eval`.
 
