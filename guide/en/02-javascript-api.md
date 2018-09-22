@@ -87,6 +87,7 @@ const outputOptions = {
   outro,
   sourcemap,
   sourcemapFile,
+  sourcemapPathTransform,
   interop,
   extend,
 

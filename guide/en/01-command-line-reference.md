@@ -68,6 +68,7 @@ export default { // can be an array (for multiple inputs)
     outro,
     sourcemap,
     sourcemapFile,
+    sourcemapPathTransform,
     interop,
     extend,
 
