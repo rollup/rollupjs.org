@@ -62,6 +62,8 @@ function create_guide(lang) {
 			const slug = match[1];
 			const title = match[2]
 				.replace(/<\/?code>/g, '')
+				.replace(/&quot;/g, '"')
+				.replace(/&#39;/g, '\'')
 				.replace(/\.(\w+).*/, '.$1')
 				.replace(/\((\w+).*\)/, '');
 
