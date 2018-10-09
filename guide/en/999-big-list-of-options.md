@@ -235,7 +235,30 @@ export default {
 
 #### cache
 
-`Object` A previously-generated bundle. Use it to speed up subsequent builds — Rollup will only reanalyse the modules that have changed.
+`Object | false` The `cache` property of a previous bundle. Use it to speed up subsequent builds — Rollup will only reanalyse the modules that have changed. Setting this option to `false` will prevent generating the `cache` property on the bundle and also deactivate caching for plugins.
+
+```js
+const rollup = require('rollup');
+let cache;
+
+async function buildWithCache() {
+  const bundle = await rollup.rollup({
+    cache, // is ignored if falsy
+    // ... other input options
+  });
+  cache = bundle.cache; // store the cache object of the previous build
+  return bundle;
+}
+
+buildWithCache()
+  .then(bundle => {
+    // ... do something with the bundle
+  })
+  .then(() => buildWithCache()) // will use the cache of the previous build
+  .then(bundle => {
+    // ... do something with the bundle
+  })
+```
 
 
 #### onwarn
