@@ -138,7 +138,7 @@ Many developers use [Babel](https://babeljs.io/) in their projects in order to u
 The easiest way to use both Babel and Rollup is with [rollup-plugin-babel](https://github.com/rollup/rollup-plugin-babel). First; install the plugin:
 
 ```console
-npm i -D rollup-plugin-babel
+npm i -D rollup-plugin-babel rollup-plugin-node-resolve
 ```
 
 Add it to `rollup.config.js`:
@@ -207,9 +207,9 @@ Run Rollup with `npm run build`, and check the bundle:
 ```js
 'use strict';
 
-const index = 42;
+var index = 42;
 
-const main = (function () {
+var main = (function () {
   console.log('the answer is ' + index);
 });
 
