@@ -2,7 +2,7 @@
 title: Plugins
 ---
 
-### Overview
+### Plugins Overview
 
 A Rollup plugin is a package which exports a function that returns an object with one or more of the [properties](guide/en#properties) and [hooks](guide/en#hooks) described below, and which follows our [conventions](guide/en#conventions).
 
