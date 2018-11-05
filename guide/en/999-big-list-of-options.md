@@ -334,7 +334,22 @@ export default ({
 
 #### perf *`--perf`*
 
+⚠️ Details of this API are not considered stable and may change in minor versions.
+
 `true` or `false` (defaults to `false`) – whether to collect performance timings. When used from the command line or a configuration file, detailed measurements about the current bundling process will be displayed. When used from the [JavaScript API](guide/en#javascript-api), the returned bundle object will contain an aditional `getTimings()` function that can be called at any time to retrieve all accumulated measurements.
+
+`getTimings()` returns an object of the following form:
+
+```json
+{
+  "# BUILD": [ 698.020877, 33979632, 45328080 ],
+  "## parse modules": [ 537.509342, 16295024, 27660296 ],
+  "load modules": [ 33.253778999999994, 2277104, 38204152 ],
+  ...
+}
+```
+
+For each key, the first number represents the elapsed time while the second represents the change in memory consumption and the third represents the total memory consumption after this step. The order of these steps is the order used by `Object.keys`. Top level keys start with `#` and contain the timings of nested steps, i.e. in the example above, the 698ms of the `# BUILD` step include the 538ms of the `## parse modules` step.
 
 ### Danger zone
 
