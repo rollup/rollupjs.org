@@ -522,28 +522,19 @@ console.log(String(namespace));
 
 will always log `[object Module]`;
 
+#### shimMissingExports *`--shimMissingExports`*
+
+`true` or `false` (defaults to `false`) – if this option is provided, bundling will not fail if bindings are imported from a file that does not define these bindings. Instead, new variables will be created for these bindings with the value `undefined`.
+
 ### Experimental options
 
 These options reflect new features that have not yet been fully finalized. Specific behaviour and usage may therefore be subject to change.
 
-#### experimentalDynamicImport *`--experimentalDynamicImport`*
-`true` or `false` (defaults to `false`) – adds the necessary acorn plugin to enable parsing dynamic imports, e.g.
-
-```javascript
-import('./my-module.js')
-  .then(moduleNamespace => console.log(moduleNamespace.foo));
-```
-
-When used without `experimentalCodeSplitting`, statically resolvable dynamic imports will be automatically inlined into your bundle. Also enables the `resolveDynamicImport` plugin hook.
-
 #### experimentalCodeSplitting *`--experimentalCodeSplitting`*
-`true` or `false` (defaults to `false`) – enables you to specify multiple entry points. If this option is enabled, `input` can be set to an array of entry points to be built into the folder at the provided `output.dir`.
+`true` or `false` (defaults to `false`) – enables the generation of multiple chunks. If this option is enabled, `input` can be set to an array or object of entry points to be built into the folder at the provided `output.dir`. See [input](guide/en#input-i-input) for more information
 
-* Filenames of generated chunks in the `output.dir` folder correspond to the entry point filenames.
 * Shared chunks are generated automatically to avoid code duplication between chunks.
-* Enable the `experimentalDynamicImport` flag to generate new chunks for dynamic imports as well.
-
-`output.dir` and input as an array must both be provided for code splitting to work, the `output.file` option is not compatible with code splitting workflows.
+* Dynamic imports will create new chunks instead of being inlined.
 
 #### output.entryFileNames *`--entryFileNames`*
 
@@ -561,6 +552,9 @@ When used without `experimentalCodeSplitting`, statically resolvable dynamic imp
 
 `{ [chunkAlias: String]: String[] }` allows creating custom shared commmon chunks. Provides an alias for the chunk and the list of modules to include in that chunk. Modules are bundled into the chunk along with their dependencies. If a module is already in a previous chunk, then the chunk will reference it there. Modules defined into chunks this way are considered to be entry points that can execute independently to any parent importers.
 
+#### inlineDynamicImports *`--inlineDynamicImports`*
+`true` or `false` (defaults to `false)` - will inline dynamic imports instead of creating new chunks when code-splitting is enabled. Only possible if a single input is provided.
+
 #### optimizeChunks *`--optimizeChunks`*
 
 `true` or `false` (defaults to `false)` - experimental feature to optimize chunk groupings. When a large number of chunks are generated in code-splitting, this allows smaller chunks to group together as long as they are within the `chunkGroupingSize` limit. It results in unnecessary code being loaded in some cases in order to have a smaller number of chunks overall. Disabled by default as it may cause unwanted side effects when loading unexpected code.
@@ -568,6 +562,10 @@ When used without `experimentalCodeSplitting`, statically resolvable dynamic imp
 #### chunkGroupingSize *`--chunkGroupingSize`*
 
 `number` (defaults to 5000) - the total source length allowed to be loaded unnecessarily when applying chunk grouping optimizations.
+
+#### experimentalPreserveModules *`--experimentalPreserveModules`*
+
+Instead of creating as few chunks as possible, this mode will create separate chunks for all modules using the original module names as file names. Requires the `--dir` option. Tree-shaking will still be applied, suppressing files that are not used by the provided entry points or do not have side-effects when executed. This mode can be used to transform a file structure to a different module format.
 
 ### Watch options
 
