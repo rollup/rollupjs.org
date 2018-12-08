@@ -143,9 +143,9 @@ Defines a custom resolver. A resolver loader can be useful for e.g. locating thi
 
 #### `transform`
 Type: `Function`<br>
-Signature: `( source, id ) => (code|{ code, map }|Promise)`
+Signature: `( source, id ) => (code|{ code, map, dependencies }|Promise)`
 
-Can be used to transform individual modules.
+Can be used to transform individual modules. In `--watch` mode, also watch for changes in any of the files or directories in the `dependencies` array.
 
 #### `watchChange`
 Type: `Function`<br>
