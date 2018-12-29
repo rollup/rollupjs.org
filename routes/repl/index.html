@@ -260,8 +260,9 @@
 					const { options } = this.get();
 					const generated = await bundle.generate(options);
 
+					// TODO support multiple chunks
 					this.set({
-						code: generated.code,
+						code: generated.output[0].code,
 						error: null,
 						warnings
 					});
