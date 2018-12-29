@@ -262,7 +262,7 @@
 
 					// TODO support multiple chunks
 					this.set({
-						code: generated.output[0].code,
+						code: generated.output ? generated.output[0].code : generated.code,
 						error: null,
 						warnings
 					});
