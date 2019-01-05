@@ -1,6 +1,6 @@
 # Rollupjs.org
 
-This is the source code for the website. Note that the actual guide is now part of the [main rollup repo](https://github.com/rollup/rollup/tree/master/guide) and needs to be updated there, see below.
+This is the source code for the website. Note that the actual guide is now part of the [main rollup repo](https://github.com/rollup/rollup/tree/master/docs) and needs to be updated there, see below.
 
 ## Steps to build the website locally
 
