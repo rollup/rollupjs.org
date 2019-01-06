@@ -252,15 +252,23 @@
 						}
 					});
 
-					this.set({
-						imports: bundle.imports,
-						exports: bundle.exports
-					});
+					if (bundle.imports && bundle.exports) {
+						this.set({
+							imports: bundle.imports,
+							exports: bundle.exports
+						});
+					}
 
 					const { options } = this.get();
 					const generated = await bundle.generate(options);
 
 					// TODO support multiple chunks
+					if (generated.output) {
+						this.set({
+							imports: generated.output[0].imports,
+							exports: generated.output[0].exports
+						});
+					}
 					this.set({
 						code: generated.output ? generated.output[0].code : generated.code,
 						error: null,
