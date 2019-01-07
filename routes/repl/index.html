@@ -6,9 +6,9 @@
 		</div>
 	</div>
 	<div class='right'>
-		<h2>...bundle comes out</h2>
+		<h2>...{#if output.length > 1}chunks come{:else}bundle comes{/if} out</h2>
 		<div class='output'>
-			<Output bind:options {code} {error} {warnings} {imports} {exports}/>
+			<Output bind:options {output} {error} {warnings}/>
 		</div>
 	</div>
 </div>
@@ -66,7 +66,7 @@
 	}
 
 	:global(input):focus {
-		background-color: #eee;
+		background-color: #eaeaea;
 	}
 
 
@@ -121,20 +121,19 @@
 
 		data () {
 			return {
-				code: '',
+				output: [],
 				rollupReady: false,
 
 				options: {
 					format: 'cjs',
 					name: 'myBundle',
-					amd: { id: '' }
+					amd: { id: '' },
+					globals: {}
 				},
 
 				selectedExample: null,
 				modules: [],
-				warnings: [],
-				imports: [],
-				exports: []
+				warnings: []
 			};
 		},
 
@@ -255,17 +254,13 @@
 
 					if (supportsCodeSplitting()) {
 						this.set({
-							code: generated.output[0].code,
-							imports: generated.output[0].imports,
-							exports: generated.output[0].exports,
+							output: generated.output,
 							error: null,
 							warnings
 						});
 					} else {
 						this.set({
-							code: generated.code,
-							imports: generated.imports,
-							exports: generated.exports,
+							output: [generated],
 							error: null,
 							warnings
 						});
