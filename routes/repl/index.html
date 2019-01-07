@@ -234,6 +234,10 @@
 							}
 						}],
 						onwarn ( warning ) {
+							if (warning.code === 'UNKNOWN_OPTION') {
+								return;
+							}
+
 							warnings.push( warning );
 
 							console.group( warning.loc ? warning.loc.file : '' );
