@@ -9,31 +9,33 @@
 		{/each}
 	</section>
 
-	{#if options.format === 'amd' || options.format === 'umd'}
-		<section>
-			<h3>options.amd.id</h3>
-			<input bind:value='options.amd.id' placeholder='leave blank for anonymous module'>
-		</section>
-	{/if}
-
-	{#if options.format === 'iife' || options.format === 'umd'}
-		{#if exports.length}
+	{#if !error}
+		{#if options.format === 'amd' || options.format === 'umd'}
 			<section>
-				<h3>options.name</h3>
-				<input bind:value='options.name'>
+				<h3>options.amd.id</h3>
+				<input bind:value='options.amd.id' placeholder='leave blank for anonymous module'>
 			</section>
 		{/if}
 
-		{#if sortedImports.length}
-			<section>
-				<h3>options.globals</h3>
-				{#each sortedImports as x (x.name)}
-					<div>
-						<input bind:value='options.globals[x.name]'>
-						<code>'{x.name}'</code>
-					</div>
-				{/each}
-			</section>
+		{#if options.format === 'iife' || options.format === 'umd'}
+			{#if output[0].exports.length}
+				<section>
+					<h3>options.name</h3>
+					<input bind:value='options.name'>
+				</section>
+			{/if}
+
+			{#if sortedImports.length}
+				<section>
+					<h3>options.globals</h3>
+					{#each sortedImports as x (x.name)}
+						<div>
+							<input bind:value='options.globals[x.name]'>
+							<code>'{x.name}'</code>
+						</div>
+					{/each}
+				</section>
+			{/if}
 		{/if}
 	{/if}
 </div>
@@ -76,6 +78,7 @@
 
 	input {
 		padding-left: 1.5em;
+		background-color: #eee;
 	}
 
 	section code {
@@ -106,26 +109,23 @@
 				{ name: 'system', value: 'system' }
 			],
 
-			imports: [],
-			exports: [],
+			output: [],
 			sortedImports: []
 		}),
 
 		computed: {
-			sortedImports: ({ imports, options }) => {
+			sortedImports: ({ output, options }) => {
 				// we only care about this stuff in IIFE/UMD mode...
 				// cheeky hack to clean `options.globals`
 				const { format } = options;
 				if (format !== 'iife' && format !== 'umd') return [];
 
-				return imports
+				return output[0].imports
 					.sort((a, b) => a < b ? -1 : 1)
-					.map(name => {
-						return {
-							name,
-							value: userGlobals[name] || defaultGlobals[name] || name
-						};
-					});
+					.map(name => ({
+						name,
+						value: userGlobals[name] || defaultGlobals[name] || name
+					}));
 			}
 		},
 

@@ -6,9 +6,9 @@
 		</div>
 	</div>
 	<div class='right'>
-		<h2>...bundle comes out</h2>
+		<h2>...{#if output.length > 1}chunks come{:else}bundle comes{/if} out</h2>
 		<div class='output'>
-			<Output bind:options {code} {error} {warnings} {imports} {exports}/>
+			<Output bind:options {output} {error} {warnings}/>
 		</div>
 	</div>
 </div>
@@ -66,7 +66,7 @@
 	}
 
 	:global(input):focus {
-		background-color: #eee;
+		background-color: #eaeaea;
 	}
 
 
@@ -84,7 +84,8 @@
 	import Input from './_Input/index.html';
 	import Output from './_Output/index.html';
 	import debounce from './_utils/debounce.js';
-	import { dirname, resolve } from './_utils/path';
+	import {dirname, resolve} from './_utils/path';
+	import {supportsCodeSplitting, supportsInput} from './_utils/rollupVersion';
 
 	const versionMatch = typeof window !== 'undefined' ? /version=([^&]+)/.exec( window.location.search ) : null;
 
@@ -120,20 +121,19 @@
 
 		data () {
 			return {
-				code: '',
+				output: [],
 				rollupReady: false,
 
 				options: {
 					format: 'cjs',
 					name: 'myBundle',
-					amd: { id: '' }
+					amd: { id: '' },
+					globals: {}
 				},
 
 				selectedExample: null,
 				modules: [],
-				warnings: [],
-				imports: [],
-				exports: []
+				warnings: []
 			};
 		},
 
@@ -211,69 +211,60 @@
 				});
 
 				const warnings = [];
+				const inputOptions = {
+					plugins: [{
+						resolveId ( importee, importer ) {
+							if ( !importer ) return importee;
+							if ( importee[0] !== '.' ) return false;
+
+							let resolved = resolve( dirname( importer ), importee ).replace( /^\.\//, '' );
+							if ( resolved in moduleById ) return resolved;
+
+							resolved += '.js';
+							if ( resolved in moduleById ) return resolved;
+
+							throw new Error( `Could not resolve '${importee}' from '${importer}'` );
+						},
+						load: function ( id ) {
+							return moduleById[ id ].code;
+						}
+					}],
+					onwarn ( warning ) {
+						warnings.push( warning );
+
+						console.group( warning.loc ? warning.loc.file : '' );
+
+						console.warn( warning.message );
+
+						if ( warning.frame ) {
+							console.log( warning.frame );
+						}
+
+						if ( warning.url ) {
+							console.log( `See ${warning.url} for more information` );
+						}
+
+						console.groupEnd();
+					}
+				};
+				inputOptions[supportsInput() ? 'input' : 'entry'] = 'main.js';
 
 				try {
-					const bundle = await rollup.rollup({
-						input: 'main.js',
-						entry: 'main.js', // for older versions
-						plugins: [{
-							resolveId ( importee, importer ) {
-								if ( !importer ) return importee;
-								if ( importee[0] !== '.' ) return false;
+					const generated = await (await rollup.rollup(inputOptions)).generate(this.get().options);
 
-								let resolved = resolve( dirname( importer ), importee ).replace( /^\.\//, '' );
-								if ( resolved in moduleById ) return resolved;
-
-								resolved += '.js';
-								if ( resolved in moduleById ) return resolved;
-
-								throw new Error( `Could not resolve '${importee}' from '${importer}'` );
-							},
-							load: function ( id ) {
-								return moduleById[ id ].code;
-							}
-						}],
-						onwarn ( warning ) {
-							warnings.push( warning );
-
-							console.group( warning.loc ? warning.loc.file : '' );
-
-							console.warn( warning.message );
-
-							if ( warning.frame ) {
-								console.log( warning.frame );
-							}
-
-							if ( warning.url ) {
-								console.log( `See ${warning.url} for more information` );
-							}
-
-							console.groupEnd();
-						}
-					});
-
-					if (bundle.imports && bundle.exports) {
+					if (supportsCodeSplitting()) {
 						this.set({
-							imports: bundle.imports,
-							exports: bundle.exports
+							output: generated.output,
+							error: null,
+							warnings
+						});
+					} else {
+						this.set({
+							output: [generated],
+							error: null,
+							warnings
 						});
 					}
-
-					const { options } = this.get();
-					const generated = await bundle.generate(options);
-
-					// TODO support multiple chunks
-					if (generated.output) {
-						this.set({
-							imports: generated.output[0].imports,
-							exports: generated.output[0].exports
-						});
-					}
-					this.set({
-						code: generated.output ? generated.output[0].code : generated.code,
-						error: null,
-						warnings
-					});
 				} catch(error) {
 					this.set({ error });
 					if ( error.frame ) console.log( error.frame );
