@@ -11,7 +11,7 @@
 
 <div ref:modules class='modules'>
 	{#each modules as module, i}
-		<Module bind:name='module.name' bind:code='module.code' index='{i}' main='{i===0}' on:remove='removeModule(i)'/>
+		<Module bind:name='module.name' bind:code='module.code' index={i} main={i===0} isEntry={codeSplitting && module.isEntry} {codeSplitting} on:remove='removeModule(i)' on:toggle-entry="toggleEntryModule(i)"/>
 	{/each}
 </div>
 
@@ -52,6 +52,7 @@
 
 <script>
 	import Module from './Module.html';
+	import {supportsCodeSplitting} from '../_utils/rollupVersion';
 
 	let uid = 1;
 
@@ -70,6 +71,13 @@
 			removeModule(index) {
 				const { modules } = this.get();
 				modules.splice(index, 1);
+
+				this.set({ modules });
+			},
+
+			toggleEntryModule(index) {
+				const { modules } = this.get();
+				modules[index].isEntry = !modules[index].isEntry;
 
 				this.set({ modules });
 			},
@@ -93,7 +101,7 @@
 
 			clear() {
 				this.set({
-					modules: [{ name: 'main.js', code: '' }],
+					modules: [{ name: 'main.js', code: '', isEntry: true }],
 					selectedExample: null
 				});
 			}

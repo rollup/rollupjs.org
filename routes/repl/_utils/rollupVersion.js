@@ -1,4 +1,5 @@
 const isRollupVersionAtLeast = (major, minor) => {
+	if (!window.rollup) return false;
 	const [currentMajor, currentMinor] = window.rollup.VERSION.split('.').map(Number);
 	return currentMajor > major || (currentMajor === major && currentMinor >= minor);
 };

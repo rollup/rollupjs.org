@@ -1,8 +1,15 @@
-/* STATIC NAMESPACES
-   ES6 modules let you import all of another module's
-   exports as a namespace... */
-import * as assert from './assert';
+/* NAMED EXPORTS
+   There are many ways to export bindings
+   from an ES2015 module */
+export var foo = 1;
 
-// ...but we can statically resolve this to the
-// original function definition
-assert.equal( 1 + 1, 2 );
+export function bar () {
+	return foo; // try changing this to `foo++`
+}
+
+function baz () {
+	return bar();
+}
+
+export { baz };
+export * from './qux';

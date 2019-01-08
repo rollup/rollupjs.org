@@ -1,14 +1,24 @@
-<article class='module {main ? "main-module" : ""}'>
+<article class='module {main || isEntry ? "entry-module" : ""} {codeSplitting ? "code-splitting" : ""}'>
 	<header>
 		{#if main}
-			<span class='entry-module-name'>main.js <span class='entry-module-label'>(entry module)</span></span>
+			<span class='entry-module-name'>main.js<span class='entry-module-label'>(entry module)</span></span>
 		{:else}
 			<input class='module-name' bind:value='name' on:focus='selectName(this)' on:tab='focusEditor(event)' placeholder='foo.js'>
 
-			<button class='remove' on:click='fire("remove")'>
+		    <button class='remove' on:click='fire("remove")'>
 				<span class='label'>remove</span>
 				<span class='icon-cancel'></span>
 			</button>
+			{#if codeSplitting}
+				<button class='toggle-entry' on:click='fire("toggle-entry")'>
+					<span class='label'>(entry&nbsp;module)</span>
+					{#if isEntry}
+						<span class='icon-minus'></span>
+					{:else}
+						<span class='icon-plus'></span>
+					{/if}
+				</button>
+			{/if}
 		{/if}
 	</header>
 
@@ -26,7 +36,7 @@
 		border-bottom: 1px solid #f4f4f4;
 	}
 
-	.main-module {
+	.entry-module {
 		border: 1px solid #ccc;
 	}
 
@@ -36,20 +46,27 @@
 	}
 
 	.entry-module-label {
-		color: #999;
+		color: #555;
+		opacity: 0.6;
+		position: absolute;
+		right: 0;
+		padding-right: 0.5em;
 	}
 
-	.remove {
+	.code-splitting input {
+		padding: 0.8em;
+	}
+
+	button {
 		position: absolute;
 		display: block;
-		top: 0;
 		right: 0;
 		font-family: inherit;
 		font-size: inherit;
 		padding: 0.5em;
+		margin: 0;
 		background-color: transparent;
 		border: none;
-		color: #e94c43;
 		cursor: pointer;
 		outline: none;
 		opacity: 0.4;
@@ -57,12 +74,29 @@
 		transition: opacity 0.2s;
 	}
 
-	.remove:hover, .remove:active {
+	.code-splitting button {
+		padding: 0.2em;
+	}
+
+	.toggle-entry {
+		bottom: 0;
+		color: #555;
+	}
+
+	.remove {
+		top: 0;
+		color: #e94c43;
+	}
+
+	button:hover,
+	button:active,
+	.entry-module .toggle-entry:hover,
+	.entry-module .toggle-entry:active {
 		opacity: 1;
 		background-color: transparent;
 	}
 
-	.remove .label {
+	button .label {
 		position: absolute;
 		right: 100%;
 		opacity: 0;
@@ -70,11 +104,19 @@
 		transition: opacity 0.2s;
 	}
 
-	.remove:hover .label, .remove:active .label {
+	.entry-module .toggle-entry .label {
+		opacity: 1;
+	}
+
+	.entry-module button.toggle-entry {
 		opacity: 0.6;
 	}
 
-	.icon-cancel {
+	button:hover .label, button:active .label {
+		opacity: 0.6;
+	}
+
+	.icon-cancel, .icon-plus, .icon-minus {
 		font-size: 0.8em;
 	}
 </style>

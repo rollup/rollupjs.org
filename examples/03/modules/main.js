@@ -1,6 +1,8 @@
-/* EXTERNAL IMPORTS
-   You can import external modules into your bundle –
-   it doesn't matter if they're ES2015 or legacy */
-import $ from 'jquery';
+/* DEFAULT EXPORTS
+   Default exports from the 'entry module' are
+   exported from the bundle */
+import answer from './answer.js';
 
-$( 'body' ).html( '<h1>Hello world!</h1>' );
+export default function () {
+	console.log( 'the answer is ' + answer );
+}

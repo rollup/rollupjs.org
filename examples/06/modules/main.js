@@ -1,9 +1,8 @@
-/* DYNAMIC IMPORTS
-   Rollup supports automatic chunking and lazy-loading
-   via dynamic imports utilizing the import mechanism
-   of the host system. */
+/* STATIC NAMESPACES
+   ES6 modules let you import all of another module's
+   exports as a namespace... */
+import * as assert from './assert';
 
-import('./maths.js').then(function (maths) {
-	console.log( maths.square( 5 ) );
-	console.log( maths.cube( 5 ) );
-});
+// ...but we can statically resolve this to the
+// original function definition
+assert.equal( 1 + 1, 2 );

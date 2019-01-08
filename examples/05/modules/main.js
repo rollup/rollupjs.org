@@ -1,10 +1,6 @@
-/* DYNAMIC NAMESPACES
-   In some cases, you don't know which exports will
-   be accessed until you actually run the code. In
-   these cases, Rollup creates a namespace object
-   for dynamic lookup */
-import * as constants from './constants';
+/* EXTERNAL IMPORTS
+   You can import external modules into your bundle –
+   it doesn't matter if they're ES2015 or legacy */
+import $ from 'jquery';
 
-Object.keys( constants ).forEach( key => {
-	console.log( `The value of ${key} is ${constants[key]}` );
-});
+$( 'body' ).html( '<h1>Hello world!</h1>' );
