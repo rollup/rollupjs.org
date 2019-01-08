@@ -2,7 +2,7 @@
 	<div class='left'>
 		<h2>ES6 modules go in...</h2>
 		<div class='input'>
-			<Input {examples} bind:selectedExample bind:modules/>
+			<Input {examples} {codeSplitting} bind:selectedExample bind:modules/>
 		</div>
 	</div>
 	<div class='right'>
@@ -114,9 +114,7 @@
 		},
 
 		preload({ params, query }) {
-			return this.fetch(`api/examples.json`).then(r => r.json()).then(examples => {
-				return { examples };
-			});
+			return this.fetch(`api/examples.json`).then(r => r.json()).then(examples => ({examples}));
 		},
 
 		data () {
@@ -131,6 +129,7 @@
 					globals: {}
 				},
 
+				codeSplitting: false,
 				selectedExample: null,
 				modules: [],
 				warnings: []
@@ -164,7 +163,7 @@
 			this.debouncedBundle = debounce(() => this.bundle(), 100);
 
 			const rollup = await loadRollup(url);
-			this.set({ rollupReady: true });
+			this.set({ rollupReady: true, codeSplitting: supportsCodeSplitting() });
 			this.bundle();
 		},
 
@@ -247,7 +246,13 @@
 						console.groupEnd();
 					}
 				};
-				inputOptions[supportsInput() ? 'input' : 'entry'] = 'main.js';
+				if (supportsCodeSplitting()) {
+					inputOptions.input = modules
+						.filter((module, index) => index === 0 || module.isEntry)
+						.map(module => module.name);
+				} else {
+					inputOptions[supportsInput() ? 'input' : 'entry'] = 'main.js';
+				}
 
 				try {
 					const generated = await (await rollup.rollup(inputOptions)).generate(this.get().options);

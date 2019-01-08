@@ -1,8 +1,4 @@
-/* DEFAULT EXPORTS
-   Default exports from the 'entry module' are
-   exported from the bundle */
-import answer from './answer.js';
+/* MULTIPLE ENTRY MODULES */
+import hyperCube from './hyperCube.js';
 
-export default function () {
-	console.log( 'the answer is ' + answer );
-}
+console.log( hyperCube( 5 ) );

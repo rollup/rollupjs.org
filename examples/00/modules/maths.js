@@ -1,14 +1,7 @@
-// maths.js
+import square from './square.js';
 
-// This function isn't used anywhere, so
-// Rollup excludes it from the bundle...
-export function square ( x ) {
-	return x * x;
-}
+export {default as square} from './square.js';
 
-// This function gets included
-export function cube ( x ) {
-	// rewrite this as `square( x ) * x`
-	// and see what happens!
-	return x * x * x;
+export function cube (x ) {
+	return square(x) * x;
 }
