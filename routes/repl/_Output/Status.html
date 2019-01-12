@@ -1,19 +1,20 @@
-<div class='status {error ? "error": "success"}'>
+<div class='status {error ? "error": waiting ? "waiting" : "success"}'>
+	<span>
 	{#if error}
-		<span>
-			<span class='icon icon-error'></span>
-			<strong>{error.name}:</strong> {error.message}
-		</span>
+		<span class='icon icon-error'></span>
+		<strong>{error.name}:</strong> {error.message}
+	{:elseif waiting}
+		<span class='icon icon-attention'></span>
+		Loading Rollup...
 	{:else}
-		<span>
-			<span class='icon icon-ok'></span>
-			Rollup successful!
+		<span class='icon icon-ok'></span>
+		Rollup successful!
 
-			{#if warnings.length}
-				({warnings.length} {warnings.length === 1 ? 'warning' : 'warnings'} — check the console)
-			{/if}
-		</span>
+		{#if warnings.length}
+			({warnings.length} {warnings.length === 1 ? 'warning' : 'warnings'} — check the console)
+		{/if}
 	{/if}
+	</span>
 </div>
 
 <style>
@@ -25,6 +26,10 @@
 
 	.success {
 		background-color: #3D9970;
+	}
+
+	.waiting {
+		background-color: #4384e6;
 	}
 
 	.error {
