@@ -8,7 +8,7 @@
 	<div class='right'>
 		<h2>...{#if output.length > 1}chunks come{:else}bundle comes{/if} out</h2>
 		<div class='output'>
-			<Output bind:options {output} {error} {warnings}/>
+			<Output bind:options {output} {error} {warnings} waiting={!rollupReady}/>
 		</div>
 	</div>
 </div>
@@ -16,7 +16,7 @@
 <!-- trick Sapper into generating example JSON files -->
 <!-- TODO use a <link> to do this instead! -->
 {#each examples as example}
-	<a hidden href="api/examples/{example.id}.json">{example.title}</a>
+<a hidden href="api/examples/{example.id}.json">{example.title}</a>
 {/each}
 
 <style>
@@ -87,16 +87,16 @@
 	import {dirname, resolve} from './_utils/path';
 	import {supportsCodeSplitting, supportsInput} from './_utils/rollupVersion';
 
-	const versionMatch = typeof window !== 'undefined' ? /version=([^&]+)/.exec( window.location.search ) : null;
+	const versionMatch = typeof window !== 'undefined' ? /version=([^&]+)/.exec(window.location.search) : null;
 
 	const atob = typeof window !== 'undefined' ?
 		window.atob :
 		base64 => Buffer.from(base64, 'base64').toString();
 
-	function loadRollup(url) {
+	function loadRollup ( url ) {
 		// TODO expose an ESM build of rollup.browser.js, so we
 		// can just use import()
-		return new Promise((fulfil, reject) => {
+		return new Promise(( fulfil, reject ) => {
 			const script = document.createElement('script');
 			script.src = url;
 			script.onload = () => {
@@ -113,8 +113,8 @@
 			Output
 		},
 
-		preload({ params, query }) {
-			return this.fetch(`api/examples.json`).then(r => r.json()).then(examples => ({examples}));
+		preload ( { params, query } ) {
+			return this.fetch(`api/examples.json`).then(r => r.json()).then(examples => ({ examples }));
 		},
 
 		data () {
@@ -139,16 +139,31 @@
 		async oncreate () {
 			const { query } = this.get();
 
-			if (query.shareable) {
-				const json = decodeURIComponent(atob(query.shareable));
-
-				try {
-					const saved = JSON.parse(json);
-					this.set(saved);
-				} catch (err) {
+			try {
+				if ( query.shareable ) {
+					const json = decodeURIComponent(atob(query.shareable));
+					this.set(JSON.parse(json));
+				} else if ( query.gist ) {
+					const result = await (await fetch(`https://api.github.com/gists/${query.gist}`, {
+						method: 'GET',
+						headers: { Accept: 'application/vnd.github.v3+json' }
+					})).json();
+					const entryModules = query.entry ? query.entry.split(',') : [];
+					const modules = [result.files['main.js'] || { filename: 'main.js', content: '' }]
+						.concat(Object.keys(result.files)
+							.filter(fileName => fileName !== 'main.js')
+							.map(fileName => result.files[fileName])
+						).map(module => ({
+							name: module.filename,
+							code: module.content,
+							isEntry: entryModules.indexOf(module.filename) >= 0
+						}));
+					this.set({ modules });
+				} else {
 					this.set({ selectedExample: '00' });
 				}
-			} else {
+			} catch (err) {
+				console.error(err);
 				this.set({ selectedExample: '00' });
 			}
 
@@ -167,8 +182,8 @@
 			this.bundle();
 		},
 
-		onstate({ changed, current }) {
-			if (changed.selectedExample && current.selectedExample) {
+		onstate ( { changed, current } ) {
+			if ( changed.selectedExample && current.selectedExample ) {
 				fetch(`api/examples/${current.selectedExample}.json`).then(r => r.json()).then(example => {
 					this.settingModulesViaExample = true;
 					this.set({ modules: example.modules });
@@ -176,9 +191,9 @@
 				});
 			}
 
-			if (current.rollupReady) {
-				if (changed.modules) {
-					if (this.settingModulesViaExample) {
+			if ( current.rollupReady ) {
+				if ( changed.modules ) {
+					if ( this.settingModulesViaExample ) {
 						this.bundle();
 					} else {
 						this.set({ selectedExample: null });
@@ -186,17 +201,17 @@
 					}
 				}
 
-				if (changed.options) this.bundle();
+				if ( changed.options ) this.bundle();
 			}
 		},
 
 		methods: {
-			async bundle() {
-				if (!window.rollup) return;
+			async bundle () {
+				if ( !window.rollup ) return;
 
 				const { modules } = this.get();
 
-				if (this.updating || !modules.length) return; // TODO this is inelegant...
+				if ( this.updating || !modules.length ) return; // TODO this is inelegant...
 				this.updating = true;
 
 				console.clear();
@@ -216,39 +231,39 @@
 							if ( !importer ) return importee;
 							if ( importee[0] !== '.' ) return false;
 
-							let resolved = resolve( dirname( importer ), importee ).replace( /^\.\//, '' );
+							let resolved = resolve(dirname(importer), importee).replace(/^\.\//, '');
 							if ( resolved in moduleById ) return resolved;
 
 							resolved += '.js';
 							if ( resolved in moduleById ) return resolved;
 
-							throw new Error( `Could not resolve '${importee}' from '${importer}'` );
+							throw new Error(`Could not resolve '${importee}' from '${importer}'`);
 						},
 						load: function ( id ) {
-							return moduleById[ id ].code;
+							return moduleById[id].code;
 						}
 					}],
 					onwarn ( warning ) {
-						warnings.push( warning );
+						warnings.push(warning);
 
-						console.group( warning.loc ? warning.loc.file : '' );
+						console.group(warning.loc ? warning.loc.file : '');
 
-						console.warn( warning.message );
+						console.warn(warning.message);
 
 						if ( warning.frame ) {
-							console.log( warning.frame );
+							console.log(warning.frame);
 						}
 
 						if ( warning.url ) {
-							console.log( `See ${warning.url} for more information` );
+							console.log(`See ${warning.url} for more information`);
 						}
 
 						console.groupEnd();
 					}
 				};
-				if (supportsCodeSplitting()) {
+				if ( supportsCodeSplitting() ) {
 					inputOptions.input = modules
-						.filter((module, index) => index === 0 || module.isEntry)
+						.filter(( module, index ) => index === 0 || module.isEntry)
 						.map(module => module.name);
 				} else {
 					inputOptions[supportsInput() ? 'input' : 'entry'] = 'main.js';
@@ -257,7 +272,7 @@
 				try {
 					const generated = await (await rollup.rollup(inputOptions)).generate(this.get().options);
 
-					if (supportsCodeSplitting()) {
+					if ( supportsCodeSplitting() ) {
 						this.set({
 							output: generated.output,
 							error: null,
@@ -270,10 +285,10 @@
 							warnings
 						});
 					}
-				} catch(error) {
+				} catch (error) {
 					this.set({ error });
-					if ( error.frame ) console.log( error.frame );
-					setTimeout( () => {
+					if ( error.frame ) console.log(error.frame);
+					setTimeout(() => {
 						throw error;
 					});
 				}
@@ -299,9 +314,9 @@
 					example: selectedExample
 				});
 
-				params.shareable = btoa( encodeURIComponent( json ) );
+				params.shareable = btoa(encodeURIComponent(json));
 
-				const queryString = Object.keys( params ).map( key => `${key}=${params[key]}` ).join( '&' );
+				const queryString = Object.keys(params).map(key => `${key}=${params[key]}`).join('&');
 				const url = `/repl?${queryString}`;
 
 				// TODO this should probably be a sapper `goto(url, { replaceState: true })` call
