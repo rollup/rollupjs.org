@@ -25,7 +25,7 @@
   },
   "scripts": {
     "dev": "sapper dev",
-    "build": "sapper export --legacy",
+    "build": "npm run update-guide && sapper export --legacy",
     "start": "sirv export",
     "update-guide": "git submodule update --init --recursive && shx rm -rf guide/en && shx cp -r rollup-submodule/docs/ guide/en",
     "publish-updated-guide": "git pull && git submodule update --init --recursive && cd rollup-submodule && git checkout master && git pull && cd .. && git add rollup-submodule && git commit -m \"Update guide\" && git push",
