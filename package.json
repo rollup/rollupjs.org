@@ -11,7 +11,6 @@
     "console-group": "^0.3.3",
     "highlight.js": "^9.12.0",
     "marked": "^0.5.0",
-    "now": "^11.4.1",
     "rollup": "^0.65.0",
     "rollup-plugin-babel": "^4.3.2",
     "rollup-plugin-commonjs": "^9.1.6",
@@ -26,16 +25,15 @@
   },
   "scripts": {
     "dev": "sapper dev",
-    "build": "sapper export --legacy",
+    "build": "npm run update-guide && sapper export --legacy",
     "start": "sirv export",
     "update-guide": "git submodule update --init --recursive && shx rm -rf guide/en && shx cp -r rollup-submodule/docs/ guide/en",
     "publish-updated-guide": "git pull && git submodule update --init --recursive && cd rollup-submodule && git checkout master && git pull && cd .. && git add rollup-submodule && git commit -m \"Update guide\" && git push",
     "clean": "rm -rf client/dist && rm -rf server/dist && rm -rf service-worker/dist && mkdir -p client/dist && mkdir -p server/dist && mkdir -p service-worker/dist",
-    "stage": "(cd export && now .)",
-    "predeploy": "npm run update-guide && npm run build",
-    "predeploy:ci": "npm run update-guide && npm run build",
-    "deploy": "(cd export && now . && now alias)",
-    "deploy:ci": "(cd export && now . --token $NOW_TOKEN && now alias --token $NOW_TOKEN)"
+    "stage": "netlify deploy --dir=export",
+    "deploy": "netlify deploy --dir=export --prod",
+    "prestage": "npm run build",
+    "predeploy": "npm run build"
   },
   "dependencies": {
     "@babel/runtime": "^7.0.0",
