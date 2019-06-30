@@ -18,6 +18,7 @@ function addId(id, title) {
 
 const idRegExp = / id="[^"]+/g;
 for (const section of sections) {
+	addId(section.slug, section.metadata.title);
 	const matches = section.html.match(idRegExp) || [];
 	for (const match of matches) {
 		addId(match.slice(5), section.metadata.title);
