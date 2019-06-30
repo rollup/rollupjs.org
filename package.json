@@ -28,8 +28,8 @@
     "update-guide": "git submodule update --init --recursive && shx rm -rf guide/en && shx cp -r rollup-submodule/docs/ guide/en",
     "publish-updated-guide": "git pull && git submodule update --init --recursive && cd rollup-submodule && git checkout master && git pull && cd .. && npm test && git add rollup-submodule && git commit -m \"Update guide\" && git push",
     "clean": "rm -rf client/dist && rm -rf server/dist && rm -rf service-worker/dist && mkdir -p client/dist && mkdir -p server/dist && mkdir -p service-worker/dist",
-    "stage": "netlify deploy --dir=export",
-    "deploy": "netlify deploy --dir=export --prod",
+    "stage": "netlify deploy --dir=__sapper__/export",
+    "deploy": "netlify deploy --dir=__sapper__/export --prod",
     "prestage": "npm run build",
     "predeploy": "npm run build",
     "test": "npx rollup test/verify-guide-links.js -f cjs --silent | node"
