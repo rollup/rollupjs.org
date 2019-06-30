@@ -1,9 +1,7 @@
 .DS_Store
 node_modules
-.sapper
+/__sapper__/
 .vscode
-/app/manifest
-/export
 
 # Needs to be taken from the main rollup repo
 guide/en
