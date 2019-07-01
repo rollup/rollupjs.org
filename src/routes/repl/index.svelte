@@ -137,7 +137,7 @@
 	async function bundle () {
 		console.clear();
 		console.log(`running Rollup version %c${rollup.VERSION}`, 'font-weight: bold');
-		if (selectedExample) {
+		if (selectedExample && selectedExampleModules.length) {
 		  if (modules.length !== selectedExampleModules.length || selectedExampleModules.some((module, index) => {
 		    const currentModule = modules[index];
 		    return currentModule.name !== module.name ||
