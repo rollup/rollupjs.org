@@ -25,11 +25,11 @@ for (const section of sections) {
 	}
 }
 
-const linkRegExp = / href="guide\/en#[^"]+/g;
+const linkRegExp = / href="guide\/en\/#[^"]+/g;
 for (const section of sections) {
 	const matches = section.html.match(linkRegExp) || [];
 	for (const match of matches) {
-		const id = match.slice(16);
+		const id = match.slice(17);
 		if (!ids.has(id)) {
 			errors.push(`The link "${id}" in section "${section.metadata.title}" does not correspond to an existing id.`);
 		}
