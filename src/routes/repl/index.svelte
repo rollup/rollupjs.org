@@ -104,6 +104,7 @@
         	modules = example.modules;
         	selectedExampleModules = modules.map(module => ({...module}))
         });
+        input.$set({modules, selectedExample});
 	}
 
 	$: {
