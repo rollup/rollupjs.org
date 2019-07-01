@@ -1,11 +1,9 @@
 <script>
-    import { onMount, onDestroy } from 'svelte';
-
 	export let sections;
 	export let lang;
 
 	export let active = null;
-	$: base =  `guide/${lang}`;
+	$: base =  `guide/${lang}/`;
 
 	function scrollActiveIntoView() {
 		const element = document.getElementById('link' + active);
@@ -26,21 +24,6 @@
 		    scrollActiveIntoView();
 	    }
 	}
-
-	function onHashChange() {
-		active = window.location.hash.slice( 1 );
-	}
-
-	onMount(() => {
-		window.addEventListener('hashchange', onHashChange, false);
-		onHashChange();
-	});
-
-	onDestroy(() => {
-		if (typeof window !== 'undefined') {
-			window.removeEventListener('hashchange', onHashChange, false);
-		}
-	});
 </script>
 
 <style>

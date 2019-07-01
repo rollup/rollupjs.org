@@ -238,7 +238,7 @@
     	});
     	params.shareable = btoa(encodeURIComponent(json));
     	const queryString = Object.keys(params).map(key => `${key}=${params[key]}`).join('&');
-    	const url = `/repl?${queryString}`;
+    	const url = `/repl/?${queryString}`;
     	window.history.replaceState({}, '', url);
     }
 </script>

@@ -224,13 +224,13 @@
 <div class='container'>
 	<span class="menu-link" on:click='{toggleOpen}'>{open ? 'Close' : 'Menu'}</span>
 
-	<a rel="prefetch" href='guide/en' class='logo'>rollup.js</a>
+	<a rel="prefetch" href='guide/en/' class='logo'>rollup.js</a>
 </div>
 
 <nav bind:this={nav} class='{open ? "open": "closed"}' on:click="{() => {open=false;}}">
 	<ul class='primary'>
-		<li><a rel="prefetch" class='{page === "guide" ? "active": ""}' href='guide/en'>guide</a></li>
-		<li><a rel="prefetch" class='{page === "repl" ? "active": ""}' href='repl'>repl</a></li>
+		<li><a rel="prefetch" class='{page === "guide" ? "active": ""}' href='guide/en/'>guide</a></li>
+		<li><a rel="prefetch" class='{page === "repl" ? "active": ""}' href='repl/'>repl</a></li>
 		<li><a href='https://gitter.im/rollup/rollup'>chat</a></li>
 		<li><a href='https://github.com/rollup/rollup'>github</a></li>
 	</ul>

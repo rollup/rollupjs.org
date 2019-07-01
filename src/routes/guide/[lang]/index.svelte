@@ -45,11 +45,11 @@
 			.concat(Array.from(container.querySelectorAll('h3[id]')))
 			.sort(( a, b ) => a.getBoundingClientRect().top - b.getBoundingClientRect().top);
 
-		lastId = window.location.hash.slice(1);
-		if (lastId) {
-		  const element = document.getElementById(lastId);
+		const id = window.location.hash.slice(1);
+		if (id) {
+		  const element = document.getElementById(id);
 		  if (element) {
-		    window.scrollTo(0, element.getBoundingClientRect().top)
+		    window.scrollBy(0, element.getBoundingClientRect().top)
 		  }
 		}
 
