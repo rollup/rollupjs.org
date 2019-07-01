@@ -27,6 +27,7 @@ self.addEventListener('activate', event => {
 			}
 
 			self.clients.claim();
+			console.info(`service-worker updated to version ${new Date(timestamp)}.`);
 		})
 	);
 });
@@ -43,7 +44,7 @@ self.addEventListener('fetch', event => {
 	if (url.hostname === self.location.hostname && url.port !== self.location.port) return;
 
 	// always serve static files and bundler-generated assets from cache
-	if (url.host === self.location.host && cached.has(url.pathname)) {
+	if (url.host === self.location.host && cached.has(url.pathname.slice(1))) {
 		event.respondWith(caches.match(event.request));
 		return;
 	}
