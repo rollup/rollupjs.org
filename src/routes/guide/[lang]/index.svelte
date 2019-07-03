@@ -40,21 +40,24 @@
     	}
     }
 
+	function onhashchange(event) {
+    	const id = window.location.hash.slice(1);
+    	if (id) {
+    	  const element = document.getElementById(id);
+    	  if (element) {
+    	  	window.scrollBy({left: -Infinity, top: element.getBoundingClientRect().top})
+    	  }
+    	}
+	}
+
 	onMount(() => {
 		anchors = Array.from(container.querySelectorAll('section[id]'))
 			.concat(Array.from(container.querySelectorAll('h3[id]')))
 			.sort(( a, b ) => a.getBoundingClientRect().top - b.getBoundingClientRect().top);
 
-		const id = window.location.hash.slice(1);
-		if (id) {
-		  const element = document.getElementById(id);
-		  if (element) {
-		    window.scrollBy(0, element.getBoundingClientRect().top)
-		  }
-		}
-
 		window.addEventListener('scroll', onscroll, true);
 		window.addEventListener('resize', onresize, true);
+		window.addEventListener('hashchange', onhashchange, true);
 
 		// wait for fonts to load...
 		timeouts = [
@@ -62,6 +65,7 @@
 			setTimeout(onresize, 5000)
 		];
 
+		onhashchange();
 		onresize();
 		onscroll();
 	});
@@ -70,6 +74,7 @@
 	    if (typeof window !== 'undefined') {
    	        window.removeEventListener('scroll', onscroll, true);
     	    window.removeEventListener('resize', onresize, true);
+		    window.removeEventListener('hashchange', onhashchange, true);
 	    }
 
     	timeouts.forEach(timeout => clearTimeout(timeout));
