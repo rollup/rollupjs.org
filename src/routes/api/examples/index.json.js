@@ -1,11 +1,13 @@
 import examples from './_data.js';
 
-const contents = JSON.stringify(examples.map(example => {
-	return {
-		id: example.id,
-		title: example.title
-	};
-}));
+const contents = JSON.stringify(
+	examples.map(example => {
+		return {
+			id: example.id,
+			title: example.title
+		};
+	})
+);
 
 export function get(req, res) {
 	res.writeHead(200, {

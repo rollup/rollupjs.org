@@ -6,7 +6,8 @@ import hljs from 'highlight.js';
 // Register dummy language for plain text code blocks.
 hljs.registerLanguage('text', () => ({}));
 
-export default fs.readdirSync('guide')
+export default fs
+	.readdirSync('guide')
 	.filter(dir => {
 		return fs.statSync(`guide/${dir}`).isDirectory();
 	})
@@ -39,15 +40,12 @@ function create_guide(lang) {
 		let uid = 0;
 		const highlighted = {};
 
-		content = content.replace(
-			/```([\w-]+)?\n([\s\S]+?)```/g,
-			(match, lang, code) => {
-				const { value } = hljs.highlight(lang || 'bash', code);
-				highlighted[++uid] = value;
+		content = content.replace(/```([\w-]+)?\n([\s\S]+?)```/g, (match, lang, code) => {
+			const { value } = hljs.highlight(lang || 'bash', code);
+			highlighted[++uid] = value;
 
-				return `@@${uid}`;
-			}
-		);
+			return `@@${uid}`;
+		});
 
 		const html = marked(content)
 			.replace(/<p>(<a class='open-in-repl'[\s\S]+?)<\/p>/g, '$1')
@@ -63,7 +61,7 @@ function create_guide(lang) {
 			const title = match[2]
 				.replace(/<\/?code>/g, '')
 				.replace(/&quot;/g, '"')
-				.replace(/&#39;/g, '\'')
+				.replace(/&#39;/g, "'")
 				.replace(/\.(\w+).*/, '.$1')
 				.replace(/\((\w+).*\)/, '');
 
