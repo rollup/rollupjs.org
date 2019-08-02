@@ -1,4 +1,4 @@
-import { timestamp, files, shell, routes } from '@sapper/service-worker';
+import { files, shell, timestamp } from '@sapper/service-worker';
 
 const ASSETS = `cache${timestamp}`;
 
@@ -65,19 +65,17 @@ self.addEventListener('fetch', event => {
 	// cache if the user is offline. (If the pages never change, you
 	// might prefer a cache-first approach to a network-first one.)
 	event.respondWith(
-		caches
-			.open(`offline${timestamp}`)
-			.then(async cache => {
-				try {
-					const response = await fetch(event.request);
-					cache.put(event.request, response.clone());
-					return response;
-				} catch(err) {
-					const response = await cache.match(event.request);
-					if (response) return response;
+		caches.open(`offline${timestamp}`).then(async cache => {
+			try {
+				const response = await fetch(event.request);
+				cache.put(event.request, response.clone());
+				return response;
+			} catch (err) {
+				const response = await cache.match(event.request);
+				if (response) return response;
 
-					throw err;
-				}
-			})
+				throw err;
+			}
+		})
 	);
 });

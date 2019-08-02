@@ -11,7 +11,9 @@ const errors = [];
 
 function addId(id, title) {
 	if (ids.has(id)) {
-		errors.push(`The id "${id}" in section "${title}" conflicts with the same id in section "${ids.get(id)}".`);
+		errors.push(
+			`The id "${id}" in section "${title}" conflicts with the same id in section "${ids.get(id)}".`
+		);
 	}
 	ids.set(id, title);
 }
@@ -31,7 +33,9 @@ for (const section of sections) {
 	for (const match of matches) {
 		const id = match.slice(17);
 		if (!ids.has(id)) {
-			errors.push(`The link "${id}" in section "${section.metadata.title}" does not correspond to an existing id.`);
+			errors.push(
+				`The link "${id}" in section "${section.metadata.title}" does not correspond to an existing id.`
+			);
 		}
 	}
 }
@@ -39,5 +43,5 @@ for (const section of sections) {
 if (errors.length > 0) {
 	throw new Error(errors.join('\n'));
 } else {
-	console.log('All ids are unique, all anchor targets found.')
+	console.log('All ids are unique, all anchor targets found.');
 }

@@ -1,8 +1,8 @@
 <script>
 	import Nav from '../components/Nav.svelte';
 
-    export let segment;
-    const langs = ['en', 'sk', 'zh'];
+	export let segment;
+	const langs = ['en', 'sk', 'zh'];
 </script>
 
 <style>
@@ -21,9 +21,9 @@
 	<title>rollup.js</title>
 </svelte:head>
 
-<div class='layout'>
-	<Nav page={segment === 'repl' ? 'repl' : 'guide'}/>
-	<slot></slot>
+<div class="layout">
+	<Nav page="{segment === 'repl' ? 'repl' : 'guide'}" />
+	<slot />
 </div>
 
 <!-- hidden links, to ensure `sapper export` works as expected -->

@@ -1,11 +1,14 @@
 <script context="module">
-	export function preload ({ params }) {
-    	return this.fetch(`guide/${params.lang}.json`).then(r => r.json()).then(sections => ({ sections, lang: params.lang }));
-    }
+	export function preload ( { params } ) {
+		return this.fetch(`guide/${params.lang}.json`).then(r => r.json()).then(sections => ({
+			sections,
+			lang: params.lang
+		}));
+	}
 </script>
 
 <script>
-    import { onMount, onDestroy } from 'svelte';
+	import {onMount, onDestroy} from 'svelte';
 	import GuideContents from './GuideContents.svelte';
 
 	export let sections = [];
@@ -16,44 +19,44 @@
 	let anchors = [];
 	let positions = [];
 	let timeouts = [];
-	let lastId =  '';
+	let lastId = '';
 
-	function onresize() {
-    	const { top } = container.getBoundingClientRect();
-    	positions = anchors.map(anchor => anchor.getBoundingClientRect().top - top);
-    }
+	function onresize () {
+		const { top } = container.getBoundingClientRect();
+		positions = anchors.map(anchor => anchor.getBoundingClientRect().top - top);
+	}
 
-    function onscroll() {
-    	const top = -window.scrollY;
-    	let i = anchors.length;
-    	while (i--) {
-    		if ( positions[i] + top < 40 ) {
-    			const anchor = anchors[i];
-    			const { id } = anchor;
+	function onscroll () {
+		const top = -window.scrollY;
+		let i = anchors.length;
+		while (i--) {
+			if ( positions[i] + top < 40 ) {
+				const anchor = anchors[i];
+				const { id } = anchor;
 
-    			if ( id !== lastId ) {
-    				lastId = id;
-    				contents.$set({ active: id });
-    			}
-    			return;
-    		}
-    	}
-    }
+				if ( id !== lastId ) {
+					lastId = id;
+					contents.$set({ active: id });
+				}
+				return;
+			}
+		}
+	}
 
-	function onhashchange(event) {
-    	const id = window.location.hash.slice(1);
-    	if (id) {
-    	  const element = document.getElementById(id);
-    	  if (element) {
-    	  	window.scrollBy({left: -Infinity, top: element.getBoundingClientRect().top})
-    	  }
-    	}
+	function onhashchange ( event ) {
+		const id = window.location.hash.slice(1);
+		if ( id ) {
+			const element = document.getElementById(id);
+			if ( element ) {
+				window.scrollBy({ left: -Infinity, top: element.getBoundingClientRect().top })
+			}
+		}
 	}
 
 	onMount(() => {
 		anchors = Array.from(container.querySelectorAll('section[id]'))
-			.concat(Array.from(container.querySelectorAll('h3[id]')))
-			.sort(( a, b ) => a.getBoundingClientRect().top - b.getBoundingClientRect().top);
+				.concat(Array.from(container.querySelectorAll('h3[id]')))
+				.sort(( a, b ) => a.getBoundingClientRect().top - b.getBoundingClientRect().top);
 
 		window.addEventListener('scroll', onscroll, true);
 		window.addEventListener('resize', onresize, true);
@@ -71,14 +74,14 @@
 	});
 
 	onDestroy(() => {
-	    if (typeof window !== 'undefined') {
-   	        window.removeEventListener('scroll', onscroll, true);
-    	    window.removeEventListener('resize', onresize, true);
-		    window.removeEventListener('hashchange', onhashchange, true);
-	    }
+		if ( typeof window !== 'undefined' ) {
+			window.removeEventListener('scroll', onscroll, true);
+			window.removeEventListener('resize', onresize, true);
+			window.removeEventListener('hashchange', onhashchange, true);
+		}
 
-    	timeouts.forEach(timeout => clearTimeout(timeout));
-    });
+		timeouts.forEach(timeout => clearTimeout(timeout));
+	});
 </script>
 
 <style>
@@ -282,11 +285,11 @@
 		<strong>rollup.js</strong>
 	</div>
 
-	{#each sections as section}
-    	<section id='{section.slug}'>
-    		<h2>{section.metadata.title}</h2>
-    		{@html section.html}
-    	</section>
+    {#each sections as section}
+		<section id='{section.slug}'>
+			<h2>{section.metadata.title}</h2>
+            {@html section.html}
+		</section>
     {/each}
 </div>
 

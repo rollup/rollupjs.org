@@ -1,27 +1,27 @@
 <script>
-    export let page = '';
+	export let page = '';
 
-    let open = false;
-    let nav;
+	let open = false;
+	let nav;
 
-    function toggleOpen () {
-       // if the menu is closing, scroll back to the top *after* it
-        // shuts. otherwise, scroll back to the top immediately
-        // (just in case the user reopened before it happened).
-        // The reason we don't just do it when the menu opens is
-        // that the scrollbar visibly flashes
-        if (open) {
-        	setTimeout(() => {
-        		if (!open) {
-        			nav.scrollTop = 0;
-        		}
-        	}, 350);
-        } else {
-        	nav.scrollTop = 0;
-        }
+	function toggleOpen() {
+		// if the menu is closing, scroll back to the top *after* it
+		// shuts. otherwise, scroll back to the top immediately
+		// (just in case the user reopened before it happened).
+		// The reason we don't just do it when the menu opens is
+		// that the scrollbar visibly flashes
+		if (open) {
+			setTimeout(() => {
+				if (!open) {
+					nav.scrollTop = 0;
+				}
+			}, 350);
+		} else {
+			nav.scrollTop = 0;
+		}
 
-        open = !open;
-    }
+		open = !open;
+	}
 </script>
 
 <style>
@@ -44,8 +44,12 @@
 	}
 
 	@keyframes fadein {
-		from { opacity: 0; }
-		to { opacity: 1; }
+		from {
+			opacity: 0;
+		}
+		to {
+			opacity: 1;
+		}
 	}
 
 	.container {
@@ -56,7 +60,8 @@
 		background-color: #f9f9f9;
 		color: #222;
 		border-bottom: 1px solid #eee;
-		font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+		font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif,
+			'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';
 		z-index: 5;
 	}
 
@@ -65,10 +70,11 @@
 		width: 18em;
 		height: calc(100vh - 3em);
 		top: 3em;
-		font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+		font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif,
+			'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';
 		background-color: white;
-		transform: translate(-100%,0);
-		transition: transform 0.2s cubic-bezier(.17,.67,.24,.99);
+		transform: translate(-100%, 0);
+		transition: transform 0.2s cubic-bezier(0.17, 0.67, 0.24, 0.99);
 		border-right: 1px solid #eee;
 		z-index: 5;
 		padding: 1em;
@@ -77,8 +83,8 @@
 	}
 
 	.open {
-		transform: translate(0,0);
-		transition: transform 0.3s cubic-bezier(.17,.67,.24,.99);
+		transform: translate(0, 0);
+		transition: transform 0.3s cubic-bezier(0.17, 0.67, 0.24, 0.99);
 	}
 
 	.menu-link {
@@ -142,7 +148,8 @@
 	}
 
 	@media (min-width: 768px) {
-		.mousecatcher, .menu-link {
+		.mousecatcher,
+		.menu-link {
 			display: none;
 		}
 
@@ -179,7 +186,7 @@
 		}
 
 		.primary li a.active {
-			color: 333;
+			color: #333;
 			font-weight: 500;
 		}
 
@@ -219,19 +226,36 @@
 	}
 </style>
 
-<div class="{open ? 'open': 'closed'} mousecatcher" on:click="{() => {open=false;}}"></div>
+<div
+	class="{open ? 'open' : 'closed'} mousecatcher"
+	on:click="{() => {
+		open = false;
+	}}"></div>
 
-<div class='container'>
-	<span class="menu-link" on:click='{toggleOpen}'>{open ? 'Close' : 'Menu'}</span>
+<div class="container">
+	<span class="menu-link" on:click="{toggleOpen}">{open ? 'Close' : 'Menu'}</span>
 
-	<a rel="prefetch" href='guide/en/' class='logo'>rollup.js</a>
+	<a rel="prefetch" href="guide/en/" class="logo">rollup.js</a>
 </div>
 
-<nav bind:this={nav} class='{open ? "open": "closed"}' on:click="{() => {open=false;}}">
-	<ul class='primary'>
-		<li><a rel="prefetch" class='{page === "guide" ? "active": ""}' href='guide/en/'>guide</a></li>
-		<li><a rel="prefetch" class='{page === "repl" ? "active": ""}' href='repl/'>repl</a></li>
-		<li><a href='https://gitter.im/rollup/rollup'>chat</a></li>
-		<li><a href='https://github.com/rollup/rollup'>github</a></li>
+<nav
+	bind:this="{nav}"
+	class="{open ? 'open' : 'closed'}"
+	on:click="{() => {
+		open = false;
+	}}">
+	<ul class="primary">
+		<li>
+			<a rel="prefetch" class="{page === 'guide' ? 'active' : ''}" href="guide/en/">guide</a>
+		</li>
+		<li>
+			<a rel="prefetch" class="{page === 'repl' ? 'active' : ''}" href="repl/">repl</a>
+		</li>
+		<li>
+			<a href="https://gitter.im/rollup/rollup">chat</a>
+		</li>
+		<li>
+			<a href="https://github.com/rollup/rollup">github</a>
+		</li>
 	</ul>
 </nav>
