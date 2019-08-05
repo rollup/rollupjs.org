@@ -1,6 +1,5 @@
 <script>
 	export let page = '';
-
 	let open = false;
 	let nav;
 
