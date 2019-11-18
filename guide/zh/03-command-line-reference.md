@@ -74,13 +74,14 @@ $ rollup --config my.config.js
 配置文件中的许多选项和命令行的参数是等价的。如果你使用这里的参数，那么将重写配置文件。想了解更多的话，仔细查阅这个[包办大量选项的清单](guide/zh#big-list-of-options)
 
 ```text
--i, --input                 要打包的文件（必须）
--o, --output.file           输出的文件 (如果没有这个参数，则直接输出到控制台)
--f, --output.format [es]    输出的文件类型 (amd, cjs, es, iife, umd)
--e, --external              将模块ID的逗号分隔列表排除
--g, --globals               以`module ID:Global` 键值对的形式，用逗号分隔开 
+-i, --input <filename>      要打包的文件（必须）
+-o, --file <output>         输出的文件 (如果没有这个参数，则直接输出到控制台)
+-f, --format <format>       输出的文件类型 (amd, cjs, esm, iife, umd)
+-e, --external <ids>        将模块ID的逗号分隔列表排除
+-g, --globals <pairs>       以`module ID:Global` 键值对的形式，用逗号分隔开 
                               任何定义在这里模块ID定义添加到外部依赖
--n, --name                  生成UMD模块的名字
+-n, --name <name>           生成UMD模块的名字
+-h, --help                  输出 help 信息
 -m, --sourcemap             生成 sourcemap (`-m inline` for inline map)
 --amd.id                    AMD模块的ID，默认是个匿名函数
 --amd.define                使用Function来代替`define`
