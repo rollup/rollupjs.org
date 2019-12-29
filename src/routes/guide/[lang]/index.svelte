@@ -161,7 +161,6 @@
 
 	.content :global(p) {
 		margin: 0 0 1em 0;
-		font-weight: 300;
 		color: #181818;
 		line-height: 1.5;
 	}
