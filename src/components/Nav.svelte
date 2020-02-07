@@ -202,15 +202,6 @@
 			content: '';
 		}
 
-		.secondary {
-			display: none;
-		}
-
-		/*.sidebar {
-			height: calc(100% - 4em);
-			top: 4em;
-		}*/
-
 		.logo {
 			position: absolute;
 			top: 0;
