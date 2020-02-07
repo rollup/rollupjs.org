@@ -3,27 +3,27 @@
   "author": "Rich Harris",
   "version": "1.0.0",
   "devDependencies": {
-    "@babel/core": "^7.5.5",
-    "@babel/plugin-syntax-dynamic-import": "^7.2.0",
-    "@babel/plugin-transform-runtime": "^7.5.5",
-    "@babel/preset-env": "^7.5.5",
-    "chokidar": "^3.0.2",
+    "@babel/core": "^7.8.4",
+    "@babel/plugin-syntax-dynamic-import": "^7.8.3",
+    "@babel/plugin-transform-runtime": "^7.8.3",
+    "@babel/preset-env": "^7.8.4",
+    "chokidar": "^3.3.1",
     "console-group": "^0.3.3",
-    "husky": "^3.0.2",
-    "lint-staged": "^9.2.1",
-    "prettier": "^1.18.2",
+    "husky": "^4.2.1",
+    "lint-staged": "^10.0.7",
+    "prettier": "^1.19.1",
     "prettier-plugin-svelte": "^0.7.0",
-    "rollup": "^1.18.0",
+    "rollup": "^1.31.0",
     "rollup-plugin-babel": "^4.3.3",
-    "rollup-plugin-commonjs": "^10.0.1",
+    "rollup-plugin-commonjs": "^10.1.0",
     "rollup-plugin-node-resolve": "^5.2.0",
     "rollup-plugin-replace": "^2.2.0",
-    "rollup-plugin-svelte": "^5.1.0",
-    "rollup-plugin-terser": "^5.1.1",
-    "sapper": "^0.27.8",
+    "rollup-plugin-svelte": "^5.1.1",
+    "rollup-plugin-terser": "^5.2.0",
+    "sapper": "^0.27.9",
     "shx": "^0.3.2",
-    "sirv-cli": "^0.4.4",
-    "svelte": "^3.6.10"
+    "sirv-cli": "^0.4.5",
+    "svelte": "^3.18.1"
   },
   "scripts": {
     "dev": "sapper dev",
@@ -40,12 +40,12 @@
     "test": "npx rollup test/verify-guide-links.js -f cjs --silent | node"
   },
   "dependencies": {
-    "@babel/runtime": "^7.5.5",
-    "codemirror": "^5.48.2",
+    "@babel/runtime": "^7.8.4",
+    "codemirror": "^5.51.0",
     "compression": "^1.7.4",
-    "highlight.js": "^9.15.9",
-    "marked": "^0.7.0",
-    "polka": "^0.5.0",
-    "sirv": "^0.4.0"
+    "highlight.js": "^9.18.1",
+    "marked": "^0.8.0",
+    "polka": "^0.5.2",
+    "sirv": "^0.4.2"
   }
 }

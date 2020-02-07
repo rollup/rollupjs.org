@@ -1,18 +1,17 @@
 <script>
-    import { createEventDispatcher } from 'svelte';
- 	import Editor from '../_Editor/index.svelte';
-    const dispatch = createEventDispatcher();
+	import { createEventDispatcher } from 'svelte';
+	import Editor from '../_Editor/index.svelte';
+	const dispatch = createEventDispatcher();
 
-    export let name;
-    export let code;
-    export let index;
-    export let main;
-    export let isEntry;
-    export let codeSplitting;
+	export let name;
+	export let code;
+	export let main;
+	export let isEntry;
+	export let codeSplitting;
 
-    function selectName(input) {
-      input.setSelectionRange(0, input.value.length - 3);
-    }
+	function selectName(input) {
+		input.setSelectionRange(0, input.value.length - 3);
+	}
 </script>
 
 <style>
@@ -102,37 +101,49 @@
 		opacity: 0.6;
 	}
 
-	button:hover .label, button:active .label {
+	button:hover .label,
+	button:active .label {
 		opacity: 0.6;
 	}
 
-	.icon-cancel, .icon-plus, .icon-minus {
+	.icon-cancel,
+	.icon-plus,
+	.icon-minus {
 		font-size: 0.8em;
 	}
 </style>
 
-<article class='module {main || isEntry ? "entry-module" : ""} {codeSplitting ? "code-splitting" : ""}'>
+<article
+	class="module {main || isEntry ? 'entry-module' : ''}
+	{codeSplitting ? 'code-splitting' : ''}">
 	<header>
 		{#if main}
-			<span class='entry-module-name'>main.js<span class='entry-module-label'>(entry module)</span></span>
+			<span class="entry-module-name">
+				main.js
+				<span class="entry-module-label">(entry module)</span>
+			</span>
 		{:else}
-			<input class='module-name' bind:value='{name}' on:focus='{() => selectName(this)}' placeholder='foo.js'>
+			<input
+				class="module-name"
+				bind:value="{name}"
+				on:focus="{() => selectName(this)}"
+				placeholder="foo.js" />
 
-		    <button class='remove' on:click='{() => dispatch("remove")}'>
-				<span class='label'>remove</span>
-				<span class='icon-cancel'></span>
+			<button class="remove" on:click="{() => dispatch('remove')}">
+				<span class="label">remove</span>
+				<span class="icon-cancel"></span>
 			</button>
 			{#if codeSplitting}
-				<button class='toggle-entry' on:click='{() => dispatch("toggle-entry")}'>
-					<span class='label'>(entry&nbsp;module)</span>
+				<button class="toggle-entry" on:click="{() => dispatch('toggle-entry')}">
+					<span class="label">(entry&nbsp;module)</span>
 					{#if isEntry}
-						<span class='icon-minus'></span>
+						<span class="icon-minus"></span>
 					{:else}
-						<span class='icon-plus'></span>
+						<span class="icon-plus"></span>
 					{/if}
 				</button>
 			{/if}
 		{/if}
 	</header>
-	<Editor bind:code/>
+	<Editor bind:code />
 </article>
