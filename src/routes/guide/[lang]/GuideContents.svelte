@@ -3,26 +3,26 @@
 	export let lang;
 
 	export let active = null;
-	$: base =  `guide/${lang}/`;
+	$: base = `guide/${lang}/`;
 
 	function scrollActiveIntoView() {
 		const element = document.getElementById('link' + active);
 		const sidebar = document.querySelector('.sidebar');
 		if (element) {
-			const {top, bottom} = element.getBoundingClientRect();
-			const {top: sidebarTop, bottom: sidebarBottom} = sidebar.getBoundingClientRect();
+			const { top, bottom } = element.getBoundingClientRect();
+			const { top: sidebarTop, bottom: sidebarBottom } = sidebar.getBoundingClientRect();
 			if (top < sidebarTop) {
-				sidebar.scrollBy({top: top - sidebarTop - 20, behavior: 'smooth'});
+				sidebar.scrollBy({ top: top - sidebarTop - 20, behavior: 'smooth' });
 			} else if (bottom > sidebarBottom) {
-				sidebar.scrollBy({top: bottom - sidebarBottom + 20, behavior: 'smooth'});
+				sidebar.scrollBy({ top: bottom - sidebarBottom + 20, behavior: 'smooth' });
 			}
 		}
 	}
 
 	$: {
-	    if (active) {
-		    scrollActiveIntoView();
-	    }
+		if (active) {
+			scrollActiveIntoView();
+		}
 	}
 </script>
 
@@ -55,8 +55,9 @@
 		margin: 0 0 0.15em 0;
 	}*/
 
-	.section.active, .subsection.active {
-		color: rgba(239,51,53,1);
+	.section.active,
+	.subsection.active {
+		color: rgba(239, 51, 53, 1);
 	}
 
 	li::before {
@@ -72,7 +73,6 @@
 	}
 
 	.subsections li {
-
 	}
 
 	.subsection {
@@ -84,15 +84,25 @@
 	}
 </style>
 
-<ul class='guide-toc'>
+<ul class="guide-toc">
 	{#each sections as section}
 		<li>
-			<a class='section {section.slug === active ? "active": ""}' href='{base}#{section.slug}' id='link{section.slug}'>{section.metadata.title}</a>
+			<a
+				class="section {section.slug === active ? 'active' : ''}"
+				href="{base}#{section.slug}"
+				id="link{section.slug}">
+				{section.metadata.title}
+			</a>
 
-			<ul class='subsections'>
+			<ul class="subsections">
 				{#each section.subsections as subsection}
 					<li>
-						<a class='subsection {subsection.slug === active ? "active": ""}' href='{base}#{subsection.slug}' id='link{subsection.slug}'>{subsection.title}</a>
+						<a
+							class="subsection {subsection.slug === active ? 'active' : ''}"
+							href="{base}#{subsection.slug}"
+							id="link{subsection.slug}">
+							{subsection.title}
+						</a>
 					</li>
 				{/each}
 			</ul>

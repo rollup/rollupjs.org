@@ -1,14 +1,16 @@
 <script context="module">
-	export function preload ( { params } ) {
-		return this.fetch(`guide/${params.lang}.json`).then(r => r.json()).then(sections => ({
-			sections,
-			lang: params.lang
-		}));
+	export function preload({ params }) {
+		return this.fetch(`guide/${params.lang}.json`)
+			.then(r => r.json())
+			.then(sections => ({
+				sections,
+				lang: params.lang
+			}));
 	}
 </script>
 
 <script>
-	import {onMount, onDestroy} from 'svelte';
+	import { onMount, onDestroy } from 'svelte';
 	import GuideContents from './GuideContents.svelte';
 
 	export let sections = [];
@@ -21,20 +23,20 @@
 	let timeouts = [];
 	let lastId = '';
 
-	function onresize () {
+	function onresize() {
 		const { top } = container.getBoundingClientRect();
 		positions = anchors.map(anchor => anchor.getBoundingClientRect().top - top);
 	}
 
-	function onscroll () {
+	function onscroll() {
 		const top = -window.scrollY;
 		let i = anchors.length;
 		while (i--) {
-			if ( positions[i] + top < 40 ) {
+			if (positions[i] + top < 40) {
 				const anchor = anchors[i];
 				const { id } = anchor;
 
-				if ( id !== lastId ) {
+				if (id !== lastId) {
 					lastId = id;
 					contents.$set({ active: id });
 				}
@@ -43,30 +45,27 @@
 		}
 	}
 
-	function onhashchange ( event ) {
+	function onhashchange(event) {
 		const id = window.location.hash.slice(1);
-		if ( id ) {
+		if (id) {
 			const element = document.getElementById(id);
-			if ( element ) {
-				window.scrollBy({ left: -Infinity, top: element.getBoundingClientRect().top })
+			if (element) {
+				window.scrollBy({ left: -Infinity, top: element.getBoundingClientRect().top });
 			}
 		}
 	}
 
 	onMount(() => {
 		anchors = Array.from(container.querySelectorAll('section[id]'))
-				.concat(Array.from(container.querySelectorAll('h3[id]')))
-				.sort(( a, b ) => a.getBoundingClientRect().top - b.getBoundingClientRect().top);
+			.concat(Array.from(container.querySelectorAll('h3[id]')))
+			.sort((a, b) => a.getBoundingClientRect().top - b.getBoundingClientRect().top);
 
 		window.addEventListener('scroll', onscroll, true);
 		window.addEventListener('resize', onresize, true);
 		window.addEventListener('hashchange', onhashchange, true);
 
 		// wait for fonts to load...
-		timeouts = [
-			setTimeout(onresize, 1000),
-			setTimeout(onresize, 5000)
-		];
+		timeouts = [setTimeout(onresize, 1000), setTimeout(onresize, 5000)];
 
 		onhashchange();
 		onresize();
@@ -74,7 +73,7 @@
 	});
 
 	onDestroy(() => {
-		if ( typeof window !== 'undefined' ) {
+		if (typeof window !== 'undefined') {
 			window.removeEventListener('scroll', onscroll, true);
 			window.removeEventListener('resize', onresize, true);
 			window.removeEventListener('hashchange', onhashchange, true);
@@ -116,21 +115,19 @@
 	}
 
 	h2 {
-		padding: 6rem 0 0 0;
-		margin: -3rem 0 1rem -1rem;
+		margin: 3rem 0 1rem -1rem;
 		font-size: 1.8em;
 		font-weight: 700;
-		pointer-events: none;
 		color: #333;
+		z-index: 2;
 	}
 
 	.content :global(h3) {
-		padding-top: 6rem;
-		margin: -3rem 0 0 -1rem;
+		margin: 4rem 0 1rem -1rem;
 		font-size: 1.2em;
 		font-weight: 700;
-		pointer-events: none;
 		color: #333;
+		z-index: 1;
 	}
 
 	.content :global(h3) :global(code) {
@@ -138,12 +135,21 @@
 	}
 
 	.content :global(h4) {
-		padding-top: 4em;
-		margin: -3em 0 0.5em 0;
+		margin: 2em 0 0.5em 0;
 		font-size: 1em;
 		font-weight: 700;
 		color: #333;
-		z-index: -1;
+	}
+
+	.content :global(h2):before,
+	.content :global(h3):before,
+	.content :global(h4):before {
+		display: block;
+		content: ' ';
+		margin-top: -75px;
+		height: 75px;
+		visibility: hidden;
+		pointer-events: none;
 	}
 
 	.content :global(h4) :global(code) {
@@ -163,10 +169,23 @@
 		margin: 0 0 1em 0;
 		color: #181818;
 		line-height: 1.5;
+		z-index: 3;
 	}
 
 	.content :global(a) {
 		border-bottom: 1px solid #e3d9d9;
+	}
+
+	.content :global(a.anchor) {
+		border-bottom: 0;
+		margin-left: -16px;
+		visibility: hidden;
+		fill: rgb(170, 30, 30);
+		vertical-align: text-top;
+	}
+
+	.content :global(*:hover) > :global(a.anchor) {
+		visibility: visible;
 	}
 
 	.content :global(strong) {
@@ -206,7 +225,9 @@
 		border-radius: 3px;
 	}
 
-	.content :global(p), .content :global(ul), .content :global(ol) {
+	.content :global(p),
+	.content :global(ul),
+	.content :global(ol) {
 		max-width: 48em;
 	}
 
@@ -265,33 +286,35 @@
 		.hero strong {
 			font-size: 8em;
 		}
-
-		h2 {
-			padding: 7rem 0 0 0;
-			margin: -4rem 0 1rem -1rem;
-		}
-
-		.content :global(h3) {
-			padding-top: 7rem;
-			margin: -5rem 0 0 -1rem;
-		}
 	}
-
 </style>
 
-<div bind:this={container} class='content'>
+<div bind:this="{container}" class="content">
 	<div class="hero">
 		<strong>rollup.js</strong>
 	</div>
 
-    {#each sections as section}
-		<section id='{section.slug}'>
-			<h2>{section.metadata.title}</h2>
-            {@html section.html}
+	{#each sections as section}
+		<section id="{section.slug}">
+			<h2>
+				<a class="anchor" href="guide/en/#${section.slug}">
+					<svg viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">
+						<path
+							fill-rule="evenodd"
+							d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2
+							3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4
+							9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64
+							1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6
+							13 6z"></path>
+					</svg>
+				</a>
+				{section.metadata.title}
+			</h2>
+			{@html section.html}
 		</section>
-    {/each}
+	{/each}
 </div>
 
-<div class='sidebar'>
-	<GuideContents bind:this={contents} {sections} lang='{lang}'/>
+<div class="sidebar">
+	<GuideContents bind:this="{contents}" {sections} {lang} />
 </div>
