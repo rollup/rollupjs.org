@@ -39,9 +39,11 @@
 
 	async function getRollupUrl(query) {
 		if (query.circleci) {
-			const artifacts = await (await fetch(
-				`https://circleci.com/api/v1.1/project/github/rollup/rollup/${query.circleci}/artifacts`
-			)).json();
+			const artifacts = await (
+				await fetch(
+					`https://circleci.com/api/v1.1/project/github/rollup/rollup/${query.circleci}/artifacts`
+				)
+			).json();
 			const artifact =
 				Array.isArray(artifacts) &&
 				artifacts.find(artifact => artifact.path.endsWith('rollup.browser.js'));
@@ -77,10 +79,12 @@
 				({ modules, options, example: selectedExample } = JSON.parse(json));
 				input.$set({ modules, selectedExample });
 			} else if (query.gist) {
-				const result = await (await fetch(`https://api.github.com/gists/${query.gist}`, {
-					method: 'GET',
-					headers: { Accept: 'application/vnd.github.v3+json' }
-				})).json();
+				const result = await (
+					await fetch(`https://api.github.com/gists/${query.gist}`, {
+						method: 'GET',
+						headers: { Accept: 'application/vnd.github.v3+json' }
+					})
+				).json();
 				const entryModules = query.entry ? query.entry.split(',') : [];
 				modules = [result.files['main.js'] || { filename: 'main.js', content: '' }]
 					.concat(
@@ -104,7 +108,7 @@
 		try {
 			rollup = await loadRollup(query);
 			codeSplitting = rollup && supportsCodeSplitting(rollup.VERSION);
-			return requestBundle();
+			return requestBundle(true);
 		} catch (e) {
 			error = e;
 		}
@@ -146,10 +150,13 @@
 	}
 
 	let bundlePromise = null;
-	async function requestBundle() {
+	async function requestBundle(isInitialRun = false) {
 		if (!modules.length || !rollup) return;
 		if (bundlePromise) {
 			await bundlePromise;
+		}
+		if (!isInitialRun) {
+			updateUrl();
 		}
 		bundlePromise = bundle().then(() => (bundlePromise = null));
 	}
@@ -173,8 +180,6 @@
 				selectedExampleModules = [];
 			}
 		}
-
-		updateUrl();
 
 		let moduleById = {};
 
