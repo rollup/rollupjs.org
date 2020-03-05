@@ -98,7 +98,7 @@
 
 	.content {
 		width: 100%;
-		padding: 1em;
+		padding: 1em 1em 1em 1.5em;
 	}
 
 	.hero {
@@ -178,7 +178,9 @@
 
 	.content :global(a.anchor) {
 		border-bottom: 0;
-		margin-left: -16px;
+		position: absolute;
+		left: -18px;
+		padding-right: 2px;
 		visibility: hidden;
 		fill: rgb(170, 30, 30);
 		vertical-align: text-top;
@@ -276,7 +278,7 @@
 		}
 
 		.content {
-			padding: 0 1em 2em 17em;
+			padding: 0 1em 2em 17.5em;
 		}
 
 		.hero {
@@ -297,7 +299,7 @@
 	{#each sections as section}
 		<section id="{section.slug}">
 			<h2>
-				<a class="anchor" href="guide/en/#${section.slug}">
+				<a class="anchor" href="guide/en/#{section.slug}">
 					<svg viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">
 						<path
 							fill-rule="evenodd"
