@@ -58,7 +58,7 @@
 	.new-module {
 		display: block;
 		width: 100%;
-		color: #3D9970;
+		color: #3d9970;
 		border: none;
 		padding: 1em;
 		margin-bottom: 0;
@@ -71,21 +71,31 @@
 	}
 </style>
 
-<header class='start-here clearfix'>
-	<select bind:value='{selectedExample}'>
-		<option disabled selected value='{null}'>Select an example...</option>
+<header class="start-here clearfix">
+	<select bind:value="{selectedExample}">
+		<option disabled selected value="{null}">Select an example...</option>
 		{#each examples as example}
-			<option value='{example.id}'>{example.title}</option>
+			<option value="{example.id}">{example.title}</option>
 		{/each}
 	</select>
 
-	<button class='start-over' on:click='{clear}'>Start over</button>
+	<button class="start-over" on:click="{clear}">Start over</button>
 </header>
 
-<div bind:this={modulesRef} class='modules'>
+<div bind:this="{modulesRef}" class="modules">
 	{#each modules as module, i}
-	<Module bind:name='{module.name}' bind:code='{module.code}' index={i} main={i===0} isEntry={codeSplitting && module.isEntry} {codeSplitting} on:remove='{() => removeModule(i)}' on:toggle-entry="{() => toggleEntryModule(i)}"/>
+		<Module
+			bind:name="{module.name}"
+			bind:code="{module.code}"
+			main="{i === 0}"
+			isEntry="{codeSplitting && module.isEntry}"
+			{codeSplitting}
+			on:remove="{() => removeModule(i)}"
+			on:toggle-entry="{() => toggleEntryModule(i)}" />
 	{/each}
 </div>
 
-<button class='new-module' on:click='{createModule}'><span class='icon icon-plus'></span> add module</button>
+<button class="new-module" on:click="{createModule}">
+	<span class="icon icon-plus"></span>
+	add module
+</button>

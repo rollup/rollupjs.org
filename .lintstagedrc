@@ -1,6 +1,5 @@
 {
   "{test,src}/**/*.{js,html,svelte}": [
-    "prettier --write",
-    "git add"
+    "prettier --write"
   ]
 }

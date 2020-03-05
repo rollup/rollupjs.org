@@ -47,7 +47,12 @@ function create_guide(lang) {
 			return `@@${uid}`;
 		});
 
-		const html = marked(content)
+		const renderer = new marked.Renderer();
+		renderer.heading = (text, level, raw, slugger) => {
+			const id = slugger.slug(raw);
+			return `<h${level} id="${id}"><a class="anchor" href="guide/en/#${id}"><img src="/images/anchor.svg" alt=""></a>${text}</h${level}>`;
+		};
+		const html = marked(content, { renderer })
 			.replace(/<p>(<a class='open-in-repl'[\s\S]+?)<\/p>/g, '$1')
 			.replace(/<p>@@(\d+)<\/p>/g, (match, id) => {
 				return `<pre><code>${highlighted[id]}</code></pre>`;
@@ -60,6 +65,7 @@ function create_guide(lang) {
 			const slug = match[1];
 			const title = match[2]
 				.replace(/<\/?code>/g, '')
+				.replace(/<(\w+).*>.*<\/\1>/, '')
 				.replace(/&quot;/g, '"')
 				.replace(/&#39;/g, "'")
 				.replace(/\.(\w+).*/, '.$1')
