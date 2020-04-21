@@ -11,47 +11,58 @@ const mode = process.env.NODE_ENV;
 const dev = mode === 'development';
 const legacy = !!process.env.SAPPER_LEGACY_BUILD;
 
-const onwarn = (warning, onwarn) => (warning.code === 'CIRCULAR_DEPENDENCY' && /[/\\]@sapper[/\\]/.test(warning.message)) || onwarn(warning);
+const onwarn = (warning, onwarn) =>
+	(warning.code === 'CIRCULAR_DEPENDENCY' && /[/\\]@sapper[/\\]/.test(warning.message)) ||
+	onwarn(warning);
 
 export default {
 	client: {
 		input: config.client.input(),
 		output: config.client.output(),
+		preserveEntrySignatures: false,
 		plugins: [
 			replace({
 				'process.browser': true,
-				'process.env.NODE_ENV': JSON.stringify(mode)
+				'process.env.NODE_ENV': JSON.stringify(mode),
 			}),
 			svelte({
 				dev,
 				hydratable: true,
-				emitCss: true
+				emitCss: true,
 			}),
 			resolve({
-				browser: true
+				browser: true,
 			}),
 			commonjs(),
 
-			legacy && babel({
-				extensions: ['.js', '.mjs', '.html', '.svelte'],
-				runtimeHelpers: true,
-				exclude: ['node_modules/@babel/**'],
-				presets: [
-					['@babel/preset-env', {
-						targets: '> 0.25%, not dead'
-					}]
-				],
-				plugins: [
-					'@babel/plugin-syntax-dynamic-import',
-					['@babel/plugin-transform-runtime', {
-						useESModules: true
-					}]
-				]
-			}),
+			legacy &&
+				babel({
+					extensions: ['.js', '.mjs', '.html', '.svelte'],
+					runtimeHelpers: true,
+					exclude: ['node_modules/@babel/**'],
+					presets: [
+						[
+							'@babel/preset-env',
+							{
+								targets: '> 0.25%, not dead',
+							},
+						],
+					],
+					plugins: [
+						'@babel/plugin-syntax-dynamic-import',
+						[
+							'@babel/plugin-transform-runtime',
+							{
+								useESModules: true,
+							},
+						],
+					],
+				}),
 
-			!dev && terser({
-				module: true
-			})
+			!dev &&
+				terser({
+					module: true,
+				}),
 		],
 
 		onwarn,
@@ -60,17 +71,18 @@ export default {
 	server: {
 		input: config.server.input(),
 		output: config.server.output(),
+		preserveEntrySignatures: false,
 		plugins: [
 			replace({
 				'process.browser': false,
-				'process.env.NODE_ENV': JSON.stringify(mode)
+				'process.env.NODE_ENV': JSON.stringify(mode),
 			}),
 			svelte({
 				generate: 'ssr',
-				dev
+				dev,
 			}),
 			resolve(),
-			commonjs()
+			commonjs(),
 		],
 		external: Object.keys(pkg.dependencies).concat(
 			require('module').builtinModules || Object.keys(process.binding('natives'))
@@ -82,16 +94,17 @@ export default {
 	serviceworker: {
 		input: config.serviceworker.input(),
 		output: config.serviceworker.output(),
+		preserveEntrySignatures: false,
 		plugins: [
 			resolve(),
 			replace({
 				'process.browser': true,
-				'process.env.NODE_ENV': JSON.stringify(mode)
+				'process.env.NODE_ENV': JSON.stringify(mode),
 			}),
 			commonjs(),
-			!dev && terser()
+			!dev && terser(),
 		],
 
 		onwarn,
-	}
+	},
 };

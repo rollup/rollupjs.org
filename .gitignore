@@ -3,6 +3,7 @@ node_modules
 /__sapper__/
 .vscode
 /export
+.idea
 
 # Needs to be taken from the main rollup repo
 guide/en
