@@ -4,13 +4,13 @@
 	export let error;
 
 	let formats = [
-    	{ name: 'amd', value: 'amd' },
-    	{ name: 'cjs', value: 'cjs' },
-    	{ name: 'esm', value: 'esm' },
-    	{ name: 'iife', value: 'iife' },
-    	{ name: 'umd', value: 'umd' },
-    	{ name: 'system', value: 'system' }
-    ];
+		{ name: 'es', value: 'es' },
+		{ name: 'amd', value: 'amd' },
+		{ name: 'cjs', value: 'cjs' },
+		{ name: 'iife', value: 'iife' },
+		{ name: 'umd', value: 'umd' },
+		{ name: 'system', value: 'system' }
+	];
 	let sortedImports = [];
 
 	const defaultGlobals = {
@@ -22,10 +22,10 @@
 	$: sortedImports = getSortedImports(output, options);
 
 	function getSortedImports(output, options) {
-	    const { format } = options;
+		const { format } = options;
 		if (format !== 'iife' && format !== 'umd') return [];
 		return output[0].imports
-			.sort((a, b) => a < b ? -1 : 1)
+			.sort((a, b) => (a < b ? -1 : 1))
 			.map(name => ({
 				name,
 				value: userGlobals[name] || defaultGlobals[name] || name
@@ -88,14 +88,15 @@
 	}
 </style>
 
-<div class='options'>
-	<section class='clearfix'>
+<div class="options">
+	<section class="clearfix">
 		<h3>options.format</h3>
 		{#each formats as format, i}
 			<button
-				class='{format.value === options.format ? "selected": ""}'
-				on:click="{() => setFormat(format.value)}"
-			>{format.name}</button>
+				class="{format.value === options.format ? 'selected' : ''}"
+				on:click="{() => setFormat(format.value)}">
+				{format.name}
+			</button>
 		{/each}
 	</section>
 
@@ -103,7 +104,7 @@
 		{#if options.format === 'amd' || options.format === 'umd'}
 			<section>
 				<h3>options.amd.id</h3>
-				<input bind:value='{options.amd.id}' placeholder='leave blank for anonymous module'>
+				<input bind:value="{options.amd.id}" placeholder="leave blank for anonymous module" />
 			</section>
 		{/if}
 
@@ -111,7 +112,7 @@
 			{#if output[0].exports.length}
 				<section>
 					<h3>options.name</h3>
-					<input bind:value='{options.name}'>
+					<input bind:value="{options.name}" />
 				</section>
 			{/if}
 
@@ -120,7 +121,7 @@
 					<h3>options.globals</h3>
 					{#each sortedImports as x (x.name)}
 						<div>
-							<input bind:value='{options.globals[x.name]}'>
+							<input bind:value="{options.globals[x.name]}" />
 							<code>'{x.name}'</code>
 						</div>
 					{/each}

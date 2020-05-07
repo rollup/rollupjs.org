@@ -3,17 +3,17 @@
   "author": "Rich Harris",
   "version": "1.0.0",
   "devDependencies": {
-    "@babel/core": "^7.9.0",
+    "@babel/core": "^7.9.6",
     "@babel/plugin-syntax-dynamic-import": "^7.8.3",
-    "@babel/plugin-transform-runtime": "^7.9.0",
-    "@babel/preset-env": "^7.9.5",
-    "chokidar": "^3.3.1",
+    "@babel/plugin-transform-runtime": "^7.9.6",
+    "@babel/preset-env": "^7.9.6",
+    "chokidar": "^3.4.0",
     "console-group": "^0.3.3",
     "husky": "^4.2.5",
-    "lint-staged": "^10.1.7",
+    "lint-staged": "^10.2.2",
     "prettier": "^2.0.5",
-    "prettier-plugin-svelte": "^0.7.0",
-    "rollup": "^2.7.0",
+    "prettier-plugin-svelte": "^1.1.0",
+    "rollup": "^2.8.1",
     "rollup-plugin-babel": "^4.4.0",
     "rollup-plugin-commonjs": "^10.1.0",
     "rollup-plugin-node-resolve": "^5.2.0",
@@ -23,7 +23,7 @@
     "sapper": "^0.27.12",
     "shx": "^0.3.2",
     "sirv-cli": "^0.4.5",
-    "svelte": "^3.20.1"
+    "svelte": "^3.22.2"
   },
   "scripts": {
     "dev": "sapper dev",
@@ -32,7 +32,7 @@
     "update-guide": "git submodule update --init --recursive && shx rm -rf guide/en && shx cp -r rollup-submodule/docs/ guide/en",
     "publish-updated-guide": "git pull && git submodule update --init --recursive && cd rollup-submodule && git checkout master && git pull && cd .. && npm test && git add rollup-submodule && git commit -m \"Update guide\" && git push",
     "clean": "rm -rf export/ && rm -rf __sapper__/",
-    "lint": "prettier --write {test,src}/**/*.{js,html,svelte}",
+    "lint": "prettier --write src/**/*.{js,html,svelte} test/**/*.js",
     "stage": "netlify deploy --dir=export",
     "deploy": "netlify deploy --dir=export --prod",
     "prestage": "npm run build",
@@ -40,10 +40,10 @@
     "test": "npx rollup test/verify-guide-links.js -f cjs --silent | node"
   },
   "dependencies": {
-    "@babel/runtime": "^7.9.2",
+    "@babel/runtime": "^7.9.6",
     "codemirror": "^5.53.2",
     "compression": "^1.7.4",
-    "highlight.js": "^9.18.1",
+    "highlight.js": "^10.0.2",
     "marked": "^1.0.0",
     "polka": "^0.5.2",
     "sirv": "^0.4.2"
