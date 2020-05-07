@@ -18,7 +18,7 @@
 	export let examples = [];
 	let output = [];
 	let options = {
-		format: 'cjs',
+		format: 'es',
 		name: 'myBundle',
 		amd: { id: '' },
 		globals: {}
@@ -77,6 +77,9 @@
 			if (query.shareable) {
 				const json = decodeURIComponent(atob(query.shareable));
 				({ modules, options, example: selectedExample } = JSON.parse(json));
+				if (options.format === 'esm') {
+					options.format = 'es';
+				}
 				input.$set({ modules, selectedExample });
 			} else if (query.gist) {
 				const result = await (
@@ -203,7 +206,7 @@
 
 						throw new Error(`Could not resolve '${importee}' from '${importer}'`);
 					},
-					load: function(id) {
+					load: function (id) {
 						return moduleById[id].code;
 					}
 				}
