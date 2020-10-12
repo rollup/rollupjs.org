@@ -13,7 +13,6 @@
 	import { supportsCodeSplitting, supportsInput } from './_utils/rollupVersion';
 	import { onMount } from 'svelte';
 	import { stores } from '@sapper/app';
-	import { get } from 'svelte/store';
 
 	export let examples = [];
 	let output = [];
@@ -31,6 +30,8 @@
 	let input;
 	let rollup;
 	let error;
+	let query;
+	stores().page.subscribe(page => (query = page.query));
 
 	const atob =
 		typeof window === 'undefined'
@@ -72,7 +73,6 @@
 	}
 
 	onMount(async () => {
-		const { query } = get(stores().page);
 		try {
 			if (query.shareable) {
 				const json = decodeURIComponent(atob(query.shareable));
@@ -147,12 +147,14 @@
 
 	// TODO instead of debouncing, we should bundle in a worker
 	let bundleDebounceTimeout;
+
 	function requestDebouncedBundle() {
 		clearTimeout(bundleDebounceTimeout);
 		bundleDebounceTimeout = setTimeout(requestBundle, 100);
 	}
 
 	let bundlePromise = null;
+
 	async function requestBundle(isInitialRun = false) {
 		if (!modules.length || !rollup) return;
 		if (bundlePromise) {
@@ -260,7 +262,6 @@
 		if (typeof history === 'undefined') return;
 
 		const params = {};
-		const { query } = get(stores().page);
 		if (query.circleci) {
 			params.circleci = query.circleci;
 		} else if (typeof rollup !== 'undefined') {
@@ -350,7 +351,12 @@
 	<div class="left">
 		<h2>ES6 modules go in...</h2>
 		<div class="input">
-			<Input {examples} {codeSplitting} bind:selectedExample bind:modules bind:this="{input}" />
+			<Input
+				examples="{examples}"
+				codeSplitting="{codeSplitting}"
+				bind:selectedExample
+				bind:modules
+				bind:this="{input}" />
 		</div>
 	</div>
 	<div class="right">
@@ -360,12 +366,17 @@
 			out
 		</h2>
 		<div class="output">
-			<Output bind:options {output} {error} {warnings} waiting="{!rollup}" />
+			<Output
+				bind:options
+				output="{output}"
+				error="{error}"
+				warnings="{warnings}"
+				waiting="{!rollup}" />
 		</div>
 	</div>
 </div>
 
 <!-- trick Sapper into generating example JSON files -->
 {#each examples as example}
-	<a hidden href="api/examples/{example.id}.json">{example.title}</a>
+    <a hidden href="api/examples/{example.id}.json">{example.title}</a>
 {/each}
