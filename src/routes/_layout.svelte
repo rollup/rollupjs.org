@@ -28,6 +28,4 @@
 
 <!-- hidden links, to ensure `sapper export` works as expected -->
 <a hidden href="guide">Guide</a>
-{#each langs as lang}
-	<a hidden href="guide/{lang}">{lang}</a>
-{/each}
+{#each langs as lang}<a hidden href="guide/{lang}">{lang}</a>{/each}
