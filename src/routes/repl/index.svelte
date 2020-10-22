@@ -67,7 +67,7 @@
 			script.onload = () => {
 				fulfil(window.rollup);
 			};
-			script.onerror = reject;
+			script.onerror = () => reject(new Error(`Could not load Rollup from ${url}`));
 			document.querySelector('head').appendChild(script);
 		});
 	}

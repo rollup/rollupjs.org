@@ -23,7 +23,7 @@
 
 	function getSortedImports(output, options) {
 		const { format } = options;
-		if (format !== 'iife' && format !== 'umd') return [];
+		if ((format !== 'iife' && format !== 'umd') || output.length === 0) return [];
 		return output[0].imports
 			.sort((a, b) => (a < b ? -1 : 1))
 			.map(name => ({
@@ -108,7 +108,7 @@
 			</section>
 		{/if}
 
-		{#if options.format === 'iife' || options.format === 'umd'}
+		{#if output[0] && (options.format === 'iife' || options.format === 'umd')}
 			{#if output[0].exports.length}
 				<section>
 					<h3>options.name</h3>
@@ -120,10 +120,7 @@
 				<section>
 					<h3>options.globals</h3>
 					{#each sortedImports as x (x.name)}
-						<div>
-							<input bind:value="{options.globals[x.name]}" />
-							<code>'{x.name}'</code>
-						</div>
+						<div><input bind:value="{options.globals[x.name]}" /> <code>'{x.name}'</code></div>
 					{/each}
 				</section>
 			{/if}
