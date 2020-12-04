@@ -43,7 +43,7 @@
     "@babel/runtime": "^7.11.2",
     "codemirror": "^5.58.1",
     "compression": "^1.7.4",
-    "highlight.js": "^10.2.1",
+    "highlight.js": "^10.4.1",
     "marked": "^1.2.0",
     "polka": "^0.5.2",
     "sirv": "^1.0.6"
