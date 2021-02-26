@@ -6,7 +6,7 @@
 
 <div class="container" class:has-drawer="{page === 'guide'}" on:click="{drawerOpen.close}">
 	<span class="drawer-button" on:click|stopPropagation="{drawerOpen.toggle}">&#9776;</span>
-	<a rel="prefetch" href="guide/en/" class="logo">rollup.js</a>
+	<a rel="prefetch" href="guide/en/" class="logo"><span class="logo-text">rollup.js</span></a>
 
 	<nav>
 		<ul class="primary">
@@ -68,6 +68,7 @@
 	.logo {
 		position: absolute;
 		top: 0;
+		height: 3.1em;
 		background-image: url(/logo.svg);
 		background-repeat: no-repeat;
 		background-size: auto 80%;
@@ -80,6 +81,11 @@
 		font-weight: 300;
 		transform: none;
 		background-position: 0 50%;
+		display: none;
+	}
+
+	.logo-text {
+		display: none;
 	}
 
 	.container.has-drawer .logo {
@@ -133,6 +139,18 @@
 		content: '';
 	}
 
+	@media (min-width: 340px) {
+		.logo {
+			display: block;
+		}
+	}
+
+	@media (min-width: 400px) {
+		.logo-text {
+			display: inline;
+		}
+	}
+
 	@media (min-width: 768px) {
 		.primary {
 			padding-top: 0.6em;
@@ -149,6 +167,7 @@
 		.logo {
 			font-size: 1.6rem;
 			padding-left: 3rem;
+			height: 3.6rem;
 		}
 
 		.container.has-drawer .logo {

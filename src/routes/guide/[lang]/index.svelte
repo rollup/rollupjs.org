@@ -124,6 +124,8 @@
 	.mousecatcher.visible {
 		pointer-events: all;
 		opacity: 0.3;
+		touch-action: none;
+		overscroll-behavior: none;
 	}
 
 	.sidebar {
@@ -136,7 +138,7 @@
 		background: white;
 		z-index: 3;
 		overflow-y: auto;
-		padding: 1.6em 1em;
+		padding: 1em;
 		border-right: 1px solid #eee;
 		transform: translateX(-16em);
 		transition: transform 0.3s;
