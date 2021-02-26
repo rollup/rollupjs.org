@@ -1,4 +1,6 @@
 <script>
+	import { drawerOpen } from '../../../store';
+
 	export let sections;
 	export let lang;
 
@@ -44,6 +46,7 @@
 							class="subsection {subsection.slug === active ? 'active' : ''}"
 							href="{base}#{subsection.slug}"
 							id="link{subsection.slug}"
+							on:click="{drawerOpen.close}"
 						>
 							{subsection.title}
 						</a>
