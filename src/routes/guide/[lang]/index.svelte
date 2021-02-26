@@ -333,5 +333,9 @@
 		.hero strong {
 			font-size: 8em;
 		}
+
+		.mousecatcher.visible {
+			display: none;
+		}
 	}
 </style>
