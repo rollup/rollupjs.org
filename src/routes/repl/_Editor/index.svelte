@@ -1,44 +1,48 @@
 <script>
-    import { onDestroy, onMount } from 'svelte';
+	import { onDestroy, onMount } from 'svelte';
+	import { getCodeMirror } from './getCodeMirror';
 	export let code;
 	export let readonly = false;
 	let previousCode = code;
-    let editorNode;
-    let editor;
+	let editorNode;
+	let editor;
 
-    onMount(() => {
-        import('./codemirror.js').then(({ default: CodeMirror }) => {
-        	editor = CodeMirror.fromTextArea(editorNode, {
-        		lineNumbers: true,
-        		lineWrapping: true,
-        		indentWithTabs: true,
-        		indentUnit: 2,
-        		tabSize: 2,
-        		value: code,
-        		mode: 'javascript',
-        		readOnly: readonly
-        	});
+	onMount(async () => {
+		const { default: CodeMirror } = await getCodeMirror();
+		editor = CodeMirror.fromTextArea(editorNode, {
+			lineNumbers: true,
+			lineWrapping: true,
+			indentWithTabs: true,
+			indentUnit: 2,
+			tabSize: 2,
+			value: code,
+			mode: 'javascript',
+			readOnly: readonly
+		});
 
-        	editor.on('change', instance => {
-        		code = instance.getValue();
-        		previousCode = code;
-        	});
+		editor.on('change', instance => {
+			code = instance.getValue();
+			previousCode = code;
+		});
 
-        	editor.setValue(code);
-        });
-    });
+		editor.setValue(code);
+	});
 
-    onDestroy(() => {
-        editor && editor.toTextArea();
-    });
+	onDestroy(() => {
+		editor && editor.toTextArea();
+	});
 
-    $: {
-        if (code && previousCode !== code && editor) {
-            previousCode = code;
-            editor.setValue(code);
-        }
-    }
+	$: {
+		if (code && previousCode !== code && editor) {
+			previousCode = code;
+			editor.setValue(code);
+		}
+	}
 </script>
+
+<div class="codemirror-container">
+	<textarea tabindex="0" bind:this="{editorNode}"></textarea>
+</div>
 
 <style>
 	.codemirror-container {
@@ -80,7 +84,3 @@
 		border: none;
 	}
 </style>
-
-<div class='codemirror-container'>
-	<textarea tabindex='0' bind:this={editorNode}></textarea>
-</div>
