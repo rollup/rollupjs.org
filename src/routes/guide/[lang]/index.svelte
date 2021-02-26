@@ -12,6 +12,7 @@
 <script>
 	import { onMount, onDestroy } from 'svelte';
 	import GuideContents from './GuideContents.svelte';
+	import { drawerOpen } from '../../../store';
 
 	export let sections = [];
 	export let lang;
@@ -83,17 +84,66 @@
 	});
 </script>
 
+<div bind:this="{container}" class="content">
+	<div class="hero">
+		<strong>rollup.js</strong>
+	</div>
+
+	{#each sections as section}
+		<section id="{section.slug}">
+			<h2>
+				<a class="anchor" href="guide/en/#{section.slug}">
+					<img src="/images/anchor.svg" alt="" />
+				</a>
+				{section.metadata.title}
+			</h2>
+			{@html section.html}
+		</section>
+	{/each}
+</div>
+
+<div class="mousecatcher" on:click="{drawerOpen.close}" class:visible="{$drawerOpen}"></div>
+<div class="sidebar" class:open="{$drawerOpen}">
+	<GuideContents bind:this="{contents}" sections="{sections}" lang="{lang}" />
+</div>
+
 <style>
+	.mousecatcher {
+		position: fixed;
+		left: 0;
+		top: 0;
+		width: 100vw;
+		height: 100vh;
+		background-color: black;
+		pointer-events: none;
+		opacity: 0;
+		transition: opacity 0.3s;
+		z-index: 3;
+	}
+
+	.mousecatcher.visible {
+		pointer-events: all;
+		opacity: 0.3;
+	}
+
 	.sidebar {
 		position: fixed;
 		left: 0;
-		top: 3.6em;
+		top: 3em;
 		width: 16em;
-		height: calc(100vh - 3.6em);
-		display: none;
+		height: calc(100vh - 3em);
+		display: block;
+		background: white;
+		z-index: 3;
 		overflow-y: auto;
-		padding: 1em;
+		padding: 1.6em 1em;
 		border-right: 1px solid #eee;
+		transform: translateX(-16em);
+		transition: transform 0.3s;
+	}
+
+	.sidebar.open {
+		transform: translateX(0);
 	}
 
 	.content {
@@ -196,12 +246,7 @@
 
 	.content :global(code) {
 		background-color: #f9f9f9;
-		padding: 0.2em 0.4em;
 		border-radius: 3px;
-	}
-
-	.content :global(code) {
-		padding: 0;
 	}
 
 	section:first-child :global(h3) {
@@ -274,7 +319,7 @@
 
 	@media (min-width: 768px) {
 		.sidebar {
-			display: block;
+			transform: translateX(0);
 		}
 
 		.content {
@@ -288,27 +333,9 @@
 		.hero strong {
 			font-size: 8em;
 		}
+
+		.mousecatcher.visible {
+			display: none;
+		}
 	}
 </style>
-
-<div bind:this="{container}" class="content">
-	<div class="hero">
-		<strong>rollup.js</strong>
-	</div>
-
-	{#each sections as section}
-		<section id="{section.slug}">
-			<h2>
-				<a class="anchor" href="guide/en/#{section.slug}">
-					<img src="/images/anchor.svg" alt="" />
-				</a>
-				{section.metadata.title}
-			</h2>
-			{@html section.html}
-		</section>
-	{/each}
-</div>
-
-<div class="sidebar">
-	<GuideContents bind:this="{contents}" {sections} {lang} />
-</div>

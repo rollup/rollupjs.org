@@ -1,11 +1,6 @@
-import guides from '../src/routes/guide/[lang]/_data.js';
+import getGuides from '../src/routes/guide/[lang]/_data.js';
 
-const guide = guides.find(guide => guide.lang === 'en');
-if (!guide) {
-	throw new Error('Could not find "en" docs');
-}
-
-const sections = guide.sections;
+const sections = JSON.parse(getGuides().en);
 const ids = new Map();
 const errors = [];
 
