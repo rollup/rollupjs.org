@@ -26,6 +26,34 @@
 	}
 </script>
 
+<ul class="guide-toc">
+	{#each sections as section}
+		<li>
+			<a
+				class="section {section.slug === active ? 'active' : ''}"
+				href="{base}#{section.slug}"
+				id="link{section.slug}"
+			>
+				{section.metadata.title}
+			</a>
+
+			<ul class="subsections">
+				{#each section.subsections as subsection}
+					<li>
+						<a
+							class="subsection {subsection.slug === active ? 'active' : ''}"
+							href="{base}#{subsection.slug}"
+							id="link{subsection.slug}"
+						>
+							{subsection.title}
+						</a>
+					</li>
+				{/each}
+			</ul>
+		</li>
+	{/each}
+</ul>
+
 <style>
 	.guide-toc {
 		margin: 0;
@@ -47,14 +75,6 @@
 		margin: 0 0 0.5em 0;
 	}
 
-	/*.subsection {
-		display: block;
-		font-weight: 500;
-		color:#727272;
-		font-size: 1em;
-		margin: 0 0 0.15em 0;
-	}*/
-
 	.section.active,
 	.subsection.active {
 		color: rgba(239, 51, 53, 1);
@@ -72,9 +92,6 @@
 		margin: 0;
 	}
 
-	.subsections li {
-	}
-
 	.subsection {
 		color: #666;
 	}
@@ -83,29 +100,3 @@
 		content: '';
 	}
 </style>
-
-<ul class="guide-toc">
-	{#each sections as section}
-		<li>
-			<a
-				class="section {section.slug === active ? 'active' : ''}"
-				href="{base}#{section.slug}"
-				id="link{section.slug}">
-				{section.metadata.title}
-			</a>
-
-			<ul class="subsections">
-				{#each section.subsections as subsection}
-					<li>
-						<a
-							class="subsection {subsection.slug === active ? 'active' : ''}"
-							href="{base}#{subsection.slug}"
-							id="link{subsection.slug}">
-							{subsection.title}
-						</a>
-					</li>
-				{/each}
-			</ul>
-		</li>
-	{/each}
-</ul>
