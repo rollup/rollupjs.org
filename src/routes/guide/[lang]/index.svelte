@@ -142,7 +142,6 @@
 		border-right: 1px solid #eee;
 		transform: translateX(-16em);
 		transition: transform 0.3s;
-		touch-action: none;
 		overscroll-behavior: contain;
 	}
 
