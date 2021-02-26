@@ -284,6 +284,42 @@
 	}
 </script>
 
+<div class="repl">
+	<div class="left">
+		<h2>ES6 modules go in...</h2>
+		<div class="input">
+			<Input
+				examples="{examples}"
+				codeSplitting="{codeSplitting}"
+				bind:selectedExample
+				bind:modules
+				bind:this="{input}"
+			/>
+		</div>
+	</div>
+	<div class="right">
+		<h2>
+			...
+			{#if output.length > 1}chunks come{:else}bundle comes{/if}
+			out
+		</h2>
+		<div class="output">
+			<Output
+				bind:options
+				output="{output}"
+				error="{error}"
+				warnings="{warnings}"
+				waiting="{!rollup}"
+			/>
+		</div>
+	</div>
+</div>
+
+<!-- trick Sapper into generating example JSON files -->
+{#each examples as example}
+	<a hidden href="api/examples/{example.id}.json">{example.title}</a>
+{/each}
+
 <style>
 	.repl {
 		height: calc(100% - 3.6em);
@@ -346,37 +382,3 @@
 		}
 	}
 </style>
-
-<div class="repl">
-	<div class="left">
-		<h2>ES6 modules go in...</h2>
-		<div class="input">
-			<Input
-				examples="{examples}"
-				codeSplitting="{codeSplitting}"
-				bind:selectedExample
-				bind:modules
-				bind:this="{input}" />
-		</div>
-	</div>
-	<div class="right">
-		<h2>
-			...
-			{#if output.length > 1}chunks come{:else}bundle comes{/if}
-			out
-		</h2>
-		<div class="output">
-			<Output
-				bind:options
-				output="{output}"
-				error="{error}"
-				warnings="{warnings}"
-				waiting="{!rollup}" />
-		</div>
-	</div>
-</div>
-
-<!-- trick Sapper into generating example JSON files -->
-{#each examples as example}
-    <a hidden href="api/examples/{example.id}.json">{example.title}</a>
-{/each}

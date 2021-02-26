@@ -14,6 +14,43 @@
 	}
 </script>
 
+<article
+	class="module {main || isEntry ? 'entry-module' : ''}
+	{codeSplitting ? 'code-splitting' : ''}"
+>
+	<header>
+		{#if main}
+			<span class="entry-module-name">
+				main.js
+				<span class="entry-module-label">(entry module)</span>
+			</span>
+		{:else}
+			<input
+				class="module-name"
+				bind:value="{name}"
+				on:focus="{() => selectName(this)}"
+				placeholder="foo.js"
+			/>
+
+			<button class="remove" on:click="{() => dispatch('remove')}">
+				<span class="label">remove</span>
+				<span class="icon-cancel"></span>
+			</button>
+			{#if codeSplitting}
+				<button class="toggle-entry" on:click="{() => dispatch('toggle-entry')}">
+					<span class="label">(entry&nbsp;module)</span>
+					{#if isEntry}
+						<span class="icon-minus"></span>
+					{:else}
+						<span class="icon-plus"></span>
+					{/if}
+				</button>
+			{/if}
+		{/if}
+	</header>
+	<Editor bind:code bind:name />
+</article>
+
 <style>
 	.module {
 		margin: 0 0 1em 0;
@@ -112,38 +149,3 @@
 		font-size: 0.8em;
 	}
 </style>
-
-<article
-	class="module {main || isEntry ? 'entry-module' : ''}
-	{codeSplitting ? 'code-splitting' : ''}">
-	<header>
-		{#if main}
-			<span class="entry-module-name">
-				main.js
-				<span class="entry-module-label">(entry module)</span>
-			</span>
-		{:else}
-			<input
-				class="module-name"
-				bind:value="{name}"
-				on:focus="{() => selectName(this)}"
-				placeholder="foo.js" />
-
-			<button class="remove" on:click="{() => dispatch('remove')}">
-				<span class="label">remove</span>
-				<span class="icon-cancel"></span>
-			</button>
-			{#if codeSplitting}
-				<button class="toggle-entry" on:click="{() => dispatch('toggle-entry')}">
-					<span class="label">(entry&nbsp;module)</span>
-					{#if isEntry}
-						<span class="icon-minus"></span>
-					{:else}
-						<span class="icon-plus"></span>
-					{/if}
-				</button>
-			{/if}
-		{/if}
-	</header>
-	<Editor bind:code />
-</article>

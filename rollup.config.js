@@ -1,8 +1,10 @@
-import resolve from 'rollup-plugin-node-resolve';
-import replace from 'rollup-plugin-replace';
-import commonjs from 'rollup-plugin-commonjs';
+import path from 'path';
+import resolve from '@rollup/plugin-node-resolve';
+import replace from '@rollup/plugin-replace';
+import commonjs from '@rollup/plugin-commonjs';
+import url from '@rollup/plugin-url';
 import svelte from 'rollup-plugin-svelte';
-import babel from 'rollup-plugin-babel';
+import babel from '@rollup/plugin-babel';
 import { terser } from 'rollup-plugin-terser';
 import config from 'sapper/config/rollup.js';
 import pkg from './package.json';
@@ -20,26 +22,32 @@ export default {
 	client: {
 		input: config.client.input(),
 		output: config.client.output(),
-		preserveEntrySignatures: false,
 		plugins: [
 			replace({
+				preventAssignment: true,
 				'process.browser': true,
 				'process.env.NODE_ENV': JSON.stringify(mode)
 			}),
 			svelte({
-				dev,
-				hydratable: true,
-				emitCss: true
+				compilerOptions: {
+					dev,
+					hydratable: true
+				}
+			}),
+			url({
+				sourceDir: path.resolve(__dirname, 'src/node_modules/images'),
+				publicPath: '/client/'
 			}),
 			resolve({
-				browser: true
+				browser: true,
+				dedupe: ['svelte']
 			}),
 			commonjs(),
 
 			legacy &&
 				babel({
 					extensions: ['.js', '.mjs', '.html', '.svelte'],
-					runtimeHelpers: true,
+					babelHelpers: 'runtime',
 					exclude: ['node_modules/@babel/**'],
 					presets: [
 						[
@@ -66,39 +74,50 @@ export default {
 				})
 		],
 
+		preserveEntrySignatures: false,
 		onwarn
 	},
 
 	server: {
 		input: config.server.input(),
 		output: config.server.output(),
-		preserveEntrySignatures: false,
 		plugins: [
 			replace({
+				preventAssignment: true,
 				'process.browser': false,
 				'process.env.NODE_ENV': JSON.stringify(mode)
 			}),
 			svelte({
-				generate: 'ssr',
-				dev
+				compilerOptions: {
+					dev,
+					generate: 'ssr',
+					hydratable: true
+				},
+				emitCss: false
 			}),
-			resolve(),
+			url({
+				sourceDir: path.resolve(__dirname, 'src/node_modules/images'),
+				publicPath: '/client/',
+				emitFiles: false // already emitted by client build
+			}),
+			resolve({
+				dedupe: ['svelte']
+			}),
 			commonjs()
 		],
-		external: Object.keys(pkg.dependencies).concat(
-			require('module').builtinModules || Object.keys(process.binding('natives'))
-		),
+		external: Object.keys(pkg.dependencies).concat(require('module').builtinModules),
 
+		preserveEntrySignatures: 'strict',
 		onwarn
 	},
 
 	serviceworker: {
 		input: config.serviceworker.input(),
 		output: config.serviceworker.output(),
-		preserveEntrySignatures: false,
 		plugins: [
 			resolve(),
 			replace({
+				preventAssignment: true,
 				'process.browser': true,
 				'process.env.NODE_ENV': JSON.stringify(mode)
 			}),
@@ -106,6 +125,7 @@ export default {
 			!dev && terser()
 		],
 
+		preserveEntrySignatures: false,
 		onwarn
 	}
 };
