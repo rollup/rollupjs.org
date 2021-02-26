@@ -97,6 +97,7 @@
 		margin: 0;
 		padding: 0;
 		list-style: none;
+		background: #f9f9f9;
 	}
 
 	.primary {

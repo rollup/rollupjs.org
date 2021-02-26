@@ -142,6 +142,8 @@
 		border-right: 1px solid #eee;
 		transform: translateX(-16em);
 		transition: transform 0.3s;
+		touch-action: none;
+		overscroll-behavior: contain;
 	}
 
 	.sidebar.open {
@@ -151,6 +153,7 @@
 	.content {
 		width: 100%;
 		padding: 1em 1em 1em 1.5em;
+		word-break: break-word;
 	}
 
 	.hero {
@@ -249,7 +252,6 @@
 	.content :global(code) {
 		background-color: #f9f9f9;
 		border-radius: 3px;
-		word-break: break-word;
 	}
 
 	section:first-child :global(h3) {
@@ -273,9 +275,6 @@
 		margin: 0 0 1em 0;
 		padding: 12px 8px 12px 12px;
 		border-radius: 3px;
-	}
-
-	.content :global(pre) :global(code) {
 		word-break: normal;
 	}
 
