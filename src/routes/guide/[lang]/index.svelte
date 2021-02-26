@@ -249,6 +249,7 @@
 	.content :global(code) {
 		background-color: #f9f9f9;
 		border-radius: 3px;
+		word-break: break-word;
 	}
 
 	section:first-child :global(h3) {
@@ -272,6 +273,10 @@
 		margin: 0 0 1em 0;
 		padding: 12px 8px 12px 12px;
 		border-radius: 3px;
+	}
+
+	.content :global(pre) :global(code) {
+		word-break: normal;
 	}
 
 	.content :global(p),
