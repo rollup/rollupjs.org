@@ -82,6 +82,15 @@ export default {
 		input: config.server.input(),
 		output: config.server.output(),
 		plugins: [
+			{
+				name: 'prevent-guide-caching',
+				load(id) {
+					// Prevent caching the guide so that it updates by refreshing the browser
+					if (dev && id === path.join(__dirname, 'src/routes/guide/[lang]/_data.js')) {
+						return "export { default } from './_createGuide.js';";
+					}
+				}
+			},
 			replace({
 				preventAssignment: true,
 				'process.browser': false,
