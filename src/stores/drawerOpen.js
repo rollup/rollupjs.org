@@ -10,4 +10,4 @@ function createDrawerOpen() {
 	};
 }
 
-export const drawerOpen = createDrawerOpen();
+export default createDrawerOpen();

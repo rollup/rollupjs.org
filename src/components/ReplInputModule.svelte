@@ -1,6 +1,6 @@
 <script>
 	import { createEventDispatcher } from 'svelte';
-	import Editor from '../_Editor/index.svelte';
+	import Editor from './ReplEditor.svelte';
 	const dispatch = createEventDispatcher();
 
 	export let name;
@@ -48,7 +48,7 @@
 			{/if}
 		{/if}
 	</header>
-	<Editor bind:code bind:name />
+	<Editor bind:code />
 </article>
 
 <style>

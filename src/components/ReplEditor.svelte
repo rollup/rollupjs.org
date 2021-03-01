@@ -1,6 +1,6 @@
 <script>
 	import { onDestroy, onMount } from 'svelte';
-	import { getCodeMirror } from './getCodeMirror';
+	import { getCodeMirror } from '../helpers/getCodeMirror';
 	export let code;
 	export let readonly = false;
 	let previousCode = code;

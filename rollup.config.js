@@ -87,7 +87,7 @@ export default {
 				load(id) {
 					// Prevent caching the guide so that it updates by refreshing the browser
 					if (dev && id === path.join(__dirname, 'src/routes/guide/[lang]/_data.js')) {
-						return "export { default } from './_createGuide.js';";
+						return "export { default } from '../../../helpers/createGuide.js';";
 					}
 				}
 			},

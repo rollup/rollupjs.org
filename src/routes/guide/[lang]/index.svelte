@@ -11,8 +11,8 @@
 
 <script>
 	import { onMount, onDestroy } from 'svelte';
-	import GuideContents from './GuideContents.svelte';
-	import { drawerOpen } from '../../../store';
+	import GuideContents from '../../../components/GuideContents.svelte';
+	import drawerOpen from '../../../stores/drawerOpen';
 
 	export let sections = [];
 	export let lang;

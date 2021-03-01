@@ -39,6 +39,7 @@ function create_guide(lang) {
 		const highlighted = {};
 
 		content = content.replace(/```([\w-]+)?\n([\s\S]+?)```/g, (match, lang, code) => {
+			// TODO Lukas add Bash everywhere and change default to text
 			const { value } = hljs.highlight(lang || 'bash', code);
 			highlighted[++uid] = value;
 

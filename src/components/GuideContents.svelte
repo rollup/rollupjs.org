@@ -1,6 +1,5 @@
 <script>
-	import { drawerOpen } from '../../../store';
-
+	import drawerOpen from '../stores/drawerOpen';
 	export let sections;
 	export let lang;
 

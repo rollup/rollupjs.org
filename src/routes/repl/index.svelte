@@ -7,10 +7,10 @@
 </script>
 
 <script>
-	import Input from './_Input/index.svelte';
-	import Output from './_Output/index.svelte';
-	import { dirname, resolve } from './_utils/path';
-	import { supportsCodeSplitting, supportsInput } from './_utils/rollupVersion';
+	import Input from '../../components/ReplInput.svelte';
+	import Output from '../../components/ReplOutput.svelte';
+	import { dirname, resolve } from '../../helpers/path';
+	import { supportsCodeSplitting, supportsInput } from '../../helpers/rollupVersion';
 	import { onMount } from 'svelte';
 	import { stores } from '@sapper/app';
 
@@ -30,15 +30,15 @@
 	let input;
 	let rollup;
 	let error;
-	let query;
-	stores().page.subscribe(page => (query = page.query));
+	let { page } = stores();
 
 	const atob =
 		typeof window === 'undefined'
 			? base64 => Buffer.from(base64, 'base64').toString()
 			: window.atob;
 
-	async function getRollupUrl(query) {
+	async function getRollupUrl() {
+		const { query } = $page;
 		if (query.circleci) {
 			const artifacts = await (
 				await fetch(
@@ -59,8 +59,8 @@
 		}
 	}
 
-	async function loadRollup(query) {
-		const url = await getRollupUrl(query);
+	async function loadRollup() {
+		const url = await getRollupUrl();
 		return new Promise(async (fulfil, reject) => {
 			const script = document.createElement('script');
 			script.src = url;
@@ -73,6 +73,7 @@
 	}
 
 	onMount(async () => {
+		const { query } = $page;
 		try {
 			if (query.shareable) {
 				const json = decodeURIComponent(atob(query.shareable));
@@ -109,7 +110,7 @@
 		}
 
 		try {
-			rollup = await loadRollup(query);
+			rollup = await loadRollup();
 			codeSplitting = rollup && supportsCodeSplitting(rollup.VERSION);
 			return requestBundle(true);
 		} catch (e) {
@@ -259,6 +260,7 @@
 	}
 
 	function updateUrl() {
+		const { query } = $page;
 		if (typeof history === 'undefined') return;
 
 		const params = {};

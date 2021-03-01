@@ -37,6 +37,47 @@
 	}
 </script>
 
+<div class="options">
+	<section class="clearfix">
+		<h3>options.format</h3>
+		{#each formats as format, i}
+			<button
+				class="{format.value === options.format ? 'selected' : ''}"
+				on:click="{() => setFormat(format.value)}"
+			>
+				{format.name}
+			</button>
+		{/each}
+	</section>
+
+	{#if !error}
+		{#if options.format === 'amd' || options.format === 'umd'}
+			<section>
+				<h3>options.amd.id</h3>
+				<input bind:value="{options.amd.id}" placeholder="leave blank for anonymous module" />
+			</section>
+		{/if}
+
+		{#if output[0] && (options.format === 'iife' || options.format === 'umd')}
+			{#if output[0].exports.length}
+				<section>
+					<h3>options.name</h3>
+					<input bind:value="{options.name}" />
+				</section>
+			{/if}
+
+			{#if sortedImports.length}
+				<section>
+					<h3>options.globals</h3>
+					{#each sortedImports as x (x.name)}
+						<div><input bind:value="{options.globals[x.name]}" /> <code>'{x.name}'</code></div>
+					{/each}
+				</section>
+			{/if}
+		{/if}
+	{/if}
+</div>
+
 <style>
 	.options {
 		margin: 0 0 1em 0;
@@ -87,43 +128,3 @@
 		line-height: 1;
 	}
 </style>
-
-<div class="options">
-	<section class="clearfix">
-		<h3>options.format</h3>
-		{#each formats as format, i}
-			<button
-				class="{format.value === options.format ? 'selected' : ''}"
-				on:click="{() => setFormat(format.value)}">
-				{format.name}
-			</button>
-		{/each}
-	</section>
-
-	{#if !error}
-		{#if options.format === 'amd' || options.format === 'umd'}
-			<section>
-				<h3>options.amd.id</h3>
-				<input bind:value="{options.amd.id}" placeholder="leave blank for anonymous module" />
-			</section>
-		{/if}
-
-		{#if output[0] && (options.format === 'iife' || options.format === 'umd')}
-			{#if output[0].exports.length}
-				<section>
-					<h3>options.name</h3>
-					<input bind:value="{options.name}" />
-				</section>
-			{/if}
-
-			{#if sortedImports.length}
-				<section>
-					<h3>options.globals</h3>
-					{#each sortedImports as x (x.name)}
-						<div><input bind:value="{options.globals[x.name]}" /> <code>'{x.name}'</code></div>
-					{/each}
-				</section>
-			{/if}
-		{/if}
-	{/if}
-</div>
