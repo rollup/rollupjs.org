@@ -7,8 +7,9 @@
 	import { stores } from '@sapper/app';
 	import rollup from '../stores/rollup';
 	import rollupRequest from '../stores/rollupRequest';
+	import selectedExample from '../stores/selectedExample';
+	import examples from '../stores/examples';
 
-	export let examples = [];
 	let output = [];
 	let options = {
 		format: 'es',
@@ -16,7 +17,6 @@
 		amd: { id: '' },
 		globals: {}
 	};
-	let selectedExample = null;
 	let selectedExampleModules = [];
 	let modules = [];
 	let warnings = [];
@@ -34,11 +34,13 @@
 		try {
 			if (query.shareable) {
 				const json = decodeURIComponent(atob(query.shareable));
-				({ modules, options, example: selectedExample } = JSON.parse(json));
+				let example;
+				({ modules, options, example } = JSON.parse(json));
 				if (options.format === 'esm') {
 					options.format = 'es';
 				}
-				input.$set({ modules, selectedExample });
+				selectedExample.set(example);
+				input.$set({ modules });
 			} else if (query.gist) {
 				const result = await (
 					await fetch(`https://api.github.com/gists/${query.gist}`, {
@@ -59,11 +61,11 @@
 						isEntry: entryModules.indexOf(module.filename) >= 0
 					}));
 			} else {
-				selectedExample = '00';
+				selectedExample.set('00');
 			}
 		} catch (err) {
 			console.error(err);
-			selectedExample = '00';
+			selectedExample.set('00');
 		}
 
 		if (query.circleci) {
@@ -76,26 +78,23 @@
 	$: {
 		if ($rollup.rollup) {
 			error = null;
-			requestBundle(true);
+			requestBundle();
 		} else if ($rollup.error) {
 			error = $rollup.error;
 		}
 	}
 
 	$: {
-		if (selectedExample) {
-			updateSelectedExample();
+		if ($selectedExample) {
+			updateSelectedExample($selectedExample);
+		} else {
+			selectedExampleModules = [];
 		}
 	}
 
-	function updateSelectedExample() {
-		fetch(`api/examples/${selectedExample}.json`)
-			.then(r => r.json())
-			.then(example => {
-				modules = example.modules;
-				selectedExampleModules = modules.map(module => ({ ...module }));
-			});
-		input.$set({ modules, selectedExample });
+	function updateSelectedExample(example) {
+		({ modules } = $examples.find(({ id }) => id === example));
+		selectedExampleModules = modules.map(module => ({ ...module }));
 	}
 
 	$: {
@@ -120,24 +119,14 @@
 
 	let bundlePromise = null;
 
-	async function requestBundle(isInitialRun = false) {
+	async function requestBundle() {
 		if (!modules.length || !$rollup.rollup) return;
 		if (bundlePromise) {
 			await bundlePromise;
 		}
-		if (!isInitialRun) {
-			updateUrl();
-		}
-		bundlePromise = bundle($rollup).then(() => (bundlePromise = null));
-	}
-
-	async function bundle({ rollup, VERSION: version, supportsCodeSplitting, supportsInput }) {
-		// TODO Lukas uncomment
-		// console.clear();
-		console.log(`running Rollup version %c${version}`, 'font-weight: bold');
-		if (selectedExample && selectedExampleModules.length) {
-			if (
-				modules.length !== selectedExampleModules.length ||
+		if (
+			selectedExampleModules.length &&
+			(modules.length !== selectedExampleModules.length ||
 				selectedExampleModules.some((module, index) => {
 					const currentModule = modules[index];
 					return (
@@ -145,12 +134,18 @@
 						currentModule.code !== module.code ||
 						currentModule.isEntry !== module.isEntry
 					);
-				})
-			) {
-				selectedExample = null;
-				selectedExampleModules = [];
-			}
+				}))
+		) {
+			selectedExample.set(null);
 		}
+		updateUrl();
+		bundlePromise = bundle($rollup).then(() => (bundlePromise = null));
+	}
+
+	async function bundle({ rollup, VERSION: version, supportsCodeSplitting, supportsInput }) {
+		// TODO Lukas uncomment
+		// console.clear();
+		console.log(`running Rollup version %c${version}`, 'font-weight: bold');
 
 		let moduleById = {};
 
@@ -236,7 +231,7 @@
 		const json = JSON.stringify({
 			modules,
 			options,
-			example: selectedExample
+			example: $selectedExample
 		});
 		params.shareable = btoa(encodeURIComponent(json));
 		const queryString = Object.keys(params)
@@ -251,13 +246,7 @@
 	<div class="left">
 		<h2>ES6 modules go in...</h2>
 		<div class="input">
-			<Input
-				examples="{examples}"
-				codeSplitting="{$rollup.supportsCodeSplitting}"
-				bind:selectedExample
-				bind:modules
-				bind:this="{input}"
-			/>
+			<Input bind:modules bind:this="{input}" />
 		</div>
 	</div>
 	<div class="right">
@@ -267,21 +256,10 @@
 			out
 		</h2>
 		<div class="output">
-			<Output
-				bind:options
-				output="{output}"
-				error="{error}"
-				warnings="{warnings}"
-				waiting="{!$rollup.rollup}"
-			/>
+			<Output bind:options output="{output}" error="{error}" warnings="{warnings}" />
 		</div>
 	</div>
 </div>
-
-<!-- trick Sapper into generating example JSON files -->
-{#each examples as example}
-	<a hidden href="api/examples/{example.id}.json">{example.title}</a>
-{/each}
 
 <style>
 	.repl {

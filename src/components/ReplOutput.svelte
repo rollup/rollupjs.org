@@ -7,10 +7,9 @@
 	export let output;
 	export let error = null;
 	export let warnings;
-	export let waiting;
 </script>
 
-<Status error="{error}" warnings="{warnings}" waiting="{waiting}" />
+<Status error="{error}" warnings="{warnings}" />
 
 <BundleOptions bind:options output="{output}" error="{error}" />
 

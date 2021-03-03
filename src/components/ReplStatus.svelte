@@ -1,7 +1,12 @@
 <script>
+	import rollup from '../stores/rollup';
 	export let error;
 	export let warnings;
-	export let waiting;
+
+	let waiting;
+	$: {
+		waiting = !$rollup.rollup;
+	}
 </script>
 
 <div class="status {error ? 'error' : waiting ? 'waiting' : 'success'}">

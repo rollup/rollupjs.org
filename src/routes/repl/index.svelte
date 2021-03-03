@@ -8,7 +8,11 @@
 
 <script>
 	import Repl from '../../components/Repl.svelte';
+	import examplesStore from '../../stores/examples';
 	export let examples = [];
+	$: {
+		examplesStore.set(examples);
+	}
 </script>
 
-<Repl examples="{examples}" />
+<Repl />
