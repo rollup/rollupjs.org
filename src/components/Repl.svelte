@@ -5,6 +5,8 @@
 	import { supportsCodeSplitting, supportsInput } from '../helpers/rollupVersion';
 	import { onMount } from 'svelte';
 	import { stores } from '@sapper/app';
+	import rollup from '../stores/rollup';
+	import rollupRequest from '../stores/rollupRequest';
 
 	export let examples = [];
 	let output = [];
@@ -14,55 +16,18 @@
 		amd: { id: '' },
 		globals: {}
 	};
-	let codeSplitting = false;
 	let selectedExample = null;
 	let selectedExampleModules = [];
 	let modules = [];
 	let warnings = [];
 	let input;
-	let rollup;
 	let error;
-	let { page } = stores();
+	const { page } = stores();
 
 	const atob =
 		typeof window === 'undefined'
 			? base64 => Buffer.from(base64, 'base64').toString()
 			: window.atob;
-
-	async function getRollupUrl() {
-		const { query } = $page;
-		if (query.circleci) {
-			const artifacts = await (
-				await fetch(
-					`https://circleci.com/api/v1.1/project/github/rollup/rollup/${query.circleci}/artifacts`
-				)
-			).json();
-			const artifact =
-				Array.isArray(artifacts) &&
-				artifacts.find(artifact => artifact.path.endsWith('rollup.browser.js'));
-			if (!artifact) {
-				throw new Error('Invalid CircleCI build number.');
-			}
-			return artifact.url;
-		} else {
-			return query.version
-				? `https://unpkg.com/rollup@${query.version}/dist/rollup.browser.js`
-				: 'https://unpkg.com/rollup/dist/rollup.browser.js';
-		}
-	}
-
-	async function loadRollup() {
-		const url = await getRollupUrl();
-		return new Promise(async (fulfil, reject) => {
-			const script = document.createElement('script');
-			script.src = url;
-			script.onload = () => {
-				fulfil(window.rollup);
-			};
-			script.onerror = () => reject(new Error(`Could not load Rollup from ${url}`));
-			document.querySelector('head').appendChild(script);
-		});
-	}
 
 	onMount(async () => {
 		const { query } = $page;
@@ -101,14 +66,21 @@
 			selectedExample = '00';
 		}
 
-		try {
-			rollup = await loadRollup();
-			codeSplitting = rollup && supportsCodeSplitting(rollup.VERSION);
-			return requestBundle(true);
-		} catch (e) {
-			error = e;
+		if (query.circleci) {
+			rollupRequest.requestCircleCI(query.circleci);
+		} else {
+			rollupRequest.requestVersion(query.version);
 		}
 	});
+
+	$: {
+		if ($rollup.rollup) {
+			error = null;
+			requestBundle(true);
+		} else if ($rollup.error) {
+			error = $rollup.error;
+		}
+	}
 
 	$: {
 		if (selectedExample) {
@@ -149,20 +121,20 @@
 	let bundlePromise = null;
 
 	async function requestBundle(isInitialRun = false) {
-		if (!modules.length || !rollup) return;
+		if (!modules.length || !$rollup.rollup) return;
 		if (bundlePromise) {
 			await bundlePromise;
 		}
 		if (!isInitialRun) {
 			updateUrl();
 		}
-		bundlePromise = bundle().then(() => (bundlePromise = null));
+		bundlePromise = bundle($rollup).then(() => (bundlePromise = null));
 	}
 
-	async function bundle() {
+	async function bundle({ rollup, VERSION: version, supportsCodeSplitting, supportsInput }) {
 		// TODO Lukas uncomment
 		// console.clear();
-		console.log(`running Rollup version %c${rollup.VERSION}`, 'font-weight: bold');
+		console.log(`running Rollup version %c${version}`, 'font-weight: bold');
 		if (selectedExample && selectedExampleModules.length) {
 			if (
 				modules.length !== selectedExampleModules.length ||
@@ -209,9 +181,7 @@
 			],
 			onwarn(warning) {
 				warnings.push(warning);
-
 				console.group(warning.loc ? warning.loc.file : '');
-
 				console.warn(warning.message);
 
 				if (warning.frame) {
@@ -225,18 +195,18 @@
 				console.groupEnd();
 			}
 		};
-		if (codeSplitting) {
+		if (supportsCodeSplitting) {
 			inputOptions.input = modules
 				.filter((module, index) => index === 0 || module.isEntry)
 				.map(module => module.name);
 		} else {
-			inputOptions[supportsInput(rollup.VERSION) ? 'input' : 'entry'] = 'main.js';
+			inputOptions[supportsInput ? 'input' : 'entry'] = 'main.js';
 		}
 
 		try {
-			const generated = await (await rollup.rollup(inputOptions)).generate(options);
+			const generated = await (await rollup(inputOptions)).generate(options);
 
-			if (codeSplitting) {
+			if (supportsCodeSplitting) {
 				output = generated.output;
 				error = null;
 			} else {
@@ -259,10 +229,8 @@
 		const params = {};
 		if (query.circleci) {
 			params.circleci = query.circleci;
-		} else if (typeof rollup !== 'undefined') {
-			params.version = rollup.VERSION;
-		} else if (query.version) {
-			params.version = query.version;
+		} else {
+			params.version = $rollup.VERSION;
 		}
 
 		const json = JSON.stringify({
@@ -285,7 +253,7 @@
 		<div class="input">
 			<Input
 				examples="{examples}"
-				codeSplitting="{codeSplitting}"
+				codeSplitting="{$rollup.supportsCodeSplitting}"
 				bind:selectedExample
 				bind:modules
 				bind:this="{input}"
@@ -304,7 +272,7 @@
 				output="{output}"
 				error="{error}"
 				warnings="{warnings}"
-				waiting="{!rollup}"
+				waiting="{!$rollup.rollup}"
 			/>
 		</div>
 	</div>
