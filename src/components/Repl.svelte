@@ -9,18 +9,12 @@
 	import rollupRequest from '../stores/rollupRequest';
 	import selectedExample from '../stores/selectedExample';
 	import examples from '../stores/examples';
+	import modules from '../stores/modules';
+	import options from '../stores/options';
 
 	let output = [];
-	let options = {
-		format: 'es',
-		name: 'myBundle',
-		amd: { id: '' },
-		globals: {}
-	};
 	let selectedExampleModules = [];
-	let modules = [];
 	let warnings = [];
-	let input;
 	let error;
 	const { page } = stores();
 
@@ -34,13 +28,7 @@
 		try {
 			if (query.shareable) {
 				const json = decodeURIComponent(atob(query.shareable));
-				let example;
-				({ modules, options, example } = JSON.parse(json));
-				if (options.format === 'esm') {
-					options.format = 'es';
-				}
-				selectedExample.set(example);
-				input.$set({ modules });
+				({ modules: $modules, options: $options, example: $selectedExample } = JSON.parse(json));
 			} else if (query.gist) {
 				const result = await (
 					await fetch(`https://api.github.com/gists/${query.gist}`, {
@@ -49,7 +37,7 @@
 					})
 				).json();
 				const entryModules = query.entry ? query.entry.split(',') : [];
-				modules = [result.files['main.js'] || { filename: 'main.js', content: '' }]
+				$modules = [result.files['main.js'] || { filename: 'main.js', content: '' }]
 					.concat(
 						Object.keys(result.files)
 							.filter(fileName => fileName !== 'main.js')
@@ -93,18 +81,18 @@
 	}
 
 	function updateSelectedExample(example) {
-		({ modules } = $examples.find(({ id }) => id === example));
-		selectedExampleModules = modules.map(module => ({ ...module }));
+		({ modules: selectedExampleModules } = $examples.find(({ id }) => id === example));
+		$modules = selectedExampleModules.map(module => ({ ...module }));
 	}
 
 	$: {
-		if (modules) {
+		if ($modules) {
 			requestDebouncedBundle();
 		}
 	}
 
 	$: {
-		if (options) {
+		if ($options) {
 			requestBundle();
 		}
 	}
@@ -120,15 +108,15 @@
 	let bundlePromise = null;
 
 	async function requestBundle() {
-		if (!modules.length || !$rollup.rollup) return;
+		if (!$modules.length || !$rollup.rollup) return;
 		if (bundlePromise) {
 			await bundlePromise;
 		}
 		if (
 			selectedExampleModules.length &&
-			(modules.length !== selectedExampleModules.length ||
+			($modules.length !== selectedExampleModules.length ||
 				selectedExampleModules.some((module, index) => {
-					const currentModule = modules[index];
+					const currentModule = $modules[index];
 					return (
 						currentModule.name !== module.name ||
 						currentModule.code !== module.code ||
@@ -136,6 +124,7 @@
 					);
 				}))
 		) {
+			console.log('reset selected');
 			selectedExample.set(null);
 		}
 		updateUrl();
@@ -148,10 +137,9 @@
 		console.log(`running Rollup version %c${version}`, 'font-weight: bold');
 
 		let moduleById = {};
-
-		modules.forEach(module => {
+		for (const module of $modules) {
 			moduleById[module.name] = module;
-		});
+		}
 
 		warnings = [];
 		const inputOptions = {
@@ -191,7 +179,7 @@
 			}
 		};
 		if (supportsCodeSplitting) {
-			inputOptions.input = modules
+			inputOptions.input = $modules
 				.filter((module, index) => index === 0 || module.isEntry)
 				.map(module => module.name);
 		} else {
@@ -199,7 +187,7 @@
 		}
 
 		try {
-			const generated = await (await rollup(inputOptions)).generate(options);
+			const generated = await (await rollup(inputOptions)).generate($options);
 
 			if (supportsCodeSplitting) {
 				output = generated.output;
@@ -229,10 +217,11 @@
 		}
 
 		const json = JSON.stringify({
-			modules,
-			options,
+			modules: $modules,
+			options: $options,
 			example: $selectedExample
 		});
+
 		params.shareable = btoa(encodeURIComponent(json));
 		const queryString = Object.keys(params)
 			.map(key => `${key}=${params[key]}`)
@@ -246,7 +235,7 @@
 	<div class="left">
 		<h2>ES6 modules go in...</h2>
 		<div class="input">
-			<Input bind:modules bind:this="{input}" />
+			<Input />
 		</div>
 	</div>
 	<div class="right">
@@ -256,7 +245,7 @@
 			out
 		</h2>
 		<div class="output">
-			<Output bind:options output="{output}" error="{error}" warnings="{warnings}" />
+			<Output output="{output}" error="{error}" warnings="{warnings}" />
 		</div>
 	</div>
 </div>

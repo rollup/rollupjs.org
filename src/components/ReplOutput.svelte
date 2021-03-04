@@ -3,7 +3,6 @@
 	import Status from './ReplStatus.svelte';
 	import BundleOptions from './ReplBundleOptions.svelte';
 
-	export let options;
 	export let output;
 	export let error = null;
 	export let warnings;
@@ -11,7 +10,7 @@
 
 <Status error="{error}" warnings="{warnings}" />
 
-<BundleOptions bind:options output="{output}" error="{error}" />
+<BundleOptions output="{output}" error="{error}" />
 
 {#if !error}
 	{#each output as chunk}

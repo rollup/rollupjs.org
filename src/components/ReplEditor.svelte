@@ -33,7 +33,7 @@
 	});
 
 	$: {
-		if (code && previousCode !== code && editor) {
+		if (previousCode !== code && editor) {
 			previousCode = code;
 			editor.setValue(code);
 		}

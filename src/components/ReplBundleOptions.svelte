@@ -1,5 +1,6 @@
 <script>
-	export let options;
+	import options from '../stores/options';
+
 	export let output = [];
 	export let error;
 
@@ -19,7 +20,7 @@
 
 	let userGlobals = {};
 
-	$: sortedImports = getSortedImports(output, options);
+	$: sortedImports = getSortedImports(output, $options);
 
 	function getSortedImports(output, options) {
 		const { format } = options;
@@ -33,7 +34,7 @@
 	}
 
 	function setFormat(format) {
-		options.format = format;
+		$options.format = format;
 	}
 </script>
 
@@ -42,7 +43,7 @@
 		<h3>options.format</h3>
 		{#each formats as format, i}
 			<button
-				class="{format.value === options.format ? 'selected' : ''}"
+				class="{format.value === $options.format ? 'selected' : ''}"
 				on:click="{() => setFormat(format.value)}"
 			>
 				{format.name}
@@ -51,18 +52,18 @@
 	</section>
 
 	{#if !error}
-		{#if options.format === 'amd' || options.format === 'umd'}
+		{#if $options.format === 'amd' || $options.format === 'umd'}
 			<section>
 				<h3>options.amd.id</h3>
-				<input bind:value="{options.amd.id}" placeholder="leave blank for anonymous module" />
+				<input bind:value="{$options.amd.id}" placeholder="leave blank for anonymous module" />
 			</section>
 		{/if}
 
-		{#if output[0] && (options.format === 'iife' || options.format === 'umd')}
+		{#if output[0] && ($options.format === 'iife' || $options.format === 'umd')}
 			{#if output[0].exports.length}
 				<section>
 					<h3>options.name</h3>
-					<input bind:value="{options.name}" />
+					<input bind:value="{$options.name}" />
 				</section>
 			{/if}
 
@@ -70,7 +71,7 @@
 				<section>
 					<h3>options.globals</h3>
 					{#each sortedImports as x (x.name)}
-						<div><input bind:value="{options.globals[x.name]}" /> <code>'{x.name}'</code></div>
+						<div><input bind:value="{$options.globals[x.name]}" /> <code>'{x.name}'</code></div>
 					{/each}
 				</section>
 			{/if}

@@ -1,27 +1,30 @@
 <script>
 	import Module from './ReplInputModule.svelte';
 	import Header from './ReplInputHeader.svelte';
-
-	export let modules = [];
+	import modules from '../stores/modules';
 
 	let uid = 1;
 	let modulesRef;
 
 	function removeModule(index) {
-		modules.splice(index, 1);
-		modules = modules;
+		modules.update(modules => {
+			modules.splice(index, 1);
+			return modules;
+		});
 	}
 
 	function toggleEntryModule(index) {
-		modules[index].isEntry = !modules[index].isEntry;
+		$modules[index].isEntry = !$modules[index].isEntry;
 	}
 
 	function createModule() {
-		modules.push({
-			name: `module_${uid++}.js`,
-			code: ''
+		modules.update(modules => {
+			modules.push({
+				name: `module_${uid++}.js`,
+				code: ''
+			});
+			return modules;
 		});
-		modules = modules;
 
 		setTimeout(() => {
 			const inputs = modulesRef.querySelectorAll('input');
@@ -31,10 +34,10 @@
 	}
 </script>
 
-<Header bind:modules />
+<Header />
 
 <div bind:this="{modulesRef}" class="modules">
-	{#each modules as module, i}
+	{#each $modules as module, i}
 		<Module
 			bind:name="{module.name}"
 			bind:code="{module.code}"

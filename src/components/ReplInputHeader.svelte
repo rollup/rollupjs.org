@@ -1,13 +1,11 @@
 <script>
 	import selectedExample from '../stores/selectedExample';
 	import examples from '../stores/examples';
+	import modules from '../stores/modules';
 
-	export let modules = [];
-
-	// TODO Lukas fix that all modules are cleared
 	function clear() {
-		modules = [{ name: 'main.js', code: '', isEntry: true }];
 		$selectedExample = null;
+		$modules = [{ name: 'main.js', code: '', isEntry: true }];
 	}
 </script>
 
