@@ -7,21 +7,15 @@
 	import { stores } from '@sapper/app';
 	import rollup from '../stores/rollup';
 	import selectedExample from '../stores/selectedExample';
-	import examples from '../stores/examples';
+	import selectedExampleModules from '../stores/selectedExampleModules';
 	import modules from '../stores/modules';
 	import options from '../stores/options';
 	import { updateQuery, updateStoresFromQuery } from '../helpers/query';
 
 	let output = [];
-	let selectedExampleModules = [];
 	let warnings = [];
 	let error;
 	const { page } = stores();
-
-	const atob =
-		typeof window === 'undefined'
-			? base64 => Buffer.from(base64, 'base64').toString()
-			: window.atob;
 
 	onMount(() => updateStoresFromQuery($page.query));
 
@@ -35,16 +29,14 @@
 	}
 
 	$: {
-		if ($selectedExample) {
-			updateSelectedExample($selectedExample);
-		} else {
-			selectedExampleModules = [];
-		}
+		updateModulesOnExampleModulesChange($selectedExampleModules);
 	}
 
-	function updateSelectedExample(example) {
-		({ modules: selectedExampleModules } = $examples.find(({ id }) => id === example));
-		$modules = selectedExampleModules.map(module => ({ ...module }));
+	// TODO Lukas extract
+	function updateModulesOnExampleModulesChange(selectedExampleModules) {
+		if (selectedExampleModules.length) {
+			$modules = selectedExampleModules.map(module => ({ ...module }));
+		}
 	}
 
 	$: {
@@ -78,10 +70,12 @@
 		if (bundlePromise) {
 			await bundlePromise;
 		}
+		// TODO Lukas maybe this should rather happen on $modules update
+		// and only if we have a selected example
 		if (
-			selectedExampleModules.length &&
-			($modules.length !== selectedExampleModules.length ||
-				selectedExampleModules.some((module, index) => {
+			$selectedExampleModules.length &&
+			($modules.length !== $selectedExampleModules.length ||
+				$selectedExampleModules.some((module, index) => {
 					const currentModule = $modules[index];
 					return (
 						currentModule.name !== module.name ||
@@ -90,7 +84,6 @@
 					);
 				}))
 		) {
-			console.log('reset selected');
 			selectedExample.set(null);
 		}
 		bundlePromise = bundle($rollup).then(() => (bundlePromise = null));

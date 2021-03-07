@@ -3,6 +3,9 @@ import options from '../stores/options';
 import selectedExample from '../stores/selectedExample';
 import rollupRequest from '../stores/rollupRequest';
 
+const atob =
+	typeof window === 'undefined' ? base64 => Buffer.from(base64, 'base64').toString() : window.atob;
+
 export async function updateStoresFromQuery(query) {
 	try {
 		if (query.shareable) {
