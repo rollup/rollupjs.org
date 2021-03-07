@@ -6,11 +6,11 @@
 	import { onMount } from 'svelte';
 	import { stores } from '@sapper/app';
 	import rollup from '../stores/rollup';
-	import rollupRequest from '../stores/rollupRequest';
 	import selectedExample from '../stores/selectedExample';
 	import examples from '../stores/examples';
 	import modules from '../stores/modules';
 	import options from '../stores/options';
+	import { updateQuery, updateStoresFromQuery } from '../helpers/query';
 
 	let output = [];
 	let selectedExampleModules = [];
@@ -23,45 +23,7 @@
 			? base64 => Buffer.from(base64, 'base64').toString()
 			: window.atob;
 
-	onMount(async () => {
-		const { query } = $page;
-		try {
-			if (query.shareable) {
-				const json = decodeURIComponent(atob(query.shareable));
-				({ modules: $modules, options: $options, example: $selectedExample } = JSON.parse(json));
-			} else if (query.gist) {
-				const result = await (
-					await fetch(`https://api.github.com/gists/${query.gist}`, {
-						method: 'GET',
-						headers: { Accept: 'application/vnd.github.v3+json' }
-					})
-				).json();
-				const entryModules = query.entry ? query.entry.split(',') : [];
-				$modules = [result.files['main.js'] || { filename: 'main.js', content: '' }]
-					.concat(
-						Object.keys(result.files)
-							.filter(fileName => fileName !== 'main.js')
-							.map(fileName => result.files[fileName])
-					)
-					.map(module => ({
-						name: module.filename,
-						code: module.content,
-						isEntry: entryModules.indexOf(module.filename) >= 0
-					}));
-			} else {
-				selectedExample.set('00');
-			}
-		} catch (err) {
-			console.error(err);
-			selectedExample.set('00');
-		}
-
-		if (query.circleci) {
-			rollupRequest.requestCircleCI(query.circleci);
-		} else {
-			rollupRequest.requestVersion(query.version);
-		}
-	});
+	onMount(() => updateStoresFromQuery($page.query));
 
 	$: {
 		if ($rollup.rollup) {
@@ -97,6 +59,10 @@
 		}
 	}
 
+	$: {
+		updateQuery($modules, $options, $selectedExample, $rollup.VERSION, $page.query.circleci);
+	}
+
 	// TODO instead of debouncing, we should bundle in a worker
 	let bundleDebounceTimeout;
 
@@ -127,7 +93,6 @@
 			console.log('reset selected');
 			selectedExample.set(null);
 		}
-		updateUrl();
 		bundlePromise = bundle($rollup).then(() => (bundlePromise = null));
 	}
 
@@ -203,31 +168,6 @@
 				throw error;
 			});
 		}
-	}
-
-	function updateUrl() {
-		const { query } = $page;
-		if (typeof history === 'undefined') return;
-
-		const params = {};
-		if (query.circleci) {
-			params.circleci = query.circleci;
-		} else {
-			params.version = $rollup.VERSION;
-		}
-
-		const json = JSON.stringify({
-			modules: $modules,
-			options: $options,
-			example: $selectedExample
-		});
-
-		params.shareable = btoa(encodeURIComponent(json));
-		const queryString = Object.keys(params)
-			.map(key => `${key}=${params[key]}`)
-			.join('&');
-		const url = `/repl/?${queryString}`;
-		window.history.replaceState({}, '', url);
 	}
 </script>
 
