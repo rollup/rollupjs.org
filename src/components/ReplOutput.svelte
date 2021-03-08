@@ -2,20 +2,17 @@
 	import Editor from './ReplEditor.svelte';
 	import Status from './ReplStatus.svelte';
 	import BundleOptions from './ReplBundleOptions.svelte';
-
-	export let output;
-	export let error = null;
-	export let warnings;
+	import rollupOutput from '../stores/rollupOutput';
 </script>
 
-<Status error="{error}" warnings="{warnings}" />
+<Status />
 
-<BundleOptions output="{output}" error="{error}" />
+<BundleOptions />
 
-{#if !error}
-	{#each output as chunk}
+{#if !$rollupOutput.error}
+	{#each $rollupOutput.output as chunk}
 		<article class="output">
-			{#if output.length > 1}
+			{#if $rollupOutput.output.length > 1}
 				<header>
 					<span class="module-name">{chunk.fileName}</span>
 				</header>

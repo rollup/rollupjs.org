@@ -50,14 +50,16 @@ export async function updateStoresFromQuery(query) {
 	}
 }
 
-export function updateQuery($modules, $options, $selectedExample, rollupVersion, circleci) {
+export function updateQuery($modules, $options, $selectedExample, $rollupRequest, rollupVersion) {
 	if (typeof history === 'undefined') return;
-
 	const params = {};
-	if (circleci) {
-		params.circleci = circleci;
+	if ($rollupRequest.type === 'circleci') {
+		params.circleci = $rollupRequest.version;
 	} else {
-		params.version = rollupVersion;
+		const version = $rollupRequest.version || rollupVersion;
+		if (version) {
+			params.version = version;
+		}
 	}
 
 	const json = JSON.stringify({

@@ -1,15 +1,17 @@
 <script>
 	import rollup from '../stores/rollup';
-	export let error;
-	export let warnings;
+	import rollupOutput from '../stores/rollupOutput';
 
-	let waiting;
+	let error, warnings, waiting;
 	$: {
 		waiting = !$rollup.rollup;
 	}
+	$: {
+		({ error, warnings } = $rollupOutput);
+	}
 </script>
 
-<div class="status {error ? 'error' : waiting ? 'waiting' : 'success'}">
+<div class="status {waiting ? 'waiting' : error ? 'error' : 'success'}">
 	<span>
 		{#if error}
 			<span class="icon icon-error"></span>

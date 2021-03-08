@@ -1,8 +1,6 @@
 <script>
 	import Input from './ReplInput.svelte';
 	import Output from './ReplOutput.svelte';
-	import { dirname, resolve } from '../helpers/path';
-	import { supportsCodeSplitting, supportsInput } from '../helpers/rollupVersion';
 	import { onMount } from 'svelte';
 	import { stores } from '@sapper/app';
 	import rollup from '../stores/rollup';
@@ -10,73 +8,30 @@
 	import selectedExampleModules from '../stores/selectedExampleModules';
 	import modules from '../stores/modules';
 	import options from '../stores/options';
+	import rollupOutput from '../stores/rollupOutput';
+	import rollupRequest from '../stores/rollupRequest';
 	import { updateQuery, updateStoresFromQuery } from '../helpers/query';
 
-	let output = [];
-	let warnings = [];
-	let error;
 	const { page } = stores();
 
 	onMount(() => updateStoresFromQuery($page.query));
 
-	$: {
-		if ($rollup.rollup) {
-			error = null;
-			requestBundle();
-		} else if ($rollup.error) {
-			error = $rollup.error;
-		}
-	}
+	$: updateQuery($modules, $options, $selectedExample, $rollupRequest, $rollup.VERSION);
+	$: updateModulesOnExampleModulesChange($selectedExampleModules);
+	$: clearSelectedExampleOnModulesChange($modules);
 
-	$: {
-		updateModulesOnExampleModulesChange($selectedExampleModules);
-	}
-
-	// TODO Lukas extract
 	function updateModulesOnExampleModulesChange(selectedExampleModules) {
 		if (selectedExampleModules.length) {
 			$modules = selectedExampleModules.map(module => ({ ...module }));
 		}
 	}
 
-	$: {
-		if ($modules) {
-			requestDebouncedBundle();
-		}
-	}
-
-	$: {
-		if ($options) {
-			requestBundle();
-		}
-	}
-
-	$: {
-		updateQuery($modules, $options, $selectedExample, $rollup.VERSION, $page.query.circleci);
-	}
-
-	// TODO instead of debouncing, we should bundle in a worker
-	let bundleDebounceTimeout;
-
-	function requestDebouncedBundle() {
-		clearTimeout(bundleDebounceTimeout);
-		bundleDebounceTimeout = setTimeout(requestBundle, 100);
-	}
-
-	let bundlePromise = null;
-
-	async function requestBundle() {
-		if (!$modules.length || !$rollup.rollup) return;
-		if (bundlePromise) {
-			await bundlePromise;
-		}
-		// TODO Lukas maybe this should rather happen on $modules update
-		// and only if we have a selected example
+	function clearSelectedExampleOnModulesChange(modules) {
 		if (
-			$selectedExampleModules.length &&
-			($modules.length !== $selectedExampleModules.length ||
+			$selectedExample &&
+			(modules.length !== $selectedExampleModules.length ||
 				$selectedExampleModules.some((module, index) => {
-					const currentModule = $modules[index];
+					const currentModule = modules[index];
 					return (
 						currentModule.name !== module.name ||
 						currentModule.code !== module.code ||
@@ -84,82 +39,7 @@
 					);
 				}))
 		) {
-			selectedExample.set(null);
-		}
-		bundlePromise = bundle($rollup).then(() => (bundlePromise = null));
-	}
-
-	async function bundle({ rollup, VERSION: version, supportsCodeSplitting, supportsInput }) {
-		// TODO Lukas uncomment
-		// console.clear();
-		console.log(`running Rollup version %c${version}`, 'font-weight: bold');
-
-		let moduleById = {};
-		for (const module of $modules) {
-			moduleById[module.name] = module;
-		}
-
-		warnings = [];
-		const inputOptions = {
-			plugins: [
-				{
-					resolveId(importee, importer) {
-						if (!importer) return importee;
-						if (importee[0] !== '.') return false;
-
-						let resolved = resolve(dirname(importer), importee).replace(/^\.\//, '');
-						if (resolved in moduleById) return resolved;
-
-						resolved += '.js';
-						if (resolved in moduleById) return resolved;
-
-						throw new Error(`Could not resolve '${importee}' from '${importer}'`);
-					},
-					load: function (id) {
-						return moduleById[id].code;
-					}
-				}
-			],
-			onwarn(warning) {
-				warnings.push(warning);
-				console.group(warning.loc ? warning.loc.file : '');
-				console.warn(warning.message);
-
-				if (warning.frame) {
-					console.log(warning.frame);
-				}
-
-				if (warning.url) {
-					console.log(`See ${warning.url} for more information`);
-				}
-
-				console.groupEnd();
-			}
-		};
-		if (supportsCodeSplitting) {
-			inputOptions.input = $modules
-				.filter((module, index) => index === 0 || module.isEntry)
-				.map(module => module.name);
-		} else {
-			inputOptions[supportsInput ? 'input' : 'entry'] = 'main.js';
-		}
-
-		try {
-			const generated = await (await rollup(inputOptions)).generate($options);
-
-			if (supportsCodeSplitting) {
-				output = generated.output;
-				error = null;
-			} else {
-				output = [generated];
-				error = null;
-			}
-		} catch (err) {
-			error = err;
-			if (error.frame) console.log(error.frame);
-			setTimeout(() => {
-				throw error;
-			});
+			$selectedExample = null;
 		}
 	}
 </script>
@@ -174,11 +54,11 @@
 	<div class="right">
 		<h2>
 			...
-			{#if output.length > 1}chunks come{:else}bundle comes{/if}
+			{#if $rollupOutput.output.length > 1}chunks come{:else}bundle comes{/if}
 			out
 		</h2>
 		<div class="output">
-			<Output output="{output}" error="{error}" warnings="{warnings}" />
+			<Output />
 		</div>
 	</div>
 </div>
