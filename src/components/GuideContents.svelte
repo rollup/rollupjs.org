@@ -20,10 +20,8 @@
 		}
 	}
 
-	$: {
-		if (active) {
-			scrollActiveIntoView();
-		}
+	$: if (active) {
+		scrollActiveIntoView();
 	}
 </script>
 

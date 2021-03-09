@@ -5,7 +5,6 @@
 	import { stores } from '@sapper/app';
 	import rollup from '../stores/rollup';
 	import selectedExample from '../stores/selectedExample';
-	import selectedExampleModules from '../stores/selectedExampleModules';
 	import modules from '../stores/modules';
 	import options from '../stores/options';
 	import rollupOutput from '../stores/rollupOutput';
@@ -17,31 +16,6 @@
 	onMount(() => updateStoresFromQuery($page.query));
 
 	$: updateQuery($modules, $options, $selectedExample, $rollupRequest, $rollup.VERSION);
-	$: updateModulesOnExampleModulesChange($selectedExampleModules);
-	$: clearSelectedExampleOnModulesChange($modules);
-
-	function updateModulesOnExampleModulesChange(selectedExampleModules) {
-		if (selectedExampleModules.length) {
-			$modules = selectedExampleModules.map(module => ({ ...module }));
-		}
-	}
-
-	function clearSelectedExampleOnModulesChange(modules) {
-		if (
-			$selectedExample &&
-			(modules.length !== $selectedExampleModules.length ||
-				$selectedExampleModules.some((module, index) => {
-					const currentModule = modules[index];
-					return (
-						currentModule.name !== module.name ||
-						currentModule.code !== module.code ||
-						currentModule.isEntry !== module.isEntry
-					);
-				}))
-		) {
-			$selectedExample = null;
-		}
-	}
 </script>
 
 <div class="repl">

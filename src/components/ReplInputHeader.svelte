@@ -3,6 +3,35 @@
 	import examples from '../stores/examples';
 	import modules from '../stores/modules';
 
+	let selectedExampleModules = [];
+
+	$: clearSelectedExampleOnModulesChange($modules);
+	$: updateModulesOnExampleSelection($selectedExample);
+
+	function clearSelectedExampleOnModulesChange(modules) {
+		if (
+			$selectedExample &&
+			(modules.length !== selectedExampleModules.length ||
+				selectedExampleModules.some((module, index) => {
+					const currentModule = modules[index];
+					return (
+						currentModule.name !== module.name ||
+						currentModule.code !== module.code ||
+						currentModule.isEntry !== module.isEntry
+					);
+				}))
+		) {
+			$selectedExample = null;
+		}
+	}
+
+	function updateModulesOnExampleSelection(selectedExample) {
+		if (selectedExample) {
+			selectedExampleModules = $examples.find(({ id }) => id === selectedExample).modules;
+			$modules = selectedExampleModules.map(module => ({ ...module }));
+		}
+	}
+
 	function clear() {
 		$selectedExample = null;
 		$modules = [{ name: 'main.js', code: '', isEntry: true }];

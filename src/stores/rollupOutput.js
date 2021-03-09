@@ -50,6 +50,9 @@ async function bundle({
 	$options,
 	set
 }) {
+	if (!$modules.length) {
+		return;
+	}
 	console.clear();
 	console.log(`running Rollup version %c${VERSION}`, 'font-weight: bold');
 

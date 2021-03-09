@@ -3,12 +3,8 @@
 	import rollupOutput from '../stores/rollupOutput';
 
 	let error, warnings, waiting;
-	$: {
-		waiting = !$rollup.rollup;
-	}
-	$: {
-		({ error, warnings } = $rollupOutput);
-	}
+	$: waiting = !$rollup.rollup;
+	$: ({ error, warnings } = $rollupOutput);
 </script>
 
 <div class="status {waiting ? 'waiting' : error ? 'error' : 'success'}">

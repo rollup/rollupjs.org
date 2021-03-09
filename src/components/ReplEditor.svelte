@@ -32,11 +32,9 @@
 		editor && editor.toTextArea();
 	});
 
-	$: {
-		if (previousCode !== code && editor) {
-			previousCode = code;
-			editor.setValue(code);
-		}
+	$: if (previousCode !== code && editor) {
+		previousCode = code;
+		editor.setValue(code);
 	}
 </script>
 
