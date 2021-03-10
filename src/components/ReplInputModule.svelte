@@ -1,13 +1,13 @@
 <script>
 	import { createEventDispatcher } from 'svelte';
-	import Editor from '../_Editor/index.svelte';
+	import rollup from '../stores/rollup';
+	import Editor from './ReplEditor.svelte';
 	const dispatch = createEventDispatcher();
 
 	export let name;
 	export let code;
 	export let main;
 	export let isEntry;
-	export let codeSplitting;
 
 	function selectName(input) {
 		input.setSelectionRange(0, input.value.length - 3);
@@ -15,8 +15,10 @@
 </script>
 
 <article
-	class="module {main || isEntry ? 'entry-module' : ''}
-	{codeSplitting ? 'code-splitting' : ''}"
+	class="module {main || (isEntry && $rollup.supportsCodeSplitting)
+		? 'entry-module'
+		: ''}
+	{$rollup.supportsCodeSplitting ? 'code-splitting' : ''}"
 >
 	<header>
 		{#if main}
@@ -36,7 +38,7 @@
 				<span class="label">remove</span>
 				<span class="icon-cancel"></span>
 			</button>
-			{#if codeSplitting}
+			{#if $rollup.supportsCodeSplitting}
 				<button class="toggle-entry" on:click="{() => dispatch('toggle-entry')}">
 					<span class="label">(entry&nbsp;module)</span>
 					{#if isEntry}
@@ -48,7 +50,7 @@
 			{/if}
 		{/if}
 	</header>
-	<Editor bind:code bind:name />
+	<Editor bind:code moduleName="{name}" />
 </article>
 
 <style>

@@ -1,14 +1,14 @@
 <script>
-	import { drawerOpen } from '../../../store';
-
+	import drawerOpen from '../stores/drawerOpen';
 	export let sections;
 	export let lang;
+	import currentSection from '../stores/currentSection';
 
-	export let active = null;
 	$: base = `guide/${lang}/`;
 
-	function scrollActiveIntoView() {
-		const element = document.getElementById('link' + active);
+	function scrollActiveIntoView(currentSection) {
+		if (!currentSection) return;
+		const element = document.getElementById(`link${currentSection}`);
 		const sidebar = document.querySelector('.sidebar');
 		if (element) {
 			const { top, bottom } = element.getBoundingClientRect();
@@ -21,18 +21,14 @@
 		}
 	}
 
-	$: {
-		if (active) {
-			scrollActiveIntoView();
-		}
-	}
+	$: scrollActiveIntoView($currentSection);
 </script>
 
 <ul class="guide-toc">
 	{#each sections as section}
 		<li>
 			<a
-				class="section {section.slug === active ? 'active' : ''}"
+				class="section {section.slug === $currentSection ? 'active' : ''}"
 				href="{base}#{section.slug}"
 				id="link{section.slug}"
 			>
@@ -43,7 +39,7 @@
 				{#each section.subsections as subsection}
 					<li>
 						<a
-							class="subsection {subsection.slug === active ? 'active' : ''}"
+							class="subsection {subsection.slug === $currentSection ? 'active' : ''}"
 							href="{base}#{subsection.slug}"
 							id="link{subsection.slug}"
 							on:click="{drawerOpen.close}"
