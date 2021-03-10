@@ -8,6 +8,12 @@ let bundleDebounceTimeout;
 let nextBundleRequest = null;
 let completedRequestHash = '';
 
+function logWarning(message) {
+	console.group((message.loc && message.loc.file) || message.id || '');
+	console.warn(message);
+	console.groupEnd();
+}
+
 function hashOptionsAndRollupVersion({ $options, $rollup: { VERSION } }) {
 	return JSON.stringify({ o: $options, v: VERSION });
 }
@@ -84,18 +90,7 @@ async function bundle({
 		],
 		onwarn(warning) {
 			warnings.push(warning);
-			console.group(warning.loc ? warning.loc.file : '');
-			console.warn(warning.message);
-
-			if (warning.frame) {
-				console.log(warning.frame);
-			}
-
-			if (warning.url) {
-				console.log(`See ${warning.url} for more information`);
-			}
-
-			console.groupEnd();
+			logWarning(warning);
 		}
 	};
 	if (supportsCodeSplitting) {
@@ -111,10 +106,7 @@ async function bundle({
 		set({ output: supportsCodeSplitting ? generated.output : [generated], warnings, error: null });
 	} catch (error) {
 		set({ output: [], warnings, error });
-		if (error.frame) console.log(error.frame);
-		setTimeout(() => {
-			throw error;
-		});
+		logWarning({ ...error });
 	}
 }
 
