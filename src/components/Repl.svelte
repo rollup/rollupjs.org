@@ -13,7 +13,7 @@
 
 	const { page } = stores();
 
-	onMount(() => updateStoresFromQuery($page.query));
+	onMount(() => updateStoresFromQuery($page.query, $modules.length > 0));
 
 	$: updateQuery($modules, $options, $selectedExample, $rollupRequest, $rollup.VERSION);
 </script>

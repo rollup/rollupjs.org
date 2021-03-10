@@ -6,7 +6,7 @@ import rollupRequest from '../stores/rollupRequest';
 const atob =
 	typeof window === 'undefined' ? base64 => Buffer.from(base64, 'base64').toString() : window.atob;
 
-export async function updateStoresFromQuery(query) {
+export async function updateStoresFromQuery(query, hasModules) {
 	try {
 		if (query.shareable) {
 			const json = decodeURIComponent(atob(query.shareable));
@@ -35,7 +35,7 @@ export async function updateStoresFromQuery(query) {
 						isEntry: entryModules.indexOf(module.filename) >= 0
 					}))
 			);
-		} else {
+		} else if (!hasModules) {
 			selectedExample.set('00');
 		}
 	} catch (err) {
