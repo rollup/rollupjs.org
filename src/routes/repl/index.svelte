@@ -1,6 +1,6 @@
 <script context="module">
 	export function preload() {
-		return this.fetch(`api/examples.json`)
+		return this.fetch(`api/example-data.json`)
 			.then(r => r.json())
 			.then(examples => ({ examples }));
 	}
