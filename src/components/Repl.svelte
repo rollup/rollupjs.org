@@ -40,6 +40,10 @@
 <style>
 	.repl {
 		height: calc(100% - 3.6em);
+		--warning-color: #181818;
+		--warning-background: #eed245;
+		--error-color: white;
+		--error-background: #e94c43;
 	}
 
 	.left,

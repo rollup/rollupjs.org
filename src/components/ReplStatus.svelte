@@ -51,8 +51,8 @@
 	}
 
 	.warnings {
-		background-color: #eed245;
-		color: #181818;
+		background-color: var(--warning-background);
+		color: var(--warning-color);
 	}
 
 	.warning {
@@ -60,7 +60,8 @@
 	}
 
 	.error {
-		background-color: #e94c43;
+		background-color: var(--error-background);
+		color: var(--error-color);
 	}
 
 	.status > span {

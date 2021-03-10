@@ -1,11 +1,66 @@
 <script>
 	import { onDestroy, onMount } from 'svelte';
 	import { getCodeMirror } from '../helpers/getCodeMirror';
+	import rollupOutput from '../stores/rollupOutput';
+	import { getFileNameFromMessage } from '../helpers/messages';
+
 	export let code;
 	export let readonly = false;
+	export let moduleName = null;
+
 	let previousCode = code;
 	let editorNode;
 	let editor;
+
+	$: if (moduleName && editor) {
+		editor.removeOverlay('locations');
+		const { error, warnings } = $rollupOutput;
+		if (error) {
+			addOverlay([error], 'rollup-error');
+		} else {
+			addOverlay(warnings, 'rollup-warning');
+		}
+	}
+
+	function addOverlay(messages, type) {
+		const relevantMessages = messages.filter(
+			message => message.loc && getFileNameFromMessage(message) === moduleName
+		);
+		if (relevantMessages.length) {
+			const lines = {};
+			for (const {
+				loc: { line, column }
+			} of relevantMessages) {
+				if (lines[line]) {
+					lines[line].push(column);
+				} else {
+					lines[line] = [column];
+				}
+			}
+			editor.addOverlay({
+				name: 'locations',
+				token(stream) {
+					const line = lines[stream.lineOracle.line + 1];
+					if (line) {
+						let i = 0;
+						while (typeof line[i] === 'number' && stream.pos > line[i]) {
+							i++;
+						}
+						if (typeof line[i] !== 'number') {
+							stream.skipToEnd();
+						} else if (stream.pos < line[i]) {
+							stream.pos = line[i];
+						} else {
+							stream.pos++;
+							return type;
+						}
+					} else {
+						stream.skipToEnd();
+					}
+				}
+			});
+		}
+	}
 
 	onMount(async () => {
 		const { default: CodeMirror } = await getCodeMirror();
@@ -21,6 +76,7 @@
 		});
 
 		editor.on('change', instance => {
+			editor.removeOverlay('locations');
 			code = instance.getValue();
 			previousCode = code;
 		});
@@ -80,5 +136,19 @@
 	textarea {
 		width: 100%;
 		border: none;
+	}
+
+	:global(.cm-rollup-warning) {
+		background-color: var(--warning-background);
+		color: var(--warning-color);
+		padding: 1px;
+		margin: -1px;
+	}
+
+	:global(.cm-rollup-error) {
+		background-color: var(--error-background);
+		color: var(--error-color);
+		padding: 1px;
+		margin: -1px;
 	}
 </style>

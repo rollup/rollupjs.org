@@ -3,13 +3,14 @@ import rollup from './rollup';
 import modules from './modules';
 import options from './options';
 import { dirname, resolve } from '../helpers/path';
+import { getFileNameFromMessage } from '../helpers/messages';
 
 let bundleDebounceTimeout;
 let nextBundleRequest = null;
 let completedRequestHash = '';
 
 function logWarning(message) {
-	console.group((message.loc && message.loc.file) || message.id || '');
+	console.group(getFileNameFromMessage(message) || '');
 	console.warn(message);
 	console.groupEnd();
 }

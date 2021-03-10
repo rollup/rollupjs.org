@@ -50,7 +50,7 @@
 			{/if}
 		{/if}
 	</header>
-	<Editor bind:code />
+	<Editor bind:code moduleName="{name}" />
 </article>
 
 <style>

@@ -1,4 +1,6 @@
 <script>
+	import { getFileNameFromMessage } from '../helpers/messages';
+
 	export let message = {};
 	export let isError = false;
 
@@ -12,7 +14,7 @@
 	$: frame = getFrame(message);
 
 	function getFrame({ loc, id, frame }) {
-		const fileName = (loc && loc.file) || id;
+		const fileName = getFileNameFromMessage({ loc, id });
 		if (fileName) {
 			const location = loc ? ` (${loc.line}:${loc.column})` : '';
 			return `${fileName}${location}${frame ? '\n' : ''}${frame}`;
