@@ -138,14 +138,14 @@
 		border: none;
 	}
 
-	:global(.cm-rollup-warning) {
+	:global(.CodeMirror) :global(.cm-overlay.cm-rollup-warning) {
 		background-color: var(--warning-background);
 		color: var(--warning-color);
 		padding: 1px;
 		margin: -1px;
 	}
 
-	:global(.cm-rollup-error) {
+	:global(.CodeMirror) :global(.cm-overlay.cm-rollup-error) {
 		background-color: var(--error-background);
 		color: var(--error-color);
 		padding: 1px;

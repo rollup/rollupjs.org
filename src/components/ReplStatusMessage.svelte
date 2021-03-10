@@ -30,7 +30,9 @@
 	{/if}
 	{message.message}
 	{#if isGuideUrl(message.url)}
-		(<a href="{message.url.slice(websitePrefix.length)}">link</a>)
+		<a href="{message.url.slice(websitePrefix.length)}" class="link" class:error="{isError}"
+			>(<span class="link-text">link</span>)</a
+		>
 	{/if}
 </div>
 {#if frame}
@@ -46,5 +48,21 @@
 		overflow: hidden;
 		word-break: normal;
 		margin: 5px 0;
+	}
+
+	.link {
+		margin: 0 2px;
+	}
+
+	.link-text {
+		border-bottom: 1px solid #dd9999;
+	}
+
+	.link.error {
+		color: #eeeeee;
+	}
+
+	.link.error .link-text {
+		border-bottom: 1px solid #ffaaaa;
 	}
 </style>
