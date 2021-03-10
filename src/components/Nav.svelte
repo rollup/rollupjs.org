@@ -10,9 +10,11 @@
 	<nav>
 		<ul class="primary">
 			<li>
-				<a rel="prefetch" class="{page === 'guide' ? 'active' : ''}" href="guide/en/">guide</a>
+				<a rel="prefetch" class:active="{page === 'guide'}" href="guide/en/" sapper:noscroll
+					>guide</a
+				>
 			</li>
-			<li><a rel="prefetch" class="{page === 'repl' ? 'active' : ''}" href="repl/">repl</a></li>
+			<li><a rel="prefetch" class:active="{page === 'repl'}" href="repl/">repl</a></li>
 			<li><a href="https://is.gd/rollup_chat">chat</a></li>
 			<li><a href="https://github.com/rollup/rollup">github</a></li>
 		</ul>

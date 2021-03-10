@@ -2,41 +2,52 @@
 	import { onMount, onDestroy } from 'svelte';
 	import GuideContents from './GuideContents.svelte';
 	import drawerOpen from '../stores/drawerOpen';
+	import currentSection from '../stores/currentSection';
 
 	export let sections = [];
 	export let lang;
 	let container;
-	let contents;
 	let params;
 	let anchors = [];
 	let positions = [];
 	let timeouts = [];
 	let lastId = '';
 
-	function onresize() {
+	function updateAnchorPositions() {
 		const { top } = container.getBoundingClientRect();
 		positions = anchors.map(anchor => anchor.getBoundingClientRect().top - top);
 	}
 
-	function onscroll() {
+	// This performs a binary search to not block scrolling too much
+	function getCurrentSection() {
 		const top = -window.scrollY;
-		let i = anchors.length;
-		while (i--) {
-			if (positions[i] + top < 40) {
-				const anchor = anchors[i];
-				const { id } = anchor;
+		let first = 0;
+		let last = positions.length - 1;
 
-				if (id !== lastId) {
-					lastId = id;
-					contents.$set({ active: id });
+		while (first <= last) {
+			const middle = Math.floor((first + last) / 2);
+			if (positions[middle] + top < 40) {
+				if (middle === last || positions[middle + 1] + top >= 40) {
+					return middle;
 				}
-				return;
+				first = middle + 1;
+			} else {
+				last = middle - 1;
 			}
+		}
+		return 0;
+	}
+
+	function updateCurrentSection() {
+		const anchor = anchors[getCurrentSection()];
+		const { id } = anchor;
+		if (id !== $currentSection) {
+			$currentSection = id;
 		}
 	}
 
-	function onhashchange(event) {
-		const id = window.location.hash.slice(1);
+	function scrollOnHashChange() {
+		const id = window.location.hash.slice(1) || $currentSection;
 		if (id) {
 			const element = document.getElementById(id);
 			if (element) {
@@ -50,23 +61,23 @@
 			.concat(Array.from(container.querySelectorAll('h3[id]')))
 			.sort((a, b) => a.getBoundingClientRect().top - b.getBoundingClientRect().top);
 
-		window.addEventListener('scroll', onscroll, true);
-		window.addEventListener('resize', onresize, true);
-		window.addEventListener('hashchange', onhashchange, true);
+		window.addEventListener('scroll', updateCurrentSection, true);
+		window.addEventListener('resize', updateAnchorPositions, true);
+		window.addEventListener('hashchange', scrollOnHashChange, true);
 
 		// wait for fonts to load...
-		timeouts = [setTimeout(onresize, 1000), setTimeout(onresize, 5000)];
+		timeouts = [setTimeout(updateAnchorPositions, 1000), setTimeout(updateAnchorPositions, 5000)];
 
-		onhashchange();
-		onresize();
-		onscroll();
+		scrollOnHashChange();
+		updateAnchorPositions();
+		updateCurrentSection();
 	});
 
 	onDestroy(() => {
 		if (typeof window !== 'undefined') {
-			window.removeEventListener('scroll', onscroll, true);
-			window.removeEventListener('resize', onresize, true);
-			window.removeEventListener('hashchange', onhashchange, true);
+			window.removeEventListener('scroll', updateCurrentSection, true);
+			window.removeEventListener('resize', updateAnchorPositions, true);
+			window.removeEventListener('hashchange', scrollOnHashChange, true);
 		}
 
 		timeouts.forEach(timeout => clearTimeout(timeout));
@@ -93,7 +104,7 @@
 
 <div class="mousecatcher" on:click="{drawerOpen.close}" class:visible="{$drawerOpen}"></div>
 <div class="sidebar" class:open="{$drawerOpen}">
-	<GuideContents bind:this="{contents}" sections="{sections}" lang="{lang}" />
+	<GuideContents sections="{sections}" lang="{lang}" />
 </div>
 
 <style>
