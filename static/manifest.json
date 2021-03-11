@@ -2,7 +2,6 @@
 	"name": "Rollup",
 	"short_name": "Rollup",
 	"display": "fullscreen",
-	"start_url": "/guide/en/",
 	"background_color": "#ff3333",
 	"theme_color": "#ff3333",
 	"icons": [
@@ -15,8 +14,7 @@
 	"shortcuts" : [
 		{
 			"name": "Guide",
-			"url": "/guide/en/",
-			"description": "News you have missed"
+			"url": "/guide/en/"
 		},
 		{
 			"name": "REPL",
