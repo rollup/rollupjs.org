@@ -1,4 +1,26 @@
 {
 	"name": "Rollup",
-	"short_name": "Rollup"
+	"short_name": "Rollup",
+	"display": "fullscreen",
+	"start_url": "/guide/en/",
+	"background_color": "#ff3333",
+	"theme_color": "#ff3333",
+	"icons": [
+		{
+			"src": "/favicon.png",
+			"type": "image/png",
+			"sizes": "128x"
+		}
+	],
+	"shortcuts" : [
+		{
+			"name": "Guide",
+			"url": "/guide/en/",
+			"description": "News you have missed"
+		},
+		{
+			"name": "REPL",
+			"url": "/repl/"
+		}
+	]
 }
