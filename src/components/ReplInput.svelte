@@ -60,7 +60,7 @@
 		width: 100%;
 		color: #3d9970;
 		border: none;
-		padding: 1em;
+		padding: 0.75em;
 		margin-bottom: 0;
 	}
 </style>

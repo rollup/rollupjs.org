@@ -81,8 +81,12 @@
 		padding-right: 0.5em;
 	}
 
+	input {
+		padding: 0.5em;
+	}
+
 	.code-splitting input {
-		padding: 0.8em;
+		padding: 0.75em 0.5em;
 	}
 
 	button {

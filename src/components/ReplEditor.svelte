@@ -101,8 +101,7 @@
 <style>
 	.codemirror-container {
 		width: 100%;
-		border-top: 1px solid #ccc;
-		border-bottom: 1px solid #ccc;
+		height: 100%;
 	}
 
 	.codemirror-container :global(.CodeMirror) {
@@ -112,21 +111,11 @@
 		line-height: 1.2;
 		font-weight: 400;
 		color: #333;
+		height: 100%;
 	}
 
 	.codemirror-container :global(.CodeMirror) {
-		height: auto;
-	}
-
-	@media (min-width: 768px) {
-		.codemirror-container {
-			height: 100%;
-			border: none;
-		}
-
-		.codemirror-container :global(.CodeMirror) {
-			height: 100%;
-		}
+		height: 100%;
 	}
 
 	.codemirror-container :global(.CodeMirror-gutters) {
