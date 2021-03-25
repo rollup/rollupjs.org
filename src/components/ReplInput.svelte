@@ -2,7 +2,6 @@
 	import Module from './ReplInputModule.svelte';
 	import Header from './ReplInputHeader.svelte';
 	import modules from '../stores/modules';
-
 	let uid = 1;
 	let modulesRef;
 
