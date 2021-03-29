@@ -38,6 +38,11 @@
 </div>
 
 <style>
+	h2 {
+		white-space: nowrap;
+		margin-bottom: 0.25rem;
+	}
+
 	.repl {
 		height: calc(100% - 3.6em);
 		--warning-color: #181818;
@@ -49,7 +54,7 @@
 	.left,
 	.right {
 		width: 100%;
-		padding: 1em;
+		padding: 1rem;
 	}
 
 	:global(button) {
@@ -60,7 +65,6 @@
 		cursor: pointer;
 		background-color: #eee;
 		padding: 0.5em 1em;
-		margin-bottom: 1em;
 	}
 
 	:global(button):hover,

@@ -38,7 +38,7 @@
 	}
 </script>
 
-<header class="start-here clearfix">
+<header>
 	<select bind:value="{$selectedExample}">
 		<option disabled selected value="{null}">Select an example...</option>
 		{#each $examples as example}
@@ -50,6 +50,14 @@
 </header>
 
 <style>
+	header {
+		margin-bottom: 1.25rem;
+		display: flex;
+		justify-content: space-between;
+		flex-wrap: wrap;
+		column-gap: 0.5rem;
+	}
+
 	select {
 		font-size: inherit;
 		font-family: inherit;
@@ -60,10 +68,14 @@
 		appearance: none;
 		border-radius: 0;
 		padding: 0.5em 3em 0.5em 0.5em;
-		margin-bottom: 1em;
 		background: #eee url(/images/select-arrow.svg) no-repeat 100% 50%;
 		background-size: auto 100%;
 		outline: none;
+	}
+
+	select,
+	.start-over {
+		margin-bottom: 0.25rem;
 	}
 
 	@media (min-width: 400px) {

@@ -35,7 +35,7 @@
 <style>
 	.status {
 		padding: 0.7em;
-		margin: 0 0 1em 0;
+		margin: 0 0 0.5rem 0;
 		color: white;
 		word-break: break-word;
 		line-height: 1;
@@ -71,7 +71,7 @@
 	.warning-list {
 		list-style-type: none;
 		padding-inline-start: 0;
-		margin-block-start: 10px;
-		margin-block-end: 0;
+		margin-top: 10px;
+		margin-bottom: 0;
 	}
 </style>

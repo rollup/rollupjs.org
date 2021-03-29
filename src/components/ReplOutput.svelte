@@ -25,7 +25,7 @@
 
 <style>
 	.output {
-		margin: 0 0 1em 0;
+		margin: 0 0 0.5rem 0;
 		border: 1px solid #eee;
 	}
 

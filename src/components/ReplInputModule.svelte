@@ -15,10 +15,9 @@
 </script>
 
 <article
-	class="module {main || (isEntry && $rollup.supportsCodeSplitting)
-		? 'entry-module'
-		: ''}
-	{$rollup.supportsCodeSplitting ? 'code-splitting' : ''}"
+	class="module"
+	class:entry-module="{main || (isEntry && $rollup.supportsCodeSplitting)}"
+	class:code-splitting="{$rollup.supportsCodeSplitting}"
 >
 	<header>
 		{#if main}
@@ -55,7 +54,7 @@
 
 <style>
 	.module {
-		margin: 0 0 1em 0;
+		margin: 0 0 0.5rem 0;
 		border: 1px solid #f4f4f4;
 	}
 
