@@ -4,7 +4,7 @@
 	import ReplStatusMessage from './ReplStatusMessage.svelte';
 
 	let error, warnings, waiting;
-	$: waiting = !$rollup.rollup;
+	$: waiting = !$rollup.rollup && !$rollup.error;
 	$: ({ error, warnings } = $rollupOutput);
 </script>
 
