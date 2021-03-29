@@ -64,7 +64,9 @@
 		outline: none;
 		cursor: pointer;
 		background-color: #eee;
-		padding: 0.5em 1em;
+		padding: 0 1rem;
+		line-height: 2.25rem;
+		white-space: nowrap;
 	}
 
 	:global(button):hover,

@@ -67,10 +67,11 @@
 		-moz-appearance: none;
 		appearance: none;
 		border-radius: 0;
-		padding: 0.5em 3em 0.5em 0.5em;
+		padding: 0 2.5rem 0 0.5rem;
 		background: #eee url(/images/select-arrow.svg) no-repeat 100% 50%;
 		background-size: auto 100%;
 		outline: none;
+		line-height: 2.25rem;
 	}
 
 	select,

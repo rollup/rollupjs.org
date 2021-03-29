@@ -30,22 +30,24 @@
 </script>
 
 <div class="options">
-	<section class="clearfix">
-		<h3>options.format</h3>
-		{#each formats as format, i}
-			<button
-				class="{format.value === $options.format ? 'selected' : ''}"
-				on:click="{() => setFormat(format.value)}"
-			>
-				{format.name}
-			</button>
-		{/each}
+	<section>
+		<h3>output.format</h3>
+		<div class="option-buttons">
+			{#each formats as format, i}
+				<button
+					class:selected="{format.value === $options.format}"
+					on:click="{() => setFormat(format.value)}"
+				>
+					{format.name}
+				</button>
+			{/each}
+		</div>
 	</section>
 
 	{#if !$rollupOutput.error}
 		{#if $options.format === 'amd' || $options.format === 'umd'}
 			<section>
-				<h3>options.amd.id</h3>
+				<h3>output.amd.id</h3>
 				<input bind:value="{$options.amd.id}" placeholder="leave blank for anonymous module" />
 			</section>
 		{/if}
@@ -53,14 +55,14 @@
 		{#if $rollupOutput.output[0] && ($options.format === 'iife' || $options.format === 'umd')}
 			{#if $rollupOutput.output[0].exports.length}
 				<section>
-					<h3>options.name</h3>
+					<h3>output.name</h3>
 					<input bind:value="{$options.name}" />
 				</section>
 			{/if}
 
 			{#if sortedImports.length}
 				<section>
-					<h3>options.globals</h3>
+					<h3>output.globals</h3>
 					{#each sortedImports as x (x)}
 						<div><input bind:value="{$options.globals[x]}" /> <code>'{x}'</code></div>
 					{/each}
@@ -74,16 +76,20 @@
 	.options {
 		margin: 0 0 1.5rem 0;
 		border: 1px solid #eee;
+		line-height: 2rem;
+	}
+
+	.option-buttons {
+		display: flex;
 	}
 
 	button {
 		display: block;
-		width: 16.666666666666668%;
-		float: left;
-		/*height: 100%;*/
-		padding: 0.75em 0;
-		font-size: 0.8em;
+		font-size: 0.8rem;
 		margin: 0;
+		flex-basis: 0;
+		flex-grow: 1;
+		line-height: 2rem;
 	}
 
 	.selected {
@@ -100,23 +106,27 @@
 	}
 
 	h3 {
-		padding: 0.5rem;
+		padding: 0 0.5rem;
 		margin: 0;
 		font-size: 1em;
 		font-weight: 700;
+		line-height: 2rem;
 	}
 
 	input {
-		padding-left: 1.5em;
+		font-size: 0.8rem;
+		padding: 0 0.5rem;
+		line-height: 2rem;
 		background-color: #eee;
 	}
 
 	section code {
+		font-size: 0.8rem;
+		line-height: 2rem;
 		position: absolute;
 		display: block;
 		right: 0;
-		top: 1px;
-		padding: 0.5em 0.5em 0.5em 1.5em;
-		line-height: 1;
+		top: 0;
+		padding: 0 0.5rem 0 1.5rem;
 	}
 </style>

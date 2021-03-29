@@ -103,6 +103,7 @@
 		opacity: 0.4;
 		-webkit-transition: opacity 0.2s;
 		transition: opacity 0.2s;
+		line-height: 1rem;
 	}
 
 	.code-splitting button {

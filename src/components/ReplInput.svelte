@@ -59,7 +59,8 @@
 		width: 100%;
 		color: #3d9970;
 		border: none;
-		padding: 0.75em;
+		padding: 0;
 		margin-bottom: 0;
+		line-height: 2.25rem;
 	}
 </style>
