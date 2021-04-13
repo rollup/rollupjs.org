@@ -14,6 +14,8 @@ async function getRollupUrl({ type, version }) {
 			throw new Error('Invalid CircleCI build number.');
 		}
 		return artifact.url;
+	} else if (type === 'pr') {
+		return `https://rollup-ci-artefacts.s3.amazonaws.com/${version}/rollup.browser.js`;
 	} else {
 		return version
 			? `https://unpkg.com/rollup@${version}/dist/rollup.browser.js`
