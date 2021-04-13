@@ -31,7 +31,14 @@ async function loadRollup($rollupRequest) {
 		script.onload = () => {
 			fulfil(window.rollup);
 		};
-		script.onerror = () => reject(new Error(`Could not load Rollup from ${url}`));
+		script.onerror = () =>
+			reject(
+				new Error(
+					$rollupRequest.type === 'pr'
+						? `Could not load Rollup from PR #${$rollupRequest.version}. Was there a successful build?`
+						: `Could not load Rollup from ${url}`
+				)
+			);
 		document.querySelector('head').appendChild(script);
 	});
 }
