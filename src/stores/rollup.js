@@ -35,8 +35,8 @@ async function loadRollup($rollupRequest) {
 			reject(
 				new Error(
 					$rollupRequest.type === 'pr'
-						? `Could not load Rollup from PR #${$rollupRequest.version}. Was there a successful build?`
-						: `Could not load Rollup from ${url}`
+						? `Could not load Rollup from PR #${$rollupRequest.version}.`
+						: `Could not load Rollup from ${url}.`
 				)
 			);
 		document.querySelector('head').appendChild(script);
