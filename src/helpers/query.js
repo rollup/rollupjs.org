@@ -45,6 +45,8 @@ export async function updateStoresFromQuery(query, hasModules) {
 
 	if (query.circleci) {
 		rollupRequest.requestCircleCI(query.circleci);
+	} else if (query.pr) {
+		rollupRequest.requestPr(query.pr);
 	} else {
 		rollupRequest.requestVersion(query.version);
 	}
@@ -55,6 +57,8 @@ export function updateQuery($modules, $options, $selectedExample, $rollupRequest
 	const params = {};
 	if ($rollupRequest.type === 'circleci') {
 		params.circleci = $rollupRequest.version;
+	} else if ($rollupRequest.type === 'pr') {
+		params.pr = $rollupRequest.version;
 	} else {
 		const version = $rollupRequest.version || rollupVersion;
 		if (version) {

@@ -82,7 +82,7 @@ async function bundle({
 					resolved += '.js';
 					if (resolved in moduleById) return resolved;
 
-					throw new Error(`Could not resolve '${importee}' from '${importer}'`);
+					throw new Error(`Could not resolve '${importee}' from '${importer}'.`);
 				},
 				load: function (id) {
 					return moduleById[id].code;

@@ -14,6 +14,8 @@ async function getRollupUrl({ type, version }) {
 			throw new Error('Invalid CircleCI build number.');
 		}
 		return artifact.url;
+	} else if (type === 'pr') {
+		return `https://rollup-ci-artefacts.s3.amazonaws.com/${version}/rollup.browser.js`;
 	} else {
 		return version
 			? `https://unpkg.com/rollup@${version}/dist/rollup.browser.js`
@@ -29,7 +31,14 @@ async function loadRollup($rollupRequest) {
 		script.onload = () => {
 			fulfil(window.rollup);
 		};
-		script.onerror = () => reject(new Error(`Could not load Rollup from ${url}`));
+		script.onerror = () =>
+			reject(
+				new Error(
+					$rollupRequest.type === 'pr'
+						? `Could not load Rollup from PR #${$rollupRequest.version}.`
+						: `Could not load Rollup from ${url}.`
+				)
+			);
 		document.querySelector('head').appendChild(script);
 	});
 }
