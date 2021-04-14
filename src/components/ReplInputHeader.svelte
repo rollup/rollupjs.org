@@ -11,6 +11,7 @@
 	function clearSelectedExampleOnModulesChange(modules) {
 		if (
 			$selectedExample &&
+			selectedExampleModules.length &&
 			(modules.length !== selectedExampleModules.length ||
 				selectedExampleModules.some((module, index) => {
 					const currentModule = modules[index];
