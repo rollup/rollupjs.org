@@ -301,7 +301,7 @@
 		color: #666;
 	}
 
-	.content :global(blockquote) :global(p):last-child {
+	.content :global(blockquote p:last-child) {
 		margin: 0;
 	}
 
