@@ -51,7 +51,7 @@
 		if (id) {
 			const element = document.getElementById(id);
 			if (element) {
-				window.scrollBy({ left: -Infinity, top: element.getBoundingClientRect().top });
+				window.scrollBy({ left: -Infinity, top: element.getBoundingClientRect().top - 75 });
 			}
 		}
 	}
@@ -173,7 +173,6 @@
 		font-size: 1.8em;
 		font-weight: 700;
 		color: #333;
-		z-index: 2;
 	}
 
 	.content :global(h3) {
@@ -181,7 +180,6 @@
 		font-size: 1.2em;
 		font-weight: 700;
 		color: #333;
-		z-index: 1;
 	}
 
 	.content :global(h3) :global(code) {
@@ -195,15 +193,10 @@
 		color: #333;
 	}
 
-	.content :global(h2):before,
-	.content :global(h3):before,
-	.content :global(h4):before {
-		display: block;
-		content: ' ';
-		margin-top: -75px;
-		height: 75px;
-		visibility: hidden;
-		pointer-events: none;
+	.content :global(h2),
+	.content :global(h3),
+	.content :global(h4) {
+		scroll-margin-top: 75px;
 	}
 
 	.content :global(h4) :global(code) {
@@ -224,7 +217,6 @@
 		margin: 0 0 1em 0;
 		color: #181818;
 		line-height: 1.5;
-		z-index: 3;
 	}
 
 	.content :global(a) {
