@@ -4,6 +4,8 @@
 	import drawerOpen from '../stores/drawerOpen';
 	import currentSection from '../stores/currentSection';
 
+	$: base = `guide/${lang}/`;
+
 	export let sections = [];
 	export let lang;
 	let container;
@@ -97,6 +99,25 @@
 				</a>
 				{section.metadata.title}
 			</h2>
+			<ul>
+				{#each section.subsections as subsection}
+					<li>
+						<a href="{base}#{subsection.slug}">
+							{subsection.title}
+						</a>
+
+						<ul>
+							{#each subsection.subsubsections as subsubsection}
+								<li>
+									<a href="{base}#{subsubsection.slug}">
+										{subsubsection.title}
+									</a>
+								</li>
+							{/each}
+						</ul>
+					</li>
+				{/each}
+			</ul>
 			{@html section.html}
 		</section>
 	{/each}

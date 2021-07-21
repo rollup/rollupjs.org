@@ -60,17 +60,33 @@ function create_guide(lang) {
 
 		const subsections = [];
 		const pattern = /<h3 id="(.+?)">(.+?)<\/h3>/g;
-		while ((match = pattern.exec(html))) {
-			const slug = match[1];
-			const title = match[2]
-				.replace(/<\/?code>/g, '')
-				.replace(/<(\w+).*>.*<\/\1>/, '')
-				.replace(/&quot;/g, '"')
-				.replace(/&#39;/g, "'")
-				.replace(/\.(\w+).*/, '.$1')
-				.replace(/\((\w+).*\)/, '');
+		const subsectionHeadingMatchIndexes = [];
 
-			subsections.push({ slug, title });
+		while ((match = pattern.exec(html))) {
+			subsectionHeadingMatchIndexes.push(match.index);
+
+			const slug = match[1];
+			const title = sanitizeHeadingMarkup(match[2]);
+
+			subsections.push({ slug, title, subsubsections: [] });
+		}
+
+		subsectionHeadingMatchIndexes.push(html.length);
+
+		const subsubsectionPattern = /<h4 id="(.+?)">(.+?)<\/h4>/g;
+		let startSearchIndex = 0;
+		for (let i = 1; i < subsectionHeadingMatchIndexes.length; i++) {
+			const endSearchIndex = subsectionHeadingMatchIndexes[i];
+			const searchHtml = html.substring(startSearchIndex, endSearchIndex);
+			startSearchIndex = endSearchIndex;
+
+			let subSubSectionMatch;
+			while ((subSubSectionMatch = subsubsectionPattern.exec(searchHtml))) {
+				const slug = subSubSectionMatch[1];
+				const title = sanitizeHeadingMarkup(subSubSectionMatch[2]);
+
+				subsections[i - 1].subsubsections.push({ slug, title });
+			}
 		}
 
 		return {
@@ -80,4 +96,16 @@ function create_guide(lang) {
 			slug: file.replace(/^\d+-/, '').replace(/\.md$/, '')
 		};
 	});
+}
+
+function sanitizeHeadingMarkup(headingMarkup) {
+	return headingMarkup
+		.replace(/<\/?code>/g, '')
+		.replace(/<(\w+).*>.*<\/\1>/, '')
+		.replace(/&quot;/g, '"')
+		.replace(/&#39;/g, "'")
+		.replace(/\.(\w+).*/, '.$1')
+		.replace(/\((\w+).*\)/, '')
+		.replace(/&lt;/g, '<')
+		.replace(/&gt;/g, '>');
 }
