@@ -47,46 +47,52 @@ function create_guide(lang) {
 		});
 
 		const renderer = new marked.Renderer();
+		const tocItems = [];
 		renderer.heading = (text, level, raw, slugger) => {
 			const id = slugger.slug(raw);
+
+			if (level === 3) {
+				tocItems.push({ id, text, subSubSections: [] });
+			} else if (level === 4 && tocItems.length > 0) {
+				const previousTocItem = tocItems[tocItems.length - 1];
+				previousTocItem.subSubSections.push({ id, text });
+			}
+
 			return `<h${level} id="${id}"><a class="anchor" href="guide/en/#${id}"><img src="/images/anchor.svg" alt=""></a>${text}</h${level}>`;
 		};
-		const html = marked(content, { renderer })
+
+		const initialHtml = marked(content, { renderer })
 			.replace(/<p>(<a class='open-in-repl'[\s\S]+?)<\/p>/g, '$1')
 			.replace(/<p>@@(\d+)<\/p>/g, (match, id) => {
 				return `<pre><code>${highlighted[id]}</code></pre>`;
 			})
 			.replace(/^\t+/gm, match => match.split('\t').join('  '));
 
+		const tocItemsMarkup = tocItems
+			.map(tocItem => {
+				const subTocItemsMarkup = tocItem.subSubSections
+					.map(subTocItem => `<li><a href="guide/en/#${subTocItem.id}">${subTocItem.text}</a></li>`)
+					.join('');
+				let subTocMarkup = subTocItemsMarkup.length > 0 ? `<ul>${subTocItemsMarkup}</ul>` : '';
+
+				return `<li><a href="guide/en/#${tocItem.id}">${tocItem.text}</a>${subTocMarkup}</li>`;
+			})
+			.join('');
+		const html = `<ul>${tocItemsMarkup}</ul>` + initialHtml;
+
 		const subsections = [];
 		const pattern = /<h3 id="(.+?)">(.+?)<\/h3>/g;
-		const subsectionHeadingMatchIndexes = [];
-
 		while ((match = pattern.exec(html))) {
-			subsectionHeadingMatchIndexes.push(match.index);
-
 			const slug = match[1];
-			const title = sanitizeHeadingMarkup(match[2]);
+			const title = match[2]
+				.replace(/<\/?code>/g, '')
+				.replace(/<(\w+).*>.*<\/\1>/, '')
+				.replace(/&quot;/g, '"')
+				.replace(/&#39;/g, "'")
+				.replace(/\.(\w+).*/, '.$1')
+				.replace(/\((\w+).*\)/, '');
 
-			subsections.push({ slug, title, subsubsections: [] });
-		}
-
-		subsectionHeadingMatchIndexes.push(html.length);
-
-		const subsubsectionPattern = /<h4 id="(.+?)">(.+?)<\/h4>/g;
-		let startSearchIndex = 0;
-		for (let i = 1; i < subsectionHeadingMatchIndexes.length; i++) {
-			const endSearchIndex = subsectionHeadingMatchIndexes[i];
-			const searchHtml = html.substring(startSearchIndex, endSearchIndex);
-			startSearchIndex = endSearchIndex;
-
-			let subSubSectionMatch;
-			while ((subSubSectionMatch = subsubsectionPattern.exec(searchHtml))) {
-				const slug = subSubSectionMatch[1];
-				const title = sanitizeHeadingMarkup(subSubSectionMatch[2]);
-
-				subsections[i - 1].subsubsections.push({ slug, title });
-			}
+			subsections.push({ slug, title });
 		}
 
 		return {
@@ -96,16 +102,4 @@ function create_guide(lang) {
 			slug: file.replace(/^\d+-/, '').replace(/\.md$/, '')
 		};
 	});
-}
-
-function sanitizeHeadingMarkup(headingMarkup) {
-	return headingMarkup
-		.replace(/<\/?code>/g, '')
-		.replace(/<(\w+).*>.*<\/\1>/, '')
-		.replace(/&quot;/g, '"')
-		.replace(/&#39;/g, "'")
-		.replace(/\.(\w+).*/, '.$1')
-		.replace(/\((\w+).*\)/, '')
-		.replace(/&lt;/g, '<')
-		.replace(/&gt;/g, '>');
 }
