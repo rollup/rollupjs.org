@@ -110,15 +110,17 @@
 								{@html tocItem.text}
 							</a>
 
-							<ul>
-								{#each tocItem.subSubSections as subTocItem}
-									<li>
-										<a href="{base}#{subTocItem.id}">
-											{@html subTocItem.text}
-										</a>
-									</li>
-								{/each}
-							</ul>
+							{#if tocItem.subSubSections.length > 0}
+								<ul>
+									{#each tocItem.subSubSections as subTocItem}
+										<li>
+											<a href="{base}#{subTocItem.id}">
+												{@html subTocItem.text}
+											</a>
+										</li>
+									{/each}
+								</ul>
+							{/if}
 						</li>
 					{/each}
 				</ul>
