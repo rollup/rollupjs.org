@@ -61,24 +61,12 @@ function create_guide(lang) {
 			return `<h${level} id="${id}"><a class="anchor" href="guide/en/#${id}"><img src="/images/anchor.svg" alt=""></a>${text}</h${level}>`;
 		};
 
-		const initialHtml = marked(content, { renderer })
+		const html = marked(content, { renderer })
 			.replace(/<p>(<a class='open-in-repl'[\s\S]+?)<\/p>/g, '$1')
 			.replace(/<p>@@(\d+)<\/p>/g, (match, id) => {
 				return `<pre><code>${highlighted[id]}</code></pre>`;
 			})
 			.replace(/^\t+/gm, match => match.split('\t').join('  '));
-
-		const tocItemsMarkup = tocItems
-			.map(tocItem => {
-				const subTocItemsMarkup = tocItem.subSubSections
-					.map(subTocItem => `<li><a href="guide/en/#${subTocItem.id}">${subTocItem.text}</a></li>`)
-					.join('');
-				let subTocMarkup = subTocItemsMarkup.length > 0 ? `<ul>${subTocItemsMarkup}</ul>` : '';
-
-				return `<li><a href="guide/en/#${tocItem.id}">${tocItem.text}</a>${subTocMarkup}</li>`;
-			})
-			.join('');
-		const html = `<ul>${tocItemsMarkup}</ul>` + initialHtml;
 
 		const subsections = [];
 		const pattern = /<h3 id="(.+?)">(.+?)<\/h3>/g;
@@ -99,6 +87,7 @@ function create_guide(lang) {
 			html,
 			metadata,
 			subsections,
+			tocItems,
 			slug: file.replace(/^\d+-/, '').replace(/\.md$/, '')
 		};
 	});
