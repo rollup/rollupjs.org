@@ -96,7 +96,7 @@
 	{#each sections as section}
 		<section id="{section.slug}">
 			<h2>
-				<a class="anchor" href="guide/en/#{section.slug}">
+				<a class="anchor" href="{base}#{section.slug}">
 					<img src="/images/anchor.svg" alt="" />
 				</a>
 				{section.metadata.title}

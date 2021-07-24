@@ -58,7 +58,7 @@ function create_guide(lang) {
 				previousTocItem.subSubSections.push({ id, text });
 			}
 
-			return `<h${level} id="${id}"><a class="anchor" href="guide/en/#${id}"><img src="/images/anchor.svg" alt=""></a>${text}</h${level}>`;
+			return `<h${level} id="${id}"><a class="anchor" href="guide/${lang}/#${id}"><img src="/images/anchor.svg" alt=""></a>${text}</h${level}>`;
 		};
 
 		const html = marked(content, { renderer })
