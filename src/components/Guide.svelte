@@ -4,6 +4,8 @@
 	import drawerOpen from '../stores/drawerOpen';
 	import currentSection from '../stores/currentSection';
 
+	$: base = `guide/${lang}/`;
+
 	export let sections = [];
 	export let lang;
 	let container;
@@ -57,6 +59,8 @@
 	}
 
 	onMount(() => {
+		document.documentElement.lang = lang;
+
 		anchors = Array.from(container.querySelectorAll('section[id]'))
 			.concat(Array.from(container.querySelectorAll('h3[id]')))
 			.sort((a, b) => a.getBoundingClientRect().top - b.getBoundingClientRect().top);
@@ -92,11 +96,36 @@
 	{#each sections as section}
 		<section id="{section.slug}">
 			<h2>
-				<a class="anchor" href="guide/en/#{section.slug}">
+				<a class="anchor" href="{base}#{section.slug}">
 					<img src="/images/anchor.svg" alt="" />
 				</a>
 				{section.metadata.title}
 			</h2>
+
+			{#if section.tocItems.length > 0}
+				<ul class="table-of-contents">
+					{#each section.tocItems as tocItem}
+						<li>
+							<a href="{base}#{tocItem.id}">
+								{@html tocItem.text}
+							</a>
+
+							{#if tocItem.subSubSections.length > 0}
+								<ul>
+									{#each tocItem.subSubSections as subTocItem}
+										<li>
+											<a href="{base}#{subTocItem.id}">
+												{@html subTocItem.text}
+											</a>
+										</li>
+									{/each}
+								</ul>
+							{/if}
+						</li>
+					{/each}
+				</ul>
+			{/if}
+
 			{@html section.html}
 		</section>
 	{/each}
@@ -173,6 +202,11 @@
 		font-size: 1.8em;
 		font-weight: 700;
 		color: #333;
+	}
+
+	.table-of-contents,
+	.table-of-contents ul {
+		padding-left: 1.5em;
 	}
 
 	.content :global(h3) {

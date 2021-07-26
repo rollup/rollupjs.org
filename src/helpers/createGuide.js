@@ -47,10 +47,20 @@ function create_guide(lang) {
 		});
 
 		const renderer = new marked.Renderer();
+		const tocItems = [];
 		renderer.heading = (text, level, raw, slugger) => {
 			const id = slugger.slug(raw);
-			return `<h${level} id="${id}"><a class="anchor" href="guide/en/#${id}"><img src="/images/anchor.svg" alt=""></a>${text}</h${level}>`;
+
+			if (level === 3) {
+				tocItems.push({ id, text, subSubSections: [] });
+			} else if (level === 4 && tocItems.length > 0) {
+				const previousTocItem = tocItems[tocItems.length - 1];
+				previousTocItem.subSubSections.push({ id, text });
+			}
+
+			return `<h${level} id="${id}"><a class="anchor" href="guide/${lang}/#${id}"><img src="/images/anchor.svg" alt=""></a>${text}</h${level}>`;
 		};
+
 		const html = marked(content, { renderer })
 			.replace(/<p>(<a class='open-in-repl'[\s\S]+?)<\/p>/g, '$1')
 			.replace(/<p>@@(\d+)<\/p>/g, (match, id) => {
@@ -77,6 +87,7 @@ function create_guide(lang) {
 			html,
 			metadata,
 			subsections,
+			tocItems,
 			slug: file.replace(/^\d+-/, '').replace(/\.md$/, '')
 		};
 	});
