@@ -73,11 +73,14 @@ function create_guide(lang) {
 		while ((match = pattern.exec(html))) {
 			const slug = match[1];
 			const title = match[2]
+				// Remove <code> tags
 				.replace(/<\/?code>/g, '')
+				// Remove first HTML tag
 				.replace(/<(\w+).*>.*<\/\1>/, '')
+				// Unescape quotes
 				.replace(/&quot;/g, '"')
 				.replace(/&#39;/g, "'")
-				.replace(/\.(\w+).*/, '.$1')
+				// Remove parts in parentheses: foo (bar) -> foo
 				.replace(/\((\w+).*\)/, '');
 
 			subsections.push({ slug, title });
