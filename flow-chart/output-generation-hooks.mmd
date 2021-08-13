@@ -1,0 +1,70 @@
+flowchart TB
+    classDef hook-parallel fill:#ffb3b3;
+    classDef hook-sequential fill:#ffd2b3;
+    classDef hook-first fill:#fff2b3;
+
+	buildend("buildEnd"):::hook-parallel
+	click buildend "/guide/en/#buildend" _parent
+
+    augmentchunkhash("augmentChunkHash"):::hook-sequential
+    click augmentchunkhash "/guide/en/#augmentchunkhash" _parent
+
+	banner("banner"):::hook-parallel
+	click banner "/guide/en/#banner" _parent
+
+	closebundle("closeBundle"):::hook-parallel
+	click closebundle "/guide/en/#closebundle" _parent
+
+	footer("footer"):::hook-parallel
+	click footer "/guide/en/#footer" _parent
+
+	generatebundle("generateBundle"):::hook-sequential
+	click generatebundle "/guide/en/#generatebundle" _parent
+
+	intro("intro"):::hook-parallel
+	click intro "/guide/en/#intro" _parent
+
+	outputoptions("outputOptions"):::hook-sequential
+	click outputoptions "/guide/en/#outputoptions" _parent
+
+	outro("outro"):::hook-parallel
+	click outro "/guide/en/#outro" _parent
+
+	renderchunk("renderChunk"):::hook-sequential
+	click renderchunk "/guide/en/#renderchunk" _parent
+
+	renderdynamicImport("renderDynamicImport"):::hook-first
+	click renderdynamicImport "/guide/en/#renderdynamicImport" _parent
+
+	renderstart("renderStart"):::hook-parallel
+	click renderstart "/guide/en/#renderstart" _parent
+
+	resolvefileurl("resolveFileUrl"):::hook-first
+	click resolvefileurl "/guide/en/#resolvefileurl" _parent
+
+	resolveimportmeta("resolveImportMeta"):::hook-first
+	click resolveimportmeta "/guide/en/#resolveimportmeta" _parent
+
+	writebundle("writeBundle"):::hook-parallel
+	click writebundle "/guide/en/#writebundle" _parent
+
+
+	buildend-->|error|closebundle
+	buildend-->outputoptions
+	augmentchunkhash-->resolvefileurl
+	augmentchunkhash-->resolveimportmeta
+	banner-->renderdynamicImport
+	footer-->renderdynamicImport
+	generatebundle-->writebundle
+	intro-->renderdynamicImport
+	outputoptions-->renderstart
+	outro-->renderdynamicImport
+	renderchunk-->generatebundle
+	renderdynamicImport-->augmentchunkhash
+	renderstart-->banner
+	renderstart-->footer
+	renderstart-->intro
+	renderstart-->outro
+	resolvefileurl-->renderchunk
+	resolveimportmeta-->renderchunk
+	writebundle-->closebundle
