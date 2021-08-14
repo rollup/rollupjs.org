@@ -1,7 +1,8 @@
 flowchart TB
-    classDef hook-parallel fill:#ffb3b3;
-    classDef hook-sequential fill:#ffd2b3;
-    classDef hook-first fill:#fff2b3;
+    classDef hook-parallel fill:#ffb3b3,stroke:#000;
+    classDef hook-sequential fill:#ffd2b3,stroke:#000;
+    classDef hook-first fill:#fff2b3,stroke:#000;
+    classDef hook-sequential-sync fill:#ffd2b3,stroke:#f00;
 
 	buildend("buildEnd"):::hook-parallel
 	click buildend "/guide/en/#buildend" _parent
@@ -27,10 +28,10 @@ flowchart TB
 	transform("transform"):::hook-sequential
 	click transform "/guide/en/#transform" _parent
 
-	watchchange("watchChange"):::hook-sequential
+	watchchange("watchChange"):::hook-sequential-sync
 	click watchchange "/guide/en/#watchchange" _parent
 
-    closewatcher("closeWatcher"):::hook-sequential
+    closewatcher("closeWatcher"):::hook-sequential-sync
 	click closewatcher "/guide/en/#closewatcher" _parent
 
     options

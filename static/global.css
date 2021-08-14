@@ -24,7 +24,8 @@
 body {
 	margin: 0;
 	background: #fff;
-	font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+	font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif,
+		'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';
 	color: #555;
 	line-height: 1.5;
 	-webkit-font-smoothing: antialiased;
@@ -35,7 +36,8 @@ main {
 	overflow-x: hidden;
 }
 
-code, pre {
+code,
+pre {
 	font-family: 'Inconsolata', monospace;
 	font-weight: 400;
 	line-height: 1.2;
@@ -45,7 +47,9 @@ pre {
 	overflow-x: auto;
 }
 
-h1, h2, h3 {
+h1,
+h2,
+h3 {
 	margin: 0;
 	font-weight: 300;
 	line-height: 1.2;
@@ -53,7 +57,7 @@ h1, h2, h3 {
 
 a {
 	text-decoration: none;
-	color: rgb(170,30,30);
+	color: rgb(170, 30, 30);
 }
 
 strong {
@@ -126,4 +130,21 @@ strong {
 
 .hljs-meta-string {
 	color: #555;
+}
+
+.legend-grid {
+	display: grid;
+	grid-template-columns: max-content max-content;
+	grid-column-gap: 16px;
+}
+
+.legend-rect {
+	display: inline-block;
+	width: 16px;
+	height: 16px;
+	border-radius: 5px;
+	border: 1px solid #000;
+	vertical-align: middle;
+	margin-right: 5px;
+	background: #fff;
 }
