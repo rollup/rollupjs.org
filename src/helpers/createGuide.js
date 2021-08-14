@@ -67,11 +67,10 @@ function create_guide(lang) {
 				return `<pre><code>${highlighted[id]}</code></pre>`;
 			})
 			.replace(/^\t+/gm, match => match.split('\t').join('  '))
-			.replace('<!-- build-hooks-graph -->', getSvgElement('static/charts/build-hooks.svg'))
-			.replace(
-				'<!-- output-generation-hooks-graph -->',
-				getSvgElement('static/charts/output-generation-hooks.svg')
-			);
+			.replace(/<!-- html:([\w.-]+) -->/g, (_, fileName) =>
+				fs.readFileSync(`guide/en/${fileName}`, 'utf8')
+			)
+			.replace(/<!-- mermaid:([\w.-]+)\.mmd -->/g, (_, fileName) => getSvgGraph(fileName));
 
 		const subsections = [];
 		const pattern = /<h3 id="(.+?)">(.+?)<\/h3>/g;
@@ -103,19 +102,12 @@ function create_guide(lang) {
 
 // This will avoid a layout shift and wrong anchor positions by making sure the
 // element has the correct size before the file is loaded
-function getSvgElement(path) {
-	const file = fs.readFileSync(path, 'utf8');
-	const [, width, height] = file.match(/viewBox="0 0 ([\d.]+) ([\d.]+)"/);
+function getSvgGraph(fileName) {
+	const fileContent = fs.readFileSync(`static/graphs/${fileName}.svg`, 'utf8');
+	const [, width, height] = fileContent.match(/viewBox="0 0 ([\d.]+) ([\d.]+)"/);
 	return `
-<div class="legend-grid">
-  <div style="grid-column: 1; grid-row: 1;"><span class="legend-rect" style="background: #ffb3b3;"></span>parallel</div>
-  <div style="grid-column: 1; grid-row: 2;"><span class="legend-rect" style="background: #ffd2b3;"></span>sequential</div>
-  <div style="grid-column: 1; grid-row: 3;"><span class="legend-rect" style="background: #fff2b3;"></span>first</div>
-  <div style="grid-column: 2; grid-row: 1;"><span class="legend-rect" style="border-color: #000;"></span>async</div>
-  <div style="grid-column: 2; grid-row: 2;"><span class="legend-rect" style="border-color: #f00;"></span>sync</div>
-</div>
 <object
-  data="${path.slice('static/'.length)}"
+  data="graphs/${fileName}.svg"
   type="image/svg+xml"
   style="max-width:80vw; height:min(${height}px,calc(80vw * ${height / width}))"></object>`;
 }

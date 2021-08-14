@@ -26,18 +26,18 @@
   },
   "scripts": {
     "dev": "sapper dev",
-    "build": "npm run clean && npm run update-guide && npm run generate-charts && sapper export --legacy && cp -r __sapper__/export export",
+    "build": "npm run clean && npm run update-guide && npm run generate-graphs && sapper export --legacy && cp -r __sapper__/export export",
     "start": "sirv export",
     "update-guide": "git submodule update --init --recursive && shx rm -rf guide/en && shx cp -r rollup-submodule/docs/ guide/en",
     "publish-updated-guide": "git pull && git submodule update --init --recursive && cd rollup-submodule && git checkout master && git pull && cd .. && npm test && git add rollup-submodule && git commit -m \"Update guide\" && git push",
     "clean": "rm -rf export/ && rm -rf __sapper__/",
     "lint": "prettier --write src/**/*.{js,html,svelte} test/**/*.js",
-    "generate-charts": "mmdc -c flow-chart/mermaid.config.json -i flow-chart/build-hooks.mmd -o static/charts/build-hooks.svg && mmdc -c flow-chart/mermaid.config.json -i flow-chart/output-generation-hooks.mmd -o static/charts/output-generation-hooks.svg",
+    "generate-graphs": "zx scripts/generate-graphs.mjs",
     "stage": "netlify deploy --dir=export",
     "deploy": "netlify deploy --dir=export --prod",
     "prestage": "npm run build",
     "predeploy": "npm run build",
-    "test": "npx rollup test/verify-guide-links.js -f cjs --silent | node",
+    "test": "npx rollup scripts/verify-guide-links.js -f cjs --silent | node",
     "postinstall": "husky install"
   },
   "dependencies": {
@@ -48,6 +48,7 @@
     "highlight.js": "^10.7.2",
     "marked": "^2.0.5",
     "polka": "^0.5.2",
-    "sirv": "^1.0.12"
+    "sirv": "^1.0.12",
+    "zx": "^2.1.0"
   }
 }

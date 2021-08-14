@@ -4,7 +4,7 @@ node_modules
 .vscode
 /export
 .idea
-static/charts
+static/graphs
 
 # Needs to be taken from the main rollup repo
 guide/en
