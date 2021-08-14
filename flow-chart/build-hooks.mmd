@@ -27,21 +27,32 @@ flowchart TB
 	transform("transform"):::hook-sequential
 	click transform "/guide/en/#transform" _parent
 
-    closewatcher("closeWatcher"):::hook-sequential
-	click closewatcher "/guide/en/#closewatcher" _parent
-
 	watchchange("watchChange"):::hook-sequential
 	click watchchange "/guide/en/#watchchange" _parent
 
-    options-->buildstart
-    buildstart-->|each entry|resolveid
-    resolveid.->|external|buildend
-    resolveid-->|non-external|load
-    load-->transform
-    transform-->moduleparsed
-    moduleparsed.->|no imports|buildend
-    moduleparsed-->|"each import()"|resolvedynamicimport
-    resolvedynamicimport-->|non-external|load
-    resolvedynamicimport-->|unresolved|resolveid
-    moduleparsed-->|each import|resolveid
-    resolvedynamicimport.->|external|buildend
+    closewatcher("closeWatcher"):::hook-sequential
+	click closewatcher "/guide/en/#closewatcher" _parent
+
+    options
+    --> buildstart
+    --> |each entry|resolveid
+    .-> |external|buildend
+
+    resolveid
+    --> |non-external|load
+    --> transform
+    --> moduleparsed
+    .-> |no imports|buildend
+
+    moduleparsed
+    --> |"each import()"|resolvedynamicimport
+    --> |non-external|load
+
+    moduleparsed
+    --> |each import|resolveid
+
+    resolvedynamicimport
+    .-> |external|buildend
+
+    resolvedynamicimport
+    --> |unresolved|resolveid

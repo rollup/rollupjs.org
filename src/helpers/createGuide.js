@@ -66,7 +66,19 @@ function create_guide(lang) {
 			.replace(/<p>@@(\d+)<\/p>/g, (match, id) => {
 				return `<pre><code>${highlighted[id]}</code></pre>`;
 			})
-			.replace(/^\t+/gm, match => match.split('\t').join('  '));
+			.replace(/^\t+/gm, match => match.split('\t').join('  '))
+			.replace(
+				'<build-hooks></build-hooks>',
+				`<object data="charts/build-hooks.svg" type="image/svg+xml" style="${getSvgSize(
+					'static/charts/build-hooks.svg'
+				)}"></object>`
+			)
+			.replace(
+				'<output-generation-hooks></output-generation-hooks>',
+				`<object data="charts/output-generation-hooks.svg" type="image/svg+xml" style="${getSvgSize(
+					'static/charts/output-generation-hooks.svg'
+				)}"></object>`
+			);
 
 		const subsections = [];
 		const pattern = /<h3 id="(.+?)">(.+?)<\/h3>/g;
@@ -94,4 +106,12 @@ function create_guide(lang) {
 			slug: file.replace(/^\d+-/, '').replace(/\.md$/, '')
 		};
 	});
+}
+
+// This will avoid a layout shift and wrong anchor positions by making sure the
+// element has the correct size before the file is loaded
+function getSvgSize(path) {
+	const file = fs.readFileSync(path, 'utf8');
+	const [, width, height] = file.match(/viewBox="0 0 ([\d.]+) ([\d.]+)"/);
+	return `max-width:80vw;height:min(${height}px,calc(80vw * ${height / width}))`;
 }

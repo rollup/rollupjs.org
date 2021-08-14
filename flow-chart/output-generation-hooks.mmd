@@ -1,10 +1,8 @@
 flowchart TB
+    classDef default fill:#fff;
     classDef hook-parallel fill:#ffb3b3;
     classDef hook-sequential fill:#ffd2b3;
     classDef hook-first fill:#fff2b3;
-
-	buildend("buildEnd"):::hook-parallel
-	click buildend "/guide/en/#buildend" _parent
 
     augmentchunkhash("augmentChunkHash"):::hook-sequential
     click augmentchunkhash "/guide/en/#augmentchunkhash" _parent
@@ -33,8 +31,11 @@ flowchart TB
 	renderchunk("renderChunk"):::hook-sequential
 	click renderchunk "/guide/en/#renderchunk" _parent
 
-	renderdynamicImport("renderDynamicImport"):::hook-first
-	click renderdynamicImport "/guide/en/#renderdynamicImport" _parent
+	renderdynamicimport("renderDynamicImport"):::hook-first
+	click renderdynamicimport "/guide/en/#renderdynamicimport" _parent
+
+	rendererror("renderError"):::hook-parallel
+	click rendererror "/guide/en/#rendererror" _parent
 
 	renderstart("renderStart"):::hook-parallel
 	click renderstart "/guide/en/#renderstart" _parent
@@ -49,22 +50,29 @@ flowchart TB
 	click writebundle "/guide/en/#writebundle" _parent
 
 
-	buildend-->|error|closebundle
-	buildend-->outputoptions
-	augmentchunkhash-->resolvefileurl
-	augmentchunkhash-->resolveimportmeta
-	banner-->renderdynamicImport
-	footer-->renderdynamicImport
-	generatebundle-->writebundle
-	intro-->renderdynamicImport
-	outputoptions-->renderstart
-	outro-->renderdynamicImport
-	renderchunk-->generatebundle
-	renderdynamicImport-->augmentchunkhash
-	renderstart-->banner
-	renderstart-->footer
-	renderstart-->intro
-	renderstart-->outro
-	resolvefileurl-->renderchunk
-	resolveimportmeta-->renderchunk
-	writebundle-->closebundle
+	outputoptions
+	--> renderstart
+	--> banner & footer & intro & outro
+	--> beforerenderdynamicimport(( ))
+	--> beforeaugmentchunkhash(( ))
+	--> |each chunk|augmentchunkhash
+	--> renderchunk
+	.-> generatebundle
+	--> writebundle
+	.-> closebundle
+
+    beforerenderdynamicimport
+    --> |"each import()"|renderdynamicimport
+    --> beforeaugmentchunkhash
+
+	augmentchunkhash
+	--> |each import.meta.*|beforeimportmeta(( ))
+	--> |import.meta.url|resolvefileurl
+	.-> renderchunk
+
+	beforeimportmeta
+	--> |other|resolveimportmeta
+	.-> renderchunk
+
+	rendererror
+	.-> closebundle
