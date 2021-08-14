@@ -3,6 +3,7 @@
 import path from 'path';
 
 const mermaidFiles = await globby('guide/en/*.mmd');
+await fs.ensureDir('static/graphs');
 await Promise.all(
 	mermaidFiles.map(
 		file =>
