@@ -246,13 +246,6 @@
 		top: -0.1em;
 	}
 
-	.content :global(p),
-	.content :global(ol) {
-		margin: 0 0 1em 0;
-		color: #181818;
-		line-height: 1.5;
-	}
-
 	.content :global(a) {
 		border-bottom: 1px solid #e3d9d9;
 	}

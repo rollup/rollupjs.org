@@ -66,7 +66,11 @@ function create_guide(lang) {
 			.replace(/<p>@@(\d+)<\/p>/g, (match, id) => {
 				return `<pre><code>${highlighted[id]}</code></pre>`;
 			})
-			.replace(/^\t+/gm, match => match.split('\t').join('  '));
+			.replace(/^\t+/gm, match => match.split('\t').join('  '))
+			.replace(/<!-- html:([\w.-]+) -->/g, (_, fileName) =>
+				fs.readFileSync(`guide/en/${fileName}`, 'utf8')
+			)
+			.replace(/<!-- mermaid:([\w.-]+)\.mmd -->/g, (_, fileName) => getSvgGraph(fileName));
 
 		const subsections = [];
 		const pattern = /<h3 id="(.+?)">(.+?)<\/h3>/g;
@@ -94,4 +98,16 @@ function create_guide(lang) {
 			slug: file.replace(/^\d+-/, '').replace(/\.md$/, '')
 		};
 	});
+}
+
+// This will avoid a layout shift and wrong anchor positions by making sure the
+// element has the correct size before the file is loaded
+function getSvgGraph(fileName) {
+	const fileContent = fs.readFileSync(`static/graphs/${fileName}.svg`, 'utf8');
+	const [, width, height] = fileContent.match(/viewBox="0 0 ([\d.]+) ([\d.]+)"/);
+	return `
+<object
+  data="graphs/${fileName}.svg"
+  type="image/svg+xml"
+  style="max-width:80vw; height:min(${height}px,calc(80vw * ${height / width}))"></object>`;
 }
