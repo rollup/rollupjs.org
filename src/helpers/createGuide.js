@@ -1,6 +1,6 @@
 import fs from 'fs';
 import path from 'path';
-import marked from 'marked';
+import { marked } from 'marked';
 import hljs from 'highlight.js';
 
 // Register dummy language for plain text code blocks.
@@ -109,5 +109,7 @@ function getSvgGraph(fileName) {
 <object
   data="graphs/${fileName}.svg"
   type="image/svg+xml"
-  style="max-width:80vw; height:min(${height}px,calc(80vw * ${height / width}))"></object>`;
+  style="max-width:var(--image-width); height:min(${height}px,calc(var(--image-width) * ${
+		height / width
+	}))"></object>`;
 }

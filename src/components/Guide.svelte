@@ -161,7 +161,7 @@
 		position: fixed;
 		left: 0;
 		top: 3em;
-		width: 16em;
+		width: 16rem;
 		height: calc(100vh - 3em);
 		display: block;
 		background: white;
@@ -169,7 +169,7 @@
 		overflow-y: auto;
 		padding: 1em;
 		border-right: 1px solid #eee;
-		transform: translateX(-16em);
+		transform: translateX(-16rem);
 		transition: transform 0.3s;
 		overscroll-behavior: contain;
 	}
@@ -182,6 +182,7 @@
 		width: 100%;
 		padding: 1em 1em 1em 1.5em;
 		word-break: break-word;
+		--image-width: 80vw;
 	}
 
 	.hero {
@@ -348,6 +349,7 @@
 
 		.content {
 			padding: 0 1em 2em 17.5em;
+			--image-width: calc(90vw - 16rem);
 		}
 
 		.hero {
