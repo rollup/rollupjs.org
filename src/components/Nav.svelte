@@ -17,6 +17,7 @@
 			<li><a rel="prefetch" class:active="{page === 'repl'}" href="repl/">repl</a></li>
 			<li><a href="https://is.gd/rollup_chat">chat</a></li>
 			<li><a href="https://github.com/rollup/rollup">github</a></li>
+			<li><a href="https://opencollective.com/rollup">opencollective</a></li>
 		</ul>
 	</nav>
 </div>
