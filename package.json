@@ -24,7 +24,7 @@
     "shx": "^0.3.4",
     "sirv": "^2.0.2",
     "svelte": "^3.50.1",
-    "zx": "^7.0.8"
+    "zx": "^7.0.7"
   },
   "scripts": {
     "dev": "sapper dev",
@@ -44,7 +44,12 @@
   },
   "dependencies": {
     "@babel/runtime": "^7.19.0",
-    "codemirror": "^5.65.6",
+    "@codemirror/commands": "^6.1.0",
+    "@codemirror/lang-javascript": "^6.0.2",
+    "@codemirror/language": "^6.2.1",
+    "@codemirror/search": "^6.2.0",
+    "@codemirror/state": "^6.1.1",
+    "@codemirror/view": "^6.2.4",
     "compression": "^1.7.4",
     "highlight.js": "^11.6.0",
     "marked": "^4.1.0",

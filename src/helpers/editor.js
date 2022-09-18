@@ -1,26 +1,20 @@
 import {
-	crosshairCursor,
-	drawSelection,
 	dropCursor,
-	highlightActiveLine,
-	highlightActiveLineGutter,
+	EditorView,
 	highlightSpecialChars,
 	keymap,
-	lineNumbers,
-	rectangularSelection,
-	EditorView
+	lineNumbers
 } from '@codemirror/view';
 import { EditorState } from '@codemirror/state';
 import {
 	bracketMatching,
 	defaultHighlightStyle,
-	foldGutter,
 	foldKeymap,
 	indentOnInput,
 	syntaxHighlighting
 } from '@codemirror/language';
 import { defaultKeymap, history, historyKeymap } from '@codemirror/commands';
-import { highlightSelectionMatches, searchKeymap } from '@codemirror/search';
+import { highlightSelectionMatches } from '@codemirror/search';
 import {
 	autocompletion,
 	closeBrackets,
@@ -36,35 +30,27 @@ export const createEditor = (parent, doc, onUpdate, readonly) =>
 		doc,
 		extensions: [
 			lineNumbers(),
-			highlightActiveLineGutter(),
 			highlightSpecialChars(),
 			history(),
-			foldGutter(),
-			drawSelection(),
 			dropCursor(),
-			EditorState.allowMultipleSelections.of(true),
 			indentOnInput(),
 			syntaxHighlighting(defaultHighlightStyle, { fallback: true }),
 			bracketMatching(),
 			closeBrackets(),
 			autocompletion(),
-			rectangularSelection(),
-			crosshairCursor(),
-			highlightActiveLine(),
 			highlightSelectionMatches(),
 			keymap.of([
 				...closeBracketsKeymap,
 				...defaultKeymap,
-				...searchKeymap,
 				...historyKeymap,
 				...foldKeymap,
 				...completionKeymap,
 				...lintKeymap
 			]),
-			javascript()
-			// EditorState.readOnly.of(readonly),
-			// EditorView.lineWrapping,
-			// EditorState.tabSize.of(2),
-			// EditorView.updateListener.of(onUpdate)
+			javascript(),
+			EditorState.readOnly.of(readonly),
+			EditorView.lineWrapping,
+			EditorState.tabSize.of(2),
+			EditorView.updateListener.of(onUpdate)
 		]
 	});

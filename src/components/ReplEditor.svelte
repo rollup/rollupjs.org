@@ -1,27 +1,29 @@
 <script>
 	import { onDestroy, onMount } from 'svelte';
-	import { getCodeMirror } from '../helpers/getCodeMirror';
 	import rollupOutput from '../stores/rollupOutput';
 	import { getFileNameFromMessage } from '../helpers/messages';
+	import { createEditor } from '../helpers/editor';
 
 	export let code;
 	export let readonly = false;
 	export let moduleName = null;
 
 	let previousCode = code;
-	let editorNode;
+	let editorContainer;
 	let editor;
 
 	$: if (moduleName && editor) {
-		editor.removeOverlay('locations');
+		// TODO Lukas remove overlay
 		const { error, warnings } = $rollupOutput;
-		if (error) {
-			addOverlay([error], 'rollup-error');
-		} else {
-			addOverlay(warnings, 'rollup-warning');
-		}
+		// TODO Lukas add overlay
+		// if (error) {
+		// 	addOverlay([error], 'rollup-error');
+		// } else {
+		// 	addOverlay(warnings, 'rollup-warning');
+		// }
 	}
 
+	// TODO Lukas remove/rework
 	function addOverlay(messages, type) {
 		const relevantMessages = messages.filter(
 			message => message.loc && getFileNameFromMessage(message) === moduleName
@@ -63,40 +65,34 @@
 	}
 
 	onMount(async () => {
-		const { default: CodeMirror } = await getCodeMirror();
-		editor = CodeMirror.fromTextArea(editorNode, {
-			lineNumbers: true,
-			lineWrapping: true,
-			indentWithTabs: true,
-			indentUnit: 2,
-			tabSize: 2,
-			value: code,
-			mode: 'javascript',
-			readOnly: readonly
-		});
-
-		editor.on('change', instance => {
-			editor.removeOverlay('locations');
-			code = instance.getValue();
-			previousCode = code;
-		});
-
-		editor.setValue(code);
+		const { createEditor } = await import('../helpers/editor.js');
+		editor = createEditor(
+			editorContainer,
+			code,
+			({ changedRanges, state: { doc } }) => {
+				if (changedRanges.length) {
+					// TODO Lukas removeOverlay
+					code = doc.toString();
+					previousCode = code;
+				}
+			},
+			readonly
+		);
 	});
 
 	onDestroy(() => {
-		editor && editor.toTextArea();
+		editor && editor.destroy();
 	});
 
 	$: if (previousCode !== code && editor) {
 		previousCode = code;
-		editor.setValue(code);
+		editor.dispatch({
+			changes: { from: 0, to: editor.state.doc.length, insert: code }
+		});
 	}
 </script>
 
-<div class="codemirror-container">
-	<textarea tabindex="0" bind:this="{editorNode}"></textarea>
-</div>
+<div class="codemirror-container" bind:this="{editorContainer}"></div>
 
 <style>
 	.codemirror-container {
@@ -104,40 +100,43 @@
 		height: 100%;
 	}
 
-	.codemirror-container :global(.CodeMirror) {
-		border-radius: 3px;
+	.codemirror-container :global(.cm-editor .cm-content),
+	.codemirror-container :global(.cm-editor .cm-gutters) {
 		font-family: Inconsolata, monospace;
 		font-size: 16px;
 		line-height: 1.2;
 		font-weight: 400;
+	}
+
+	.codemirror-container :global(.cm-editor .cm-content) {
 		color: #333;
 		height: 100%;
 	}
 
-	.codemirror-container :global(.CodeMirror) {
-		height: 100%;
+	.codemirror-container :global(.cm-editor .cm-gutters) {
+		color: #999;
 	}
 
-	.codemirror-container :global(.CodeMirror-gutters) {
+	.codemirror-container :global(.cm-editor) {
+		outline: none;
+	}
+
+	.codemirror-container :global(.cm-gutters) {
 		border-right: 1px solid #eee;
 	}
 
-	textarea {
-		width: 100%;
-		border: none;
-	}
+	/* TODO Lukas overlay styling */
+	/*:global(.CodeMirror) :global(.cm-overlay.cm-rollup-warning) {*/
+	/*	background-color: var(--warning-background);*/
+	/*	color: var(--warning-color);*/
+	/*	padding: 1px;*/
+	/*	margin: -1px;*/
+	/*}*/
 
-	:global(.CodeMirror) :global(.cm-overlay.cm-rollup-warning) {
-		background-color: var(--warning-background);
-		color: var(--warning-color);
-		padding: 1px;
-		margin: -1px;
-	}
-
-	:global(.CodeMirror) :global(.cm-overlay.cm-rollup-error) {
-		background-color: var(--error-background);
-		color: var(--error-color);
-		padding: 1px;
-		margin: -1px;
-	}
+	/*:global(.CodeMirror) :global(.cm-overlay.cm-rollup-error) {*/
+	/*	background-color: var(--error-background);*/
+	/*	color: var(--error-color);*/
+	/*	padding: 1px;*/
+	/*	margin: -1px;*/
+	/*}*/
 </style>
