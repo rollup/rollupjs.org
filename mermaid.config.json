@@ -1,3 +1,4 @@
 {
-	"themeCSS": "span.edgeLabel { background-color: #fff } path.LS-parallel,path.LS-sequential,path.LS-legend { stroke: none }"
+	"themeCSS": "span.edgeLabel { background-color: #fff } path.LS-parallel,path.LS-sequential,path.LS-legend { stroke: none }",
+	"securityLevel": "loose"
 }
