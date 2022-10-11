@@ -16,11 +16,13 @@ async function getRollupUrl({ type, version }) {
 		return artifact.url;
 	} else if (type === 'pr') {
 		return `https://rollup-ci-artefacts.s3.amazonaws.com/${version}/rollup.browser.js`;
-	} else {
-		return version
+	} else if (version) {
+		const majorVersion = parseInt(version.split('.')[0]);
+		return majorVersion < 3
 			? `https://unpkg.com/rollup@${version}/dist/rollup.browser.js`
-			: 'https://unpkg.com/rollup/dist/rollup.browser.js';
+			: `https://unpkg.com/@rollup/browser@${version}`;
 	}
+	return 'https://unpkg.com/@rollup/browser';
 }
 
 async function loadRollup($rollupRequest) {
