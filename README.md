@@ -6,8 +6,9 @@ This is the source code for the website. Note that the actual guide is now part 
 
 1. `npm install`
 2. `npm run update-guide`
-3. `npm run dev`
-4. Open up http://localhost:3000
+3. `npm run build`
+4. `npm run dev`
+5. Open up http://localhost:3000
 
 ## Updating the guide contents
 
